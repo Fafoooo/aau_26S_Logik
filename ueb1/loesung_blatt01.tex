@@ -1,0 +1,121 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{pdflscape}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 1 -- L\"osungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\subsection*{Aufgabe 1 \textnormal{(1 Punkt)} -- Vollst\"andig geklammerte Formeln}
+
+Operatorpr\"azedenz (von st\"arkster zu schw\"achster Bindung):
+$\neg,\; \wedge,\; \vee,\; \to,\; \leftrightarrow$
+
+\begin{enumerate}[(a)]
+\item $A \vee \neg\neg B \wedge \neg\neg\neg C
+      \;=\; (A \vee (\neg\neg B \wedge \neg\neg\neg C))$
+
+\item $A \vee \neg C \leftrightarrow \neg B \wedge C
+      \;=\; ((A \vee \neg C) \leftrightarrow (\neg B \wedge C))$
+
+\item $A \leftrightarrow \neg C \to B \wedge C
+      \;=\; (A \leftrightarrow (\neg C \to (B \wedge C)))$
+
+\item $\neg A \leftrightarrow B \to \neg C \wedge A \vee B
+      \;=\; (\neg A \leftrightarrow (B \to ((\neg C \wedge A) \vee B)))$
+\end{enumerate}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\subsection*{Aufgabe 2 \textnormal{(2 Punkte)} -- Teilformeln}
+
+Formel: $\neg A \leftrightarrow B \to \neg\neg\neg C \wedge A \vee \neg\neg B$
+
+\medskip
+Vollst\"andig geklammert:
+\[
+  (\neg A \leftrightarrow (B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B)))
+\]
+
+Die Formel besitzt \textbf{13~Teilformeln}:
+
+\begin{enumerate}
+\item $A$
+\item $B$
+\item $C$
+\item $\neg C$
+\item $\neg\neg C$
+\item $\neg\neg\neg C$
+\item $\neg B$
+\item $\neg\neg B$
+\item $\neg A$
+\item $(\neg\neg\neg C \wedge A)$
+\item $((\neg\neg\neg C \wedge A) \vee \neg\neg B)$
+\item $(B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B))$
+\item $(\neg A \leftrightarrow (B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B)))$
+\end{enumerate}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\begin{landscape}
+\subsection*{Aufgabe 3 \textnormal{(2 Punkte)} -- Wahrheitstabelle}
+
+Wahrheitstabelle f\"ur
+$\;\neg A \leftrightarrow B \to \neg\neg\neg C \wedge A \vee \neg\neg B$
+
+\medskip
+Abk\"urzungen f\"ur die zusammengesetzten Teilformeln:
+\begin{align*}
+F_{10} &= (\neg\neg\neg C \wedge A) &
+F_{11} &= (F_{10} \vee \neg\neg B) &
+F_{12} &= (B \to F_{11}) &
+F_{13} &= (\neg A \leftrightarrow F_{12})
+\end{align*}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ccc|cccccc|cccc}
+\toprule
+$A$ & $B$ & $C$
+  & $\neg C$ & $\neg\neg C$ & $\neg\neg\neg C$
+  & $\neg B$ & $\neg\neg B$ & $\neg A$
+  & $F_{10}$ & $F_{11}$ & $F_{12}$ & $F_{13}$ \\
+\midrule
+0 & 0 & 0  & 1 & 0 & 1  & 1 & 0 & 1  & 0 & 0 & 1 & \textbf{1} \\
+0 & 0 & 1  & 0 & 1 & 0  & 1 & 0 & 1  & 0 & 0 & 1 & \textbf{1} \\
+0 & 1 & 0  & 1 & 0 & 1  & 0 & 1 & 1  & 0 & 1 & 1 & \textbf{1} \\
+0 & 1 & 1  & 0 & 1 & 0  & 0 & 1 & 1  & 0 & 1 & 1 & \textbf{1} \\
+1 & 0 & 0  & 1 & 0 & 1  & 1 & 0 & 0  & 1 & 1 & 1 & \textbf{0} \\
+1 & 0 & 1  & 0 & 1 & 0  & 1 & 0 & 0  & 0 & 0 & 1 & \textbf{0} \\
+1 & 1 & 0  & 1 & 0 & 1  & 0 & 1 & 0  & 1 & 1 & 1 & \textbf{0} \\
+1 & 1 & 1  & 0 & 1 & 0  & 0 & 1 & 0  & 0 & 1 & 1 & \textbf{0} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+Die Formel ist genau dann wahr, wenn $A = 0$ gilt (d.\,h.\ sie ist \"aquivalent zu $\neg A$).
+
+\end{landscape}
+
+\end{document}

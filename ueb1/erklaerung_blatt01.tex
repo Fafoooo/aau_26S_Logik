@@ -1,0 +1,378 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{pdflscape}
+\usepackage{tcolorbox}
+
+\tcbuselibrary{breakable}
+
+\newtcolorbox{merkbox}[1][]{
+  colback=blue!5,
+  colframe=blue!40,
+  fonttitle=\bfseries,
+  title={Merke},
+  #1
+}
+
+\newtcolorbox{analogie}[1][]{
+  colback=green!5,
+  colframe=green!40,
+  fonttitle=\bfseries,
+  title={Analogie},
+  #1
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 1 -- Erkl\"arungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\section{Aufgabe 1: Vollst\"andig geklammerte Formeln}
+
+\subsection{Was wird hier verlangt?}
+
+Wir bekommen Formeln \emph{ohne} (oder mit wenigen) Klammern und sollen
+sie so umschreiben, dass \textbf{jeder} bin\"are Operator sein eigenes
+Klammerpaar bekommt. Dadurch wird die Struktur der Formel eindeutig --
+man braucht keine Vorrangregeln mehr.
+
+\begin{analogie}
+Denk an Mathematik: $2 + 3 \times 4$ ist nicht eindeutig, wenn man die
+Regel "`Punkt vor Strich"' nicht kennt. Die vollst\"andig geklammerte
+Version $\bigl(2 + (3 \times 4)\bigr)$ macht sofort klar, was zuerst
+berechnet wird.
+
+In der Logik funktioniert es genauso -- nur mit anderen Operatoren.
+\end{analogie}
+
+\subsection{Die Schl\"usselidee: Operatorpr\"azedenz}
+
+Genau wie "`Punkt vor Strich"' gibt es in der Aussagenlogik eine feste
+Reihenfolge, welcher Operator am st\"arksten bindet:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{clp{7cm}}
+\toprule
+\textbf{Rang} & \textbf{Operator} & \textbf{Bedeutung} \\
+\midrule
+1 (st\"arkste) & $\neg$ (Negation)       & Bindet immer zuerst -- wie ein Minus vor einer Zahl \\
+2              & $\wedge$ (Und)          & Wie Multiplikation \\
+3              & $\vee$ (Oder)           & Wie Addition \\
+4              & $\to$ (Implikation)     & "`Wenn \ldots, dann \ldots"' \\
+5 (schw\"achste) & $\leftrightarrow$ (\"Aquivalenz) & "`Genau dann, wenn \ldots"' \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{merkbox}
+\textbf{Faustregel:} Klammere immer von innen nach au\ss en --
+starte beim st\"arksten Operator ($\neg$) und arbeite dich zum
+schw\"achsten ($\leftrightarrow$) vor.
+\end{merkbox}
+
+\subsection{L\"osungen Schritt f\"ur Schritt}
+
+\subsubsection*{(a) $A \vee \neg\neg B \wedge \neg\neg\neg C$}
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Schritt 1:}] \textbf{Negationen erkennen} ($\neg$ bindet am st\"arksten).
+
+$\neg\neg B$ bedeutet: Erst $\neg B$, dann nochmal $\neg$ davor.\\
+$\neg\neg\neg C$ bedeutet: $\neg C$, dann $\neg\neg C$, dann $\neg\neg\neg C$.
+
+Die Negationen sind hier schon eindeutig -- sie brauchen keine
+zus\"atzlichen Klammern, weil $\neg$ immer auf die \emph{n\"achste}
+Formel wirkt.
+
+\item[\textbf{Schritt 2:}] \textbf{$\wedge$ klammern} (bindet st\"arker als $\vee$).
+
+$\neg\neg B \wedge \neg\neg\neg C$ wird zu
+$(\neg\neg B \wedge \neg\neg\neg C)$.
+
+\item[\textbf{Schritt 3:}] \textbf{$\vee$ klammern}.
+
+$A \vee (\neg\neg B \wedge \neg\neg\neg C)$ wird zu
+$(A \vee (\neg\neg B \wedge \neg\neg\neg C))$.
+\end{enumerate}
+
+\begin{merkbox}
+Ergebnis: $\boxed{(A \vee (\neg\neg B \wedge \neg\neg\neg C))}$
+\end{merkbox}
+
+\subsubsection*{(b) $A \vee \neg C \leftrightarrow \neg B \wedge C$}
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Schritt 1:}] \textbf{Negationen:} $\neg C$ und $\neg B$ --
+bereits eindeutig.
+
+\item[\textbf{Schritt 2:}] \textbf{$\wedge$:}
+$\neg B \wedge C$ wird zu $(\neg B \wedge C)$.
+
+\item[\textbf{Schritt 3:}] \textbf{$\vee$:}
+$A \vee \neg C$ wird zu $(A \vee \neg C)$.
+
+\item[\textbf{Schritt 4:}] \textbf{$\leftrightarrow$:}
+$(A \vee \neg C) \leftrightarrow (\neg B \wedge C)$ wird zu
+$((A \vee \neg C) \leftrightarrow (\neg B \wedge C))$.
+\end{enumerate}
+
+\begin{merkbox}
+Ergebnis: $\boxed{((A \vee \neg C) \leftrightarrow (\neg B \wedge C))}$
+\end{merkbox}
+
+\subsubsection*{(c) $A \leftrightarrow \neg C \to B \wedge C$}
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Schritt 1:}] \textbf{Negation:} $\neg C$ -- eindeutig.
+
+\item[\textbf{Schritt 2:}] \textbf{$\wedge$:}
+$B \wedge C$ wird zu $(B \wedge C)$.
+
+\item[\textbf{Schritt 3:}] \textbf{$\to$:}
+$\neg C \to (B \wedge C)$ wird zu $(\neg C \to (B \wedge C))$.
+
+\item[\textbf{Schritt 4:}] \textbf{$\leftrightarrow$:}
+$A \leftrightarrow (\neg C \to (B \wedge C))$ wird zu
+$(A \leftrightarrow (\neg C \to (B \wedge C)))$.
+\end{enumerate}
+
+\begin{merkbox}
+Ergebnis: $\boxed{(A \leftrightarrow (\neg C \to (B \wedge C)))}$
+\end{merkbox}
+
+\subsubsection*{(d) $\neg A \leftrightarrow B \to \neg C \wedge A \vee B$}
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Schritt 1:}] \textbf{Negationen:} $\neg A$ und $\neg C$ -- eindeutig.
+
+\item[\textbf{Schritt 2:}] \textbf{$\wedge$:}
+$\neg C \wedge A$ wird zu $(\neg C \wedge A)$.
+
+\item[\textbf{Schritt 3:}] \textbf{$\vee$:}
+$(\neg C \wedge A) \vee B$ wird zu $((\neg C \wedge A) \vee B)$.
+
+\item[\textbf{Schritt 4:}] \textbf{$\to$:}
+$B \to ((\neg C \wedge A) \vee B)$ wird zu
+$(B \to ((\neg C \wedge A) \vee B))$.
+
+\item[\textbf{Schritt 5:}] \textbf{$\leftrightarrow$:}
+$\neg A \leftrightarrow (B \to ((\neg C \wedge A) \vee B))$ wird zu
+$(\neg A \leftrightarrow (B \to ((\neg C \wedge A) \vee B)))$.
+\end{enumerate}
+
+\begin{merkbox}
+Ergebnis: $\boxed{(\neg A \leftrightarrow (B \to ((\neg C \wedge A) \vee B)))}$
+\end{merkbox}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\section{Aufgabe 2: Teilformeln}
+
+\subsection{Was ist eine Teilformel?}
+
+\begin{analogie}
+Stell dir eine Formel wie ein \textbf{Lego-Bauwerk} vor. Die Teilformeln
+sind alle Einzelteile und Zwischenprodukte, aus denen das Bauwerk
+zusammengebaut wird -- vom kleinsten Einzelstein (den Variablen $A$, $B$, $C$)
+bis hin zum fertigen Geb\"aude (der gesamten Formel).
+\end{analogie}
+
+Formaler: Eine Teilformel ist jede Formel, die als "`Baustein"' beim
+schrittweisen Aufbau der Gesamtformel entsteht.
+
+\subsection{Vorgehensweise}
+
+Am einfachsten findet man alle Teilformeln, indem man die Formel
+\textbf{von innen nach au\ss en aufbaut}:
+
+\begin{enumerate}
+\item Starte mit den \textbf{Atomen} (den Variablen).
+\item Wende Schritt f\"ur Schritt Operatoren an.
+\item Jedes Zwischenergebnis ist eine Teilformel.
+\end{enumerate}
+
+\subsection{Anwendung auf die Formel}
+
+Formel: $\neg A \leftrightarrow B \to \neg\neg\neg C \wedge A \vee \neg\neg B$
+
+\medskip
+Vollst\"andig geklammert:
+$(\neg A \leftrightarrow (B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B)))$
+
+\bigskip
+\textbf{Schritt-f\"ur-Schritt-Aufbau:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{clp{7.5cm}}
+\toprule
+\textbf{Nr.} & \textbf{Teilformel} & \textbf{Erkl\"arung} \\
+\midrule
+1  & $A$   & Atom (Variable) \\
+2  & $B$   & Atom (Variable) \\
+3  & $C$   & Atom (Variable) \\
+\midrule
+4  & $\neg C$         & Negation von $C$ \\
+5  & $\neg\neg C$     & Negation von Teilformel 4 \\
+6  & $\neg\neg\neg C$ & Negation von Teilformel 5 \\
+\midrule
+7  & $\neg B$         & Negation von $B$ \\
+8  & $\neg\neg B$     & Negation von Teilformel 7 \\
+\midrule
+9  & $\neg A$         & Negation von $A$ \\
+\midrule
+10 & $(\neg\neg\neg C \wedge A)$
+   & Konjunktion von Tf.\,6 und Tf.\,1 \\
+11 & $((\neg\neg\neg C \wedge A) \vee \neg\neg B)$
+   & Disjunktion von Tf.\,10 und Tf.\,8 \\
+12 & $(B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B))$
+   & Implikation von Tf.\,2 nach Tf.\,11 \\
+13 & $(\neg A \leftrightarrow (B \to ((\neg\neg\neg C \wedge A) \vee \neg\neg B)))$
+   & \"Aquivalenz von Tf.\,9 und Tf.\,12 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{merkbox}
+Insgesamt gibt es \textbf{13~Teilformeln}. Die Gesamtformel selbst
+(Nr.\,13) ist immer auch eine Teilformel.
+\end{merkbox}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\section{Aufgabe 3: Wahrheitstabelle}
+
+\subsection{Was ist eine Wahrheitstabelle?}
+
+\begin{analogie}
+Eine Wahrheitstabelle ist wie ein \textbf{Fahrplan}: F\"ur jede
+m\"ogliche Kombination der Eingaben (wahr/falsch) zeigt sie dir
+systematisch das Ergebnis. Nichts wird \"ubersehen, weil \emph{alle}
+M\"oglichkeiten durchprobiert werden.
+\end{analogie}
+
+\subsection{Wie viele Zeilen braucht man?}
+
+Wir haben 3~Variablen ($A$, $B$, $C$). Jede kann entweder 0~(falsch)
+oder 1~(wahr) sein. Also gibt es $2^3 = 8$~m\"ogliche Kombinationen
+= 8~Zeilen.
+
+\subsection{Wie f\"ullt man die Tabelle aus?}
+
+\begin{enumerate}
+\item \textbf{Eingabespalten} ($A$, $B$, $C$): Alle $2^3 = 8$ Kombinationen
+      systematisch auflisten (wie bin\"ar z\"ahlen: 000, 001, 010, \ldots).
+\item \textbf{Einfache Spalten zuerst}: Die Negationen ($\neg C$,
+      $\neg\neg C$, \ldots) kann man direkt aus den Eingaben ablesen.
+\item \textbf{Zusammengesetzte Spalten}: Von links nach rechts ausf\"ullen --
+      jede Spalte braucht nur die Werte der vorherigen Spalten.
+\end{enumerate}
+
+\begin{merkbox}
+\textbf{Erinnerung an die Wahrheitswerte der Operatoren:}
+
+\smallskip
+\begin{tabular}{ll}
+$\neg A$: & Kehrt den Wert um (aus 0 wird 1, aus 1 wird 0) \\
+$A \wedge B$: & Nur wahr, wenn \textbf{beide} wahr sind \\
+$A \vee B$: & Wahr, wenn \textbf{mindestens einer} wahr ist \\
+$A \to B$: & Nur falsch, wenn $A$ wahr und $B$ falsch ist \\
+$A \leftrightarrow B$: & Wahr, wenn beide den \textbf{gleichen} Wert haben \\
+\end{tabular}
+\end{merkbox}
+
+\subsection{Beispielzeile im Detail}
+
+Nehmen wir $A=1,\; B=0,\; C=0$:
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Neg.:}]
+$\neg C = \neg 0 = 1$, \quad
+$\neg\neg C = \neg 1 = 0$, \quad
+$\neg\neg\neg C = \neg 0 = 1$
+
+$\neg B = \neg 0 = 1$, \quad
+$\neg\neg B = \neg 1 = 0$
+
+$\neg A = \neg 1 = 0$
+
+\item[$F_{10}$:]
+$\neg\neg\neg C \wedge A = 1 \wedge 1 = 1$
+
+\item[$F_{11}$:]
+$F_{10} \vee \neg\neg B = 1 \vee 0 = 1$
+
+\item[$F_{12}$:]
+$B \to F_{11} = 0 \to 1 = 1$
+\quad (Implikation mit falscher Pr\"amisse ist \emph{immer} wahr!)
+
+\item[$F_{13}$:]
+$\neg A \leftrightarrow F_{12} = 0 \leftrightarrow 1 = 0$
+\quad (unterschiedliche Werte $\Rightarrow$ falsch)
+\end{enumerate}
+
+\subsection{Vollst\"andige Wahrheitstabelle}
+
+Abk\"urzungen:
+\begin{align*}
+F_{10} &= (\neg\neg\neg C \wedge A) &
+F_{11} &= (F_{10} \vee \neg\neg B) &
+F_{12} &= (B \to F_{11}) &
+F_{13} &= (\neg A \leftrightarrow F_{12})
+\end{align*}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ccc|cccccc|cccc}
+\toprule
+$A$ & $B$ & $C$
+  & $\neg C$ & $\neg\neg C$ & $\neg\neg\neg C$
+  & $\neg B$ & $\neg\neg B$ & $\neg A$
+  & $F_{10}$ & $F_{11}$ & $F_{12}$ & $F_{13}$ \\
+\midrule
+0 & 0 & 0  & 1 & 0 & 1  & 1 & 0 & 1  & 0 & 0 & 1 & \textbf{1} \\
+0 & 0 & 1  & 0 & 1 & 0  & 1 & 0 & 1  & 0 & 0 & 1 & \textbf{1} \\
+0 & 1 & 0  & 1 & 0 & 1  & 0 & 1 & 1  & 0 & 1 & 1 & \textbf{1} \\
+0 & 1 & 1  & 0 & 1 & 0  & 0 & 1 & 1  & 0 & 1 & 1 & \textbf{1} \\
+1 & 0 & 0  & 1 & 0 & 1  & 1 & 0 & 0  & 1 & 1 & 1 & \textbf{0} \\
+1 & 0 & 1  & 0 & 1 & 0  & 1 & 0 & 0  & 0 & 0 & 1 & \textbf{0} \\
+1 & 1 & 0  & 1 & 0 & 1  & 0 & 1 & 0  & 1 & 1 & 1 & \textbf{0} \\
+1 & 1 & 1  & 0 & 1 & 0  & 0 & 1 & 0  & 0 & 1 & 1 & \textbf{0} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Was sagt uns die Tabelle?}
+
+\begin{merkbox}
+Schau dir die letzte Spalte ($F_{13}$) an: Sie ist \textbf{immer 1,
+wenn $A = 0$} und \textbf{immer 0, wenn $A = 1$}. Das bedeutet:
+
+Die gesamte Formel verh\"alt sich genauso wie $\neg A$ -- sie ist
+logisch \"aquivalent zu $\neg A$.
+
+\medskip
+Die Formel ist weder eine Tautologie (nicht immer wahr) noch eine
+Kontradiktion (nicht immer falsch) -- sie ist \textbf{erf\"ullbar}.
+\end{merkbox}
+
+\end{document}
