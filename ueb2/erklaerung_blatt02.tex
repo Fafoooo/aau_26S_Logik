@@ -1,0 +1,402 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tcolorbox}
+
+\tcbuselibrary{breakable}
+
+\newtcolorbox{merkbox}[1][]{
+  colback=blue!5,
+  colframe=blue!40,
+  fonttitle=\bfseries,
+  title={Merke},
+  #1
+}
+
+\newtcolorbox{analogie}[1][]{
+  colback=green!5,
+  colframe=green!40,
+  fonttitle=\bfseries,
+  title={Analogie},
+  #1
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 2 -- Erkl\"arungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\section{Aufgabe 1: Kaffeewelt}
+
+\subsection{Was wird hier verlangt?}
+
+Wir haben ein Geb\"aude mit R\"aumen. In manchen R\"aumen riecht
+es nach Kaffee (Variable~$G$), in manchen steht eine Kaffeetasse
+(Variable~$K$). Die Wissensbasis~KB fasst unsere Beobachtungen
+und Regeln zusammen. Wir sollen \emph{alle} m\"oglichen
+Belegungen der Variablen (Interpretationen) auflisten und
+herausfinden, welche davon mit KB vertr\"aglich sind (Modelle).
+
+\begin{analogie}
+Stell dir vor, du bist ein Detektiv. Du betrittst Raum~$(1{,}1)$
+und riechst \emph{keinen} Kaffee. Dann gehst du in Raum~$(1{,}2)$
+und riechst Kaffee. Jetzt willst du herausfinden, in welchen
+der angrenzenden R\"aume $(2{,}1)$, $(2{,}2)$, $(1{,}3)$ eine
+Kaffeetasse stehen k\"onnte -- das sind die \emph{Modelle}.
+\end{analogie}
+
+\subsection{Was kodiert die Wissensbasis?}
+
+\begin{align*}
+\text{KB} &\equiv \underbrace{\neg G_{1,1}}_{\text{kein Geruch in }(1,1)}
+  \;\wedge\; \underbrace{G_{1,2}}_{\text{Geruch in }(1,2)}
+  \;\wedge \\
+& \underbrace{(K_{2,1} \to G_{1,1})}_{\text{Tasse in }(2,1)
+  \Rightarrow\text{ Geruch in }(1,1)}
+  \;\wedge\;
+  \underbrace{(K_{2,2} \to G_{1,2})}_{\text{Tasse in }(2,2)
+  \Rightarrow\text{ Geruch in }(1,2)}
+  \;\wedge\;
+  \underbrace{(K_{1,3} \to G_{1,2})}_{\text{Tasse in }(1,3)
+  \Rightarrow\text{ Geruch in }(1,2)}
+  \;\wedge \\
+& \underbrace{(G_{1,1} \to K_{2,1})}_{\text{Geruch in }(1,1)
+  \Rightarrow\text{ Tasse in }(2,1)}
+  \;\wedge\;
+  \underbrace{(G_{1,2} \to K_{2,2} \vee K_{1,3})}_{\text{Geruch in }(1,2)
+  \Rightarrow\text{ mind.\ eine Tasse}}
+\end{align*}
+
+Zusammen ergeben die letzten f\"unf Konjunkte zwei
+Bikonditionale ("`genau dann, wenn"'):
+\begin{itemize}
+\item $G_{1,1} \leftrightarrow K_{2,1}$
+      \quad (Geruch in $(1{,}1)$ $\Leftrightarrow$ Tasse in $(2{,}1)$)
+\item $G_{1,2} \leftrightarrow K_{2,2} \vee K_{1,3}$
+      \quad (Geruch in $(1{,}2)$ $\Leftrightarrow$ Tasse in $(2{,}2)$ oder $(1{,}3)$)
+\end{itemize}
+
+\subsection{Schritt f\"ur Schritt: Constraints ableiten}
+
+\begin{enumerate}[leftmargin=2cm]
+\item[\textbf{Schritt 1:}]
+\textbf{Beobachtungen auswerten.}
+
+$\neg G_{1,1}$ erzwingt $G_{1,1} = 0$.
+$G_{1,2}$ erzwingt $G_{1,2} = 1$.
+
+\item[\textbf{Schritt 2:}]
+\textbf{Implikationen mit festen Werten auswerten.}
+
+$K_{2,1} \to G_{1,1}$: Da $G_{1,1} = 0$, muss $K_{2,1} = 0$
+sein (sonst w\"are $1 \to 0 = 0$).
+
+$K_{2,2} \to G_{1,2}$: Da $G_{1,2} = 1$, ist dies immer wahr
+($K_{2,2} \to 1 = 1$). Keine Einschr\"ankung f\"ur $K_{2,2}$.
+
+$K_{1,3} \to G_{1,2}$: Ebenso immer wahr.
+
+$G_{1,1} \to K_{2,1}$: $0 \to K_{2,1} = 1$, immer wahr.
+
+$G_{1,2} \to K_{2,2} \vee K_{1,3}$: Da $G_{1,2} = 1$,
+brauchen wir $K_{2,2} \vee K_{1,3} = 1$, also mindestens
+eine Tasse in $(2{,}2)$ oder $(1{,}3)$.
+
+\item[\textbf{Schritt 3:}]
+\textbf{Zusammenfassung.}
+
+KB ist genau dann wahr, wenn:
+$G_{1,1}=0$, \;$G_{1,2}=1$, \;$K_{2,1}=0$, \;und
+$K_{2,2} \vee K_{1,3} = 1$.
+\end{enumerate}
+
+\begin{merkbox}
+Von den $2^5 = 32$ Interpretationen sind genau \textbf{3~Modelle}:
+
+\smallskip
+\begin{tabular}{cccccc}
+$G_{1,1}$ & $G_{1,2}$ & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$ & Bedeutung \\
+\midrule
+0 & 1 & 0 & 0 & 1 & Tasse nur in $(1{,}3)$ \\
+0 & 1 & 0 & 1 & 0 & Tasse nur in $(2{,}2)$ \\
+0 & 1 & 0 & 1 & 1 & Tassen in $(2{,}2)$ und $(1{,}3)$ \\
+\end{tabular}
+\end{merkbox}
+
+\subsection{Die 8~Welten aus der Vorlesung}
+
+Die 8~m\"oglichen Welten entsprechen den $2^3 = 8$ Kombinationen
+der Tassenvariablen $K_{2,1}$, $K_{2,2}$, $K_{1,3}$.
+In jeder Welt sind die Geruchswerte durch die Bikonditionale
+eindeutig bestimmt:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c|ccc|cc|c|l}
+\toprule
+Welt & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$
+     & $G_{1,1}$ & $G_{1,2}$ & Modell? & Grund \\
+\midrule
+$W_1$ & 0 & 0 & 0 & 0 & 0 & Nein & $G_{1,2} \neq 1$ \\
+$W_2$ & 0 & 0 & 1 & 0 & 1 & \textbf{Ja} & \\
+$W_3$ & 0 & 1 & 0 & 0 & 1 & \textbf{Ja} & \\
+$W_4$ & 0 & 1 & 1 & 0 & 1 & \textbf{Ja} & \\
+$W_5$ & 1 & 0 & 0 & 1 & 0 & Nein & $G_{1,1} \neq 0$ \\
+$W_6$ & 1 & 0 & 1 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
+$W_7$ & 1 & 1 & 0 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
+$W_8$ & 1 & 1 & 1 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die restlichen $32 - 8 = 24$ Interpretationen haben
+Geruchswerte, die \emph{nicht} zu den Tassen passen
+(z.\,B.\ Geruch ohne Tasse oder Tasse ohne Geruch) --
+sie verletzen die Bikonditionale in~KB und sind daher
+ebenfalls keine Modelle.
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\section{Aufgabe 2: G\"ultigkeit, Erf\"ullbarkeit, \"Aquivalenz,
+logische Konsequenz}
+
+\subsection{Die wichtigsten Begriffe}
+
+\begin{merkbox}
+\begin{tabular}{lp{10cm}}
+\textbf{G\"ultig} (Tautologie): &
+Formel ist in \emph{allen} Interpretationen wahr. \\[3pt]
+\textbf{Erf\"ullbar}: &
+Formel ist in \emph{mindestens einer} Interpretation wahr. \\[3pt]
+\textbf{\"Aquivalent} ($F_1 \equiv F_2$): &
+Beide Formeln haben in \emph{jeder} Interpretation
+denselben Wahrheitswert. \\[3pt]
+\textbf{Log.\ Konsequenz} ($F_1 \models F_2$): &
+\emph{Jedes} Modell von $F_1$ ist auch Modell von $F_2$.
+\end{tabular}
+\end{merkbox}
+
+\begin{analogie}
+\begin{itemize}
+\item \textbf{G\"ultig} = ein Gesetz, das \emph{immer} gilt,
+      egal was passiert.
+\item \textbf{Erf\"ullbar} = es gibt \emph{mindestens eine}
+      Situation, in der es stimmt.
+\item \textbf{\"Aquivalent} = zwei Aussagen, die immer dasselbe
+      sagen (wie "`Es regnet"' und "`Wasser f\"allt vom Himmel"').
+\item \textbf{Konsequenz} = wenn das eine gilt, \emph{muss}
+      auch das andere gelten.
+\end{itemize}
+\end{analogie}
+
+\subsection{Wahrheitstabelle}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{cc|ccccc}
+\toprule
+$P$ & $Q$
+  & (a)\;$P$
+  & (b)\;$Q$
+  & (c)\;$P \wedge Q$
+  & (d)\;$\neg P \vee \neg Q$
+  & (e)\;$\neg(\neg P \vee \neg Q)$ \\
+\midrule
+0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+1 & 1 & 1 & 1 & 1 & 0 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Analyse}
+
+\subsubsection*{G\"ultigkeit}
+
+Eine Formel ist g\"ultig, wenn ihre Spalte \emph{nur} Einsen
+enth\"alt. Das trifft auf \textbf{keine} der f\"unf Formeln zu.
+
+\subsubsection*{Erf\"ullbarkeit}
+
+Eine Formel ist erf\"ullbar, wenn ihre Spalte \emph{mindestens
+eine} Eins enth\"alt. Das trifft auf \textbf{alle f\"unf} Formeln
+zu.
+
+\subsubsection*{\"Aquivalenz}
+
+Zwei Formeln sind \"aquivalent, wenn ihre Spalten
+\emph{identisch} sind.
+
+\begin{itemize}
+\item (c) hat die Werte $(0,0,0,1)$ und (e) hat die Werte
+$(0,0,0,1)$ $\Rightarrow$ \textbf{(c) $\equiv$ (e)}.
+
+Dies ist das \textbf{Gesetz von De~Morgan}:
+$P \wedge Q \equiv \neg(\neg P \vee \neg Q)$.
+
+\item Alle anderen Paare haben unterschiedliche Spalten
+$\Rightarrow$ nicht \"aquivalent.
+\end{itemize}
+
+\begin{merkbox}
+\textbf{Zus\"atzliche Beobachtung:} (d) hat die Werte
+$(1,1,1,0)$ -- das ist das genaue Gegenteil von (c) bzw.\ (e).
+Also gilt: $(d) \equiv \neg(c) \equiv \neg(e)$. Das ist ebenfalls
+De~Morgan: $\neg P \vee \neg Q \equiv \neg(P \wedge Q)$.
+\end{merkbox}
+
+\subsubsection*{Logische Konsequenz}
+
+$F_1 \models F_2$ gilt, wenn $\text{Mod}(F_1) \subseteq \text{Mod}(F_2)$.
+
+\smallskip
+Die Modellmengen (als Mengen von $(P,Q)$-Paaren):
+\begin{align*}
+\text{Mod}(a) &= \{(1,0),\;(1,1)\} \\
+\text{Mod}(b) &= \{(0,1),\;(1,1)\} \\
+\text{Mod}(c) &= \{(1,1)\} \\
+\text{Mod}(d) &= \{(0,0),\;(0,1),\;(1,0)\} \\
+\text{Mod}(e) &= \{(1,1)\}
+\end{align*}
+
+\textbf{Konsequenzen, die gelten:}
+\begin{itemize}
+\item $(c) \models (a)$: \;$\{(1,1)\} \subseteq \{(1,0),(1,1)\}$
+      \;\checkmark\quad
+      ($P \wedge Q$ impliziert $P$)
+\item $(c) \models (b)$: \;$\{(1,1)\} \subseteq \{(0,1),(1,1)\}$
+      \;\checkmark\quad
+      ($P \wedge Q$ impliziert $Q$)
+\item $(e) \models (a)$ und $(e) \models (b)$: \;\checkmark\quad
+      (folgt aus $(c) \equiv (e)$)
+\end{itemize}
+
+\begin{analogie}
+\textbf{Warum $(c) \models (a)$?}
+Wenn du wei\ss t, dass \emph{sowohl} $P$ als auch $Q$ wahr sind
+($P \wedge Q$), dann ist insbesondere $P$ wahr.
+Das Spezielle impliziert das Allgemeine.
+\end{analogie}
+
+\textbf{Beispiel, warum $(a) \not\models (c)$:}
+$(1,0)$ ist ein Modell von $P$, aber kein Modell von $P \wedge Q$
+(da $Q=0$). Also impliziert $P$ allein \emph{nicht} $P \wedge Q$.
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\section{Aufgabe 3: Erf\"ullbarkeitstester}
+
+\subsection{Was ist ein Erf\"ullbarkeitstester?}
+
+\begin{analogie}
+Ein Erf\"ullbarkeitstester (SAT-Solver) ist wie ein
+\textbf{Automat}: Du gibst ihm eine Formel, und er antwortet
+mit "`erf\"ullbar"' oder "`unerf\"ullbar"'. Mehr kann er nicht --
+aber das reicht, um viele Fragen zu beantworten!
+\end{analogie}
+
+\subsection{Die Schl\"usselbeziehungen}
+
+\begin{merkbox}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lll}
+\textbf{Frage} & \textbf{Gib dem Tester} & \textbf{Antwort} \\
+\midrule
+Ist $F$ g\"ultig? & $\neg F$ & unerf.\ $\Rightarrow$ ja \\
+Ist $F$ Kontradiktion? & $F$ & unerf.\ $\Rightarrow$ ja \\
+Folgt $F_2$ aus $F_1$? & $F_1 \wedge \neg F_2$
+  & unerf.\ $\Rightarrow$ ja \\
+Ist $F$ Tautologie? & $\neg F$ & unerf.\ $\Rightarrow$ ja \\
+\end{tabular}
+\end{merkbox}
+
+\textbf{Idee dahinter:} Wenn die Negation einer Aussage
+unerf\"ullbar ist (es gibt kein Gegenbeispiel), dann muss
+die Aussage selbst immer wahr sein.
+
+\subsection{Umformulierungen}
+
+\begin{enumerate}[(a)]
+\item \textbf{Ist $(P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)$
+      g\"ultig?}
+
+      \textbf{Umformulierung:} Ist
+      $\neg\bigl((P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)\bigr)$
+      unerf\"ullbar?
+
+      Falls ja $\Rightarrow$ die Formel ist g\"ultig.
+
+      \smallskip
+      \textit{Antwort (Flei\ss aufgabe):}
+      $\neg P \to Q \equiv P \vee Q$, also vereinfacht sich
+      die Formel zu $(P \vee Q) \leftrightarrow (P \vee Q)$,
+      was stets wahr ist. Die Negation ist unerf\"ullbar
+      $\Rightarrow$ \textbf{g\"ultig}.
+
+\item \textbf{Folgt $P \to Q$ aus $\neg Q \to \neg P$?}
+
+      \textbf{Umformulierung:} Ist
+      $(\neg Q \to \neg P) \wedge \neg(P \to Q)$
+      unerf\"ullbar?
+
+      Falls ja $\Rightarrow$ es folgt.
+
+      \smallskip
+      \textit{Antwort (Flei\ss aufgabe):}
+      $\neg Q \to \neg P$ ist die Kontraposition von $P \to Q$.
+      Beide sind \"aquivalent, also folgt $P \to Q$ aus
+      $\neg Q \to \neg P$ $\Rightarrow$ \textbf{ja, es folgt}.
+
+\item \textbf{Ist $P \leftrightarrow Q \wedge P$ eine Kontradiktion?}
+
+      Vollst\"andig geklammert: $P \leftrightarrow (Q \wedge P)$.
+
+      \textbf{Umformulierung:} Ist
+      $P \leftrightarrow (Q \wedge P)$ unerf\"ullbar?
+
+      Falls ja $\Rightarrow$ Kontradiktion.
+
+      \smallskip
+      \textit{Antwort (Flei\ss aufgabe):}
+      F\"ur $P=0$, $Q=0$: $0 \leftrightarrow (0 \wedge 0) =
+      0 \leftrightarrow 0 = 1$.
+      Die Formel ist erf\"ullbar $\Rightarrow$
+      \textbf{keine Kontradiktion}.
+
+\item \textbf{Ist $P \leftrightarrow P \vee \bot$ eine Tautologie?}
+
+      Vollst\"andig geklammert: $P \leftrightarrow (P \vee \bot)$.
+
+      \textbf{Umformulierung:} Ist
+      $\neg\bigl(P \leftrightarrow (P \vee \bot)\bigr)$ unerf\"ullbar?
+
+      Falls ja $\Rightarrow$ Tautologie.
+
+      \smallskip
+      \textit{Antwort (Flei\ss aufgabe):}
+      $P \vee \bot = P \vee 0 = P$, also wird die Formel zu
+      $P \leftrightarrow P$, was stets wahr ist.
+      Die Negation ist unerf\"ullbar $\Rightarrow$
+      \textbf{Tautologie}.
+\end{enumerate}
+
+\end{document}
