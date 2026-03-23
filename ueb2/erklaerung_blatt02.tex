@@ -35,179 +35,899 @@
 
 \bigskip
 
-%% ============================================================
-%% AUFGABE 1
-%% ============================================================
 \section{Aufgabe 1: Kaffeewelt}
 
-\subsection{Was wird hier verlangt?}
+% ============================================================
+% TEIL 0: Grundbegriffe -- was man wissen muss BEVOR man anfaengt
+% ============================================================
 
-Wir haben ein Geb\"aude mit R\"aumen. In manchen R\"aumen riecht
-es nach Kaffee (Variable~$G$), in manchen steht eine Kaffeetasse
-(Variable~$K$). Die Wissensbasis~KB fasst unsere Beobachtungen
-und Regeln zusammen. Wir sollen \emph{alle} m\"oglichen
-Belegungen der Variablen (Interpretationen) auflisten und
-herausfinden, welche davon mit KB vertr\"aglich sind (Modelle).
+\subsection{Bevor wir starten: Die wichtigsten Grundbegriffe}
 
-\begin{analogie}
-Stell dir vor, du bist ein Detektiv. Du betrittst Raum~$(1{,}1)$
-und riechst \emph{keinen} Kaffee. Dann gehst du in Raum~$(1{,}2)$
-und riechst Kaffee. Jetzt willst du herausfinden, in welchen
-der angrenzenden R\"aume $(2{,}1)$, $(2{,}2)$, $(1{,}3)$ eine
-Kaffeetasse stehen k\"onnte -- das sind die \emph{Modelle}.
-\end{analogie}
+Bevor wir die Aufgabe l\"osen, m\"ussen wir ein paar Begriffe verstehen.
+Keine Sorge -- wir erkl\"aren alles ganz langsam.
 
-\subsection{Was kodiert die Wissensbasis?}
+\subsubsection*{Was bedeuten die Symbole?}
 
-\begin{align*}
-\text{KB} &\equiv \underbrace{\neg G_{1,1}}_{\text{kein Geruch in }(1,1)}
-  \;\wedge\; \underbrace{G_{1,2}}_{\text{Geruch in }(1,2)}
-  \;\wedge \\
-& \underbrace{(K_{2,1} \to G_{1,1})}_{\text{Tasse in }(2,1)
-  \Rightarrow\text{ Geruch in }(1,1)}
-  \;\wedge\;
-  \underbrace{(K_{2,2} \to G_{1,2})}_{\text{Tasse in }(2,2)
-  \Rightarrow\text{ Geruch in }(1,2)}
-  \;\wedge\;
-  \underbrace{(K_{1,3} \to G_{1,2})}_{\text{Tasse in }(1,3)
-  \Rightarrow\text{ Geruch in }(1,2)}
-  \;\wedge \\
-& \underbrace{(G_{1,1} \to K_{2,1})}_{\text{Geruch in }(1,1)
-  \Rightarrow\text{ Tasse in }(2,1)}
-  \;\wedge\;
-  \underbrace{(G_{1,2} \to K_{2,2} \vee K_{1,3})}_{\text{Geruch in }(1,2)
-  \Rightarrow\text{ mind.\ eine Tasse}}
-\end{align*}
-
-Zusammen ergeben die letzten f\"unf Konjunkte zwei
-Bikonditionale ("`genau dann, wenn"'):
-\begin{itemize}
-\item $G_{1,1} \leftrightarrow K_{2,1}$
-      \quad (Geruch in $(1{,}1)$ $\Leftrightarrow$ Tasse in $(2{,}1)$)
-\item $G_{1,2} \leftrightarrow K_{2,2} \vee K_{1,3}$
-      \quad (Geruch in $(1{,}2)$ $\Leftrightarrow$ Tasse in $(2{,}2)$ oder $(1{,}3)$)
-\end{itemize}
-
-\subsection{Schritt f\"ur Schritt: Constraints ableiten}
-
-\begin{enumerate}[leftmargin=2cm]
-\item[\textbf{Schritt 1:}]
-\textbf{Beobachtungen auswerten.}
-
-$\neg G_{1,1}$ erzwingt $G_{1,1} = 0$.
-$G_{1,2}$ erzwingt $G_{1,2} = 1$.
-
-\item[\textbf{Schritt 2:}]
-\textbf{Implikationen mit festen Werten auswerten.}
-
-$K_{2,1} \to G_{1,1}$: Da $G_{1,1} = 0$, muss $K_{2,1} = 0$
-sein (sonst w\"are $1 \to 0 = 0$).
-
-$K_{2,2} \to G_{1,2}$: Da $G_{1,2} = 1$, ist dies immer wahr
-($K_{2,2} \to 1 = 1$). Keine Einschr\"ankung f\"ur $K_{2,2}$.
-
-$K_{1,3} \to G_{1,2}$: Ebenso immer wahr.
-
-$G_{1,1} \to K_{2,1}$: $0 \to K_{2,1} = 1$, immer wahr.
-
-$G_{1,2} \to K_{2,2} \vee K_{1,3}$: Da $G_{1,2} = 1$,
-brauchen wir $K_{2,2} \vee K_{1,3} = 1$, also mindestens
-eine Tasse in $(2{,}2)$ oder $(1{,}3)$.
-
-\item[\textbf{Schritt 3:}]
-\textbf{Zusammenfassung.}
-
-KB ist genau dann wahr, wenn:
-$G_{1,1}=0$, \;$G_{1,2}=1$, \;$K_{2,1}=0$, \;und
-$K_{2,2} \vee K_{1,3} = 1$.
-\end{enumerate}
-
-\begin{merkbox}
-Von den $2^5 = 32$ Interpretationen sind genau \textbf{3~Modelle}:
-
-\smallskip
-\begin{tabular}{cccccc}
-$G_{1,1}$ & $G_{1,2}$ & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$ & Bedeutung \\
-\midrule
-0 & 1 & 0 & 0 & 1 & Tasse nur in $(1{,}3)$ \\
-0 & 1 & 0 & 1 & 0 & Tasse nur in $(2{,}2)$ \\
-0 & 1 & 0 & 1 & 1 & Tassen in $(2{,}2)$ und $(1{,}3)$ \\
-\end{tabular}
-\end{merkbox}
-
-\subsection{Die 8~Welten aus der Vorlesung}
-
-Die 8~m\"oglichen Welten entsprechen den $2^3 = 8$ Kombinationen
-der Tassenvariablen $K_{2,1}$, $K_{2,2}$, $K_{1,3}$.
-In jeder Welt sind die Geruchswerte durch die Bikonditionale
-eindeutig bestimmt:
+In der Logik schreiben wir Aussagen mit Symbolen statt mit langen S\"atzen.
+Hier sind die f\"unf Symbole, die wir brauchen:
 
 \begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{c|ccc|cc|c|l}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{c|l|l}
 \toprule
-Welt & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$
-     & $G_{1,1}$ & $G_{1,2}$ & Modell? & Grund \\
+\textbf{Symbol} & \textbf{Bedeutung} & \textbf{Alltagssprache} \\
 \midrule
-$W_1$ & 0 & 0 & 0 & 0 & 0 & Nein & $G_{1,2} \neq 1$ \\
-$W_2$ & 0 & 0 & 1 & 0 & 1 & \textbf{Ja} & \\
-$W_3$ & 0 & 1 & 0 & 0 & 1 & \textbf{Ja} & \\
-$W_4$ & 0 & 1 & 1 & 0 & 1 & \textbf{Ja} & \\
-$W_5$ & 1 & 0 & 0 & 1 & 0 & Nein & $G_{1,1} \neq 0$ \\
-$W_6$ & 1 & 0 & 1 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
-$W_7$ & 1 & 1 & 0 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
-$W_8$ & 1 & 1 & 1 & 1 & 1 & Nein & $G_{1,1} \neq 0$ \\
+$\neg A$ & \textbf{Nicht} $A$ (Negation)
+  & "`$A$ ist falsch"' \\
+$A \wedge B$ & $A$ \textbf{und} $B$ (Konjunktion)
+  & "`Beide m\"ussen wahr sein"' \\
+$A \vee B$ & $A$ \textbf{oder} $B$ (Disjunktion)
+  & "`Mindestens eines muss wahr sein"' \\
+$A \to B$ & \textbf{Wenn} $A$, \textbf{dann} $B$ (Implikation)
+  & "`$A$ garantiert $B$"' \\
+$A \leftrightarrow B$ & $A$ \textbf{genau dann, wenn} $B$
+  & "`Beide sind gleich (beide wahr oder beide falsch)"' \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Die restlichen $32 - 8 = 24$ Interpretationen haben
-Geruchswerte, die \emph{nicht} zu den Tassen passen
-(z.\,B.\ Geruch ohne Tasse oder Tasse ohne Geruch) --
-sie verletzen die Bikonditionale in~KB und sind daher
-ebenfalls keine Modelle.
-
-\newpage
-
-%% ============================================================
-%% AUFGABE 2
-%% ============================================================
-\section{Aufgabe 2: G\"ultigkeit, Erf\"ullbarkeit, \"Aquivalenz,
-logische Konsequenz}
-
-\subsection{Die wichtigsten Begriffe}
-
 \begin{merkbox}
-\begin{tabular}{lp{10cm}}
-\textbf{G\"ultig} (Tautologie): &
-Formel ist in \emph{allen} Interpretationen wahr. \\[3pt]
-\textbf{Erf\"ullbar}: &
-Formel ist in \emph{mindestens einer} Interpretation wahr. \\[3pt]
-\textbf{\"Aquivalent} ($F_1 \equiv F_2$): &
-Beide Formeln haben in \emph{jeder} Interpretation
-denselben Wahrheitswert. \\[3pt]
-\textbf{Log.\ Konsequenz} ($F_1 \models F_2$): &
-\emph{Jedes} Modell von $F_1$ ist auch Modell von $F_2$.
-\end{tabular}
+Die Werte in der Logik sind ganz einfach:
+\begin{itemize}
+\item $1$ = \textbf{wahr} (die Aussage stimmt)
+\item $0$ = \textbf{falsch} (die Aussage stimmt nicht)
+\end{itemize}
 \end{merkbox}
 
-\begin{analogie}
+\subsubsection*{Die Implikation ($\to$) -- das schwierigste Symbol}
+
+Die Implikation $A \to B$ ("`Wenn $A$, dann $B$"') ist das Symbol, das am meisten verwirrt. Schauen wir es uns genau an.
+
+\begin{analogie}[title={Analogie: Regenversprechen}]
+Dein Freund sagt: \textbf{"`Wenn es regnet, bringe ich einen Schirm mit."'}
+
+Wann hat dein Freund \textbf{gelogen}?
+
+\medskip
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{cc|c|l}
+Es regnet? & Schirm dabei? & Gelogen? & Warum? \\
+\midrule
+Nein (0) & Nein (0) & \textbf{Nein} (1) & Es hat nicht geregnet -- er musste nichts tun \\
+Nein (0) & Ja (1) & \textbf{Nein} (1) & Er hat sogar freiwillig einen Schirm mitgebracht \\
+Ja (1) & Nein (0) & \textbf{Ja!} (0) & Er hat versprochen, bei Regen Schirm mitzubringen -- hat er nicht! \\
+Ja (1) & Ja (1) & \textbf{Nein} (1) & Versprechen eingehalten \\
+\end{tabular}
+
+\medskip
+\textbf{Merke:} Die Implikation $A \to B$ ist \textbf{nur dann falsch}, wenn $A$ wahr ist (es regnet) \textbf{und} $B$ falsch ist (kein Schirm). In allen anderen F\"allen ist sie wahr!
+\end{analogie}
+
+Zusammengefasst als kleine Tabelle:
+
+\begin{center}
+\begin{tabular}{cc|c}
+$A$ & $B$ & $A \to B$ \\
+\midrule
+0 & 0 & 1 \\
+0 & 1 & 1 \\
+1 & 0 & \textbf{0} $\leftarrow$ einziger Fall, wo es falsch ist! \\
+1 & 1 & 1 \\
+\end{tabular}
+\end{center}
+
+\subsubsection*{Was ist eine "`Variable"' in der Logik?}
+
+Eine \textbf{Variable} ist ein Platzhalter, der entweder wahr~(1) oder falsch~(0) sein kann. Wie ein Lichtschalter: an oder aus.
+
+\subsubsection*{Was ist eine "`Interpretation"'?}
+
+\begin{merkbox}
+Eine \textbf{Interpretation} ist eine \textbf{vollst\"andige Zuweisung} von wahr/falsch an \textbf{jede} Variable. Man entscheidet f\"ur \textit{jede einzelne} Variable: Ist sie 1 oder 0?
+
+\medskip
+Wenn wir $n$ Variablen haben, gibt es $2^n$ verschiedene Interpretationen, weil jede Variable 2 M\"oglichkeiten hat.
+\end{merkbox}
+
+\begin{analogie}[title={Analogie: Lichtschalter}]
+Stell dir 5 Lichtschalter in einem Raum vor, jeder kann AN oder AUS sein.
+Wie viele verschiedene Kombinationen gibt es?
+
+\medskip
 \begin{itemize}
-\item \textbf{G\"ultig} = ein Gesetz, das \emph{immer} gilt,
-      egal was passiert.
-\item \textbf{Erf\"ullbar} = es gibt \emph{mindestens eine}
-      Situation, in der es stimmt.
-\item \textbf{\"Aquivalent} = zwei Aussagen, die immer dasselbe
-      sagen (wie "`Es regnet"' und "`Wasser f\"allt vom Himmel"').
-\item \textbf{Konsequenz} = wenn das eine gilt, \emph{muss}
-      auch das andere gelten.
+\item 1 Schalter: 2 Kombinationen (AN, AUS)
+\item 2 Schalter: $2 \times 2 = 4$ Kombinationen
+\item 3 Schalter: $2 \times 2 \times 2 = 8$ Kombinationen
+\item 5 Schalter: $2 \times 2 \times 2 \times 2 \times 2 = 2^5 = 32$ Kombinationen
+\end{itemize}
+
+Jede Kombination ist eine \textbf{Interpretation}.
+\end{analogie}
+
+\subsubsection*{Was ist eine "`Wissensbasis"' (KB)?}
+
+\begin{merkbox}
+Eine \textbf{Wissensbasis} (englisch: Knowledge Base, abgek\"urzt \textbf{KB}) ist einfach eine \textbf{logische Formel}, die alles zusammenfasst, was wir wissen:
+\begin{itemize}
+\item Unsere \textbf{Beobachtungen} (was wir gesehen/gerochen haben)
+\item Die \textbf{Regeln} der Welt (wie Dinge zusammenh\"angen)
+\end{itemize}
+Die KB ist eine einzige gro\ss e Formel, die alle diese Fakten und Regeln mit "`und"' ($\wedge$) verkn\"upft.
+\end{merkbox}
+
+\subsubsection*{Was ist ein "`Modell"'?}
+
+\begin{merkbox}
+Ein \textbf{Modell} ist eine Interpretation, die die gesamte Wissensbasis \textbf{wahr macht} (KB ergibt 1).
+
+\medskip
+Anders gesagt: Ein Modell ist eine Belegung der Variablen, bei der \textbf{alle} Regeln und Beobachtungen \textbf{gleichzeitig} erf\"ullt sind.
+
+\medskip
+Nicht jede Interpretation ist ein Modell! Viele Interpretationen verletzen irgendeine Regel und machen die KB falsch.
+\end{merkbox}
+
+% ============================================================
+% TEIL 1: Die Aufgabe verstehen
+% ============================================================
+
+\subsection{Die Aufgabe verstehen: Was ist die Kaffeewelt?}
+
+Wir haben ein Geb\"aude mit R\"aumen in einem Gitter:
+
+\begin{center}
+\begin{tabular}{|c|c|c}
+\cline{1-2}
+Raum $(2{,}1)$ & Raum $(2{,}2)$ & \\
+\cline{1-2}
+Raum $(1{,}1)$ & Raum $(1{,}2)$ & Raum $(1{,}3)$ \\
+\cline{1-3}
+\end{tabular}
+\end{center}
+
+\textbf{Was wissen wir?}
+\begin{itemize}
+\item Wir sind durch die R\"aume gelaufen und haben in manchen R\"aumen Kaffeegeruch bemerkt.
+\item In \textbf{Raum~$(1{,}1)$}: \textbf{Kein} Kaffeegeruch
+\item In \textbf{Raum~$(1{,}2)$}: \textbf{Ja}, Kaffeegeruch!
+\item Die gro\ss e Frage: \textbf{Wo stehen die Kaffeetassen?} (M\"oglich: in $(2{,}1)$, $(2{,}2)$ oder $(1{,}3)$)
+\end{itemize}
+
+\subsubsection*{Die Variablen -- unsere 5 Lichtschalter}
+
+Wir haben 5 Variablen, also 5 Ja/Nein-Fragen:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|l|l}
+\toprule
+\textbf{Variable} & \textbf{Frage} & \textbf{Typ} \\
+\midrule
+$G_{1,1}$ & Riecht es in Raum $(1{,}1)$ nach Kaffee? & Geruch (\textbf{beobachtet}: Nein!) \\
+$G_{1,2}$ & Riecht es in Raum $(1{,}2)$ nach Kaffee? & Geruch (\textbf{beobachtet}: Ja!) \\
+$K_{2,1}$ & Steht eine Tasse in Raum $(2{,}1)$? & Kaffeetasse (\textbf{unbekannt}) \\
+$K_{2,2}$ & Steht eine Tasse in Raum $(2{,}2)$? & Kaffeetasse (\textbf{unbekannt}) \\
+$K_{1,3}$ & Steht eine Tasse in Raum $(1{,}3)$? & Kaffeetasse (\textbf{unbekannt}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Warum gibt es 32 Interpretationen?} Weil wir 5 Variablen haben und jede entweder 0 oder 1 sein kann: $2^5 = 32$.
+
+% ============================================================
+% TEIL 2: Die Wissensbasis St\"uck f\"ur St\"uck lesen
+% ============================================================
+
+\subsection{Die Wissensbasis: St\"uck f\"ur St\"uck lesen}
+
+Die KB sieht auf den ersten Blick furchteinfl\"o\ss end aus:
+\[
+\text{KB} \equiv \neg G_{1,1} \wedge G_{1,2} \wedge (K_{2,1} \to G_{1,1}) \wedge (K_{2,2} \to G_{1,2}) \wedge (K_{1,3} \to G_{1,2}) \wedge (G_{1,1} \to K_{2,1}) \wedge (G_{1,2} \to K_{2,2} \vee K_{1,3})
+\]
+
+Aber keine Panik! Die ganze Formel besteht aus \textbf{7 Teilen}, die alle mit $\wedge$ ("`und"') verbunden sind. Das hei\ss t: \textbf{Jeder Teil muss gleichzeitig wahr sein}, damit die KB wahr ist.
+
+\begin{merkbox}
+Wenn Teile einer Formel mit $\wedge$ ("`und"') verbunden sind, dann m\"ussen \textbf{alle} Teile wahr sein. Ist auch nur \textbf{ein einziger} Teil falsch, wird die \textbf{gesamte} KB falsch!
+\end{merkbox}
+
+Lesen wir die 7 Teile einzeln:
+
+\bigskip
+\textbf{Teil 1: $\neg G_{1,1}$}
+\begin{quote}
+"`Es riecht \textbf{nicht} nach Kaffee in Raum $(1{,}1)$."'
+
+Das ist unsere erste Beobachtung. Wir waren dort und haben keinen Geruch bemerkt.
+
+$\Rightarrow$ \textbf{Erzwingt:} $G_{1,1} = 0$
+\end{quote}
+
+\textbf{Teil 2: $G_{1,2}$}
+\begin{quote}
+"`Es riecht nach Kaffee in Raum $(1{,}2)$."'
+
+Das ist unsere zweite Beobachtung.
+
+$\Rightarrow$ \textbf{Erzwingt:} $G_{1,2} = 1$
+\end{quote}
+
+\textbf{Teil 3: $K_{2,1} \to G_{1,1}$}
+\begin{quote}
+"`\textbf{Wenn} eine Tasse in $(2{,}1)$ steht, \textbf{dann} riecht es in $(1{,}1)$ nach Kaffee."'
+
+Warum? Weil $(2{,}1)$ direkt neben $(1{,}1)$ liegt. Eine Kaffeetasse verbreitet Geruch in die Nachbarr\"aume.
+\end{quote}
+
+\textbf{Teil 4: $K_{2,2} \to G_{1,2}$}
+\begin{quote}
+"`\textbf{Wenn} eine Tasse in $(2{,}2)$ steht, \textbf{dann} riecht es in $(1{,}2)$ nach Kaffee."'
+
+$(2{,}2)$ liegt neben $(1{,}2)$.
+\end{quote}
+
+\textbf{Teil 5: $K_{1,3} \to G_{1,2}$}
+\begin{quote}
+"`\textbf{Wenn} eine Tasse in $(1{,}3)$ steht, \textbf{dann} riecht es in $(1{,}2)$ nach Kaffee."'
+
+$(1{,}3)$ liegt neben $(1{,}2)$.
+\end{quote}
+
+\textbf{Teil 6: $G_{1,1} \to K_{2,1}$}
+\begin{quote}
+"`\textbf{Wenn} es in $(1{,}1)$ nach Kaffee riecht, \textbf{dann} steht eine Tasse in $(2{,}1)$."'
+
+Das ist die R\"uckrichtung: $(2{,}1)$ ist der \textbf{einzige} Nachbarraum, aus dem der Geruch in $(1{,}1)$ kommen k\"onnte.
+\end{quote}
+
+\textbf{Teil 7: $G_{1,2} \to K_{2,2} \vee K_{1,3}$}
+\begin{quote}
+"`\textbf{Wenn} es in $(1{,}2)$ nach Kaffee riecht, \textbf{dann} steht \textbf{mindestens eine} Tasse in $(2{,}2)$ \textbf{oder} $(1{,}3)$."'
+
+$(2{,}2)$ und $(1{,}3)$ sind die Nachbarr\"aume von $(1{,}2)$, aus denen der Geruch kommen k\"onnte.
+\end{quote}
+
+\begin{analogie}[title={Analogie: Detektiv im Geb\"aude}]
+Stell dir vor, du bist ein Detektiv. Du gehst durch R\"aume und riechst (oder riechst nicht) Kaffee. Die Regeln sind:
+\begin{itemize}
+\item Wenn in einem Nachbarraum eine Kaffeetasse steht, dann riechst du den Kaffee.
+\item Wenn du Kaffee riechst, dann muss die Tasse in einem der Nachbarr\"aume stehen.
+\item Teile 3--7 der KB beschreiben genau diese Nachbarschaftsbeziehungen.
+\end{itemize}
+Die KB sagt also: "`Hier sind meine Beobachtungen und die Regeln, wie Kaffee funktioniert."'
+\end{analogie}
+
+% ============================================================
+% TEIL 3: Constraints ableiten -- WARUM welche Werte?
+% ============================================================
+
+\subsection{Einschr\"ankungen ableiten: Welche Werte sind erzwungen?}
+
+Jetzt fragen wir: \textbf{Welche der 32 Interpretationen k\"onnen \"uberhaupt Modelle sein?}
+
+Daf\"ur nehmen wir die 7 Teile der KB und schauen, was sie erzwingen.
+
+\bigskip
+\textbf{Schritt 1: Die Beobachtungen auswerten}
+
+Aus Teil~1 und Teil~2 wissen wir sofort:
+\begin{itemize}
+\item $G_{1,1} = 0$ (kein Geruch in $(1{,}1)$ -- das haben wir beobachtet)
+\item $G_{1,2} = 1$ (Geruch in $(1{,}2)$ -- das haben wir beobachtet)
+\end{itemize}
+
+Diese beiden Werte stehen \textbf{fest}. Jede Interpretation, die $G_{1,1} = 1$ oder $G_{1,2} = 0$ setzt, kann \textbf{kein} Modell sein, weil sie einer Beobachtung widerspricht.
+
+\bigskip
+\textbf{Schritt 2: Teil 3 auswerten: $K_{2,1} \to G_{1,1}$}
+
+Wir wissen: $G_{1,1} = 0$. Also steht hier: $K_{2,1} \to 0$.
+
+Erinnere dich an die Implikation: $A \to B$ ist nur falsch, wenn $A=1$ und $B=0$.
+
+\begin{itemize}
+\item Falls $K_{2,1} = 1$: $1 \to 0 = \mathbf{0}$ -- die KB wird falsch! Das darf nicht sein.
+\item Falls $K_{2,1} = 0$: $0 \to 0 = 1$ -- alles in Ordnung.
+\end{itemize}
+
+\textbf{Warum muss also $K_{2,1} = 0$ sein?} Weil wir wissen, dass in $(1{,}1)$ kein Geruch ist ($G_{1,1}=0$). Wenn dort eine Tasse in $(2{,}1)$ st\"unde, m\"usste es in $(1{,}1)$ riechen -- tut es aber nicht. Also: \textbf{Keine Tasse in $(2{,}1)$}.
+
+$\Rightarrow$ \textbf{Erzwingt:} $K_{2,1} = 0$
+
+\bigskip
+\textbf{Schritt 3: Teil 4 auswerten: $K_{2,2} \to G_{1,2}$}
+
+Wir wissen: $G_{1,2} = 1$. Also steht hier: $K_{2,2} \to 1$.
+
+\begin{itemize}
+\item Falls $K_{2,2} = 0$: $0 \to 1 = 1$ -- OK
+\item Falls $K_{2,2} = 1$: $1 \to 1 = 1$ -- auch OK
+\end{itemize}
+
+Egal was $K_{2,2}$ ist, die Implikation ist wahr! Das ergibt Sinn: Wenn es in $(1{,}2)$ sowieso nach Kaffee riecht, dann ist es egal, ob in $(2{,}2)$ eine Tasse steht oder nicht -- die Beobachtung wird nicht widerlegt.
+
+$\Rightarrow$ \textbf{Keine Einschr\"ankung f\"ur $K_{2,2}$}
+
+\bigskip
+\textbf{Schritt 4: Teil 5 auswerten: $K_{1,3} \to G_{1,2}$}
+
+Genau wie bei Teil~4: $K_{1,3} \to 1 = 1$, egal was $K_{1,3}$ ist.
+
+$\Rightarrow$ \textbf{Keine Einschr\"ankung f\"ur $K_{1,3}$}
+
+\bigskip
+\textbf{Schritt 5: Teil 6 auswerten: $G_{1,1} \to K_{2,1}$}
+
+Wir wissen: $G_{1,1} = 0$. Also steht hier: $0 \to K_{2,1}$.
+
+$0 \to \text{irgendwas} = 1$ -- \textbf{immer wahr}! Wenn die Voraussetzung falsch ist, ist die Implikation automatisch wahr (erinnere dich an das Regenversprechen: wenn es nicht regnet, kann dein Freund nichts falsch machen).
+
+$\Rightarrow$ \textbf{Keine zus\"atzliche Einschr\"ankung}
+
+\bigskip
+\textbf{Schritt 6: Teil 7 auswerten: $G_{1,2} \to K_{2,2} \vee K_{1,3}$}
+
+Wir wissen: $G_{1,2} = 1$. Also steht hier: $1 \to (K_{2,2} \vee K_{1,3})$.
+
+$1 \to B$ ist nur wahr, wenn $B = 1$. Also muss $K_{2,2} \vee K_{1,3} = 1$ gelten.
+
+\textbf{Warum?} $K_{2,2} \vee K_{1,3} = 1$ bedeutet: \textbf{Mindestens eine} der beiden Variablen muss 1 sein. Also muss in $(2{,}2)$ \textbf{oder} in $(1{,}3)$ (oder in beiden) eine Tasse stehen.
+
+Das ergibt Sinn: Wir riechen Kaffee in $(1{,}2)$. Der Geruch muss irgendwoher kommen -- also muss in mindestens einem der Nachbarr\"aume $(2{,}2)$ oder $(1{,}3)$ eine Tasse stehen.
+
+$\Rightarrow$ \textbf{Erzwingt:} $K_{2,2} = 1$ oder $K_{1,3} = 1$ (oder beide)
+
+\bigskip
+\textbf{Zusammenfassung aller Einschr\"ankungen:}
+
+\begin{merkbox}
+Damit die KB wahr ist (damit eine Interpretation ein Modell ist), m\"ussen \textbf{alle} diese Bedingungen gleichzeitig gelten:
+\begin{enumerate}
+\item $G_{1,1} = 0$ \quad (Beobachtung: kein Geruch in $(1{,}1)$)
+\item $G_{1,2} = 1$ \quad (Beobachtung: Geruch in $(1{,}2)$)
+\item $K_{2,1} = 0$ \quad (sonst w\"urde es in $(1{,}1)$ riechen)
+\item $K_{2,2} \vee K_{1,3} = 1$ \quad (der Geruch in $(1{,}2)$ muss irgendwo herkommen)
+\end{enumerate}
+Alle anderen Variablen ($K_{2,2}$ und $K_{1,3}$) k\"onnen frei sein, solange mindestens eine von ihnen 1 ist.
+\end{merkbox}
+
+% ============================================================
+% TEIL 4: Alle 32 Interpretationen -- die komplette Tabelle
+% ============================================================
+
+\subsection{Alle 32 Interpretationen: Die komplette Tabelle}
+
+\subsubsection*{Warum 32? Und wie z\"ahlt man sie auf?}
+
+Wir haben 5 Variablen. Jede kann 0 oder 1 sein. Also gibt es $2^5 = 32$ m\"ogliche Kombinationen. Man z\"ahlt sie systematisch auf, indem man einfach \textbf{bin\"ar z\"ahlt} -- wie beim Z\"ahlen mit zwei Fingern:
+
+\begin{center}
+\small
+Interpretation 1: $(0,0,0,0,0)$, \quad Interpretation 2: $(0,0,0,0,1)$, \quad \ldots \quad Interpretation 32: $(1,1,1,1,1)$
+\end{center}
+
+F\"ur jede der 32 Interpretationen pr\"ufen wir: Ist die KB wahr oder falsch?
+
+\subsubsection*{Wie f\"ullt man die Tabelle aus? Eine Beispielrechnung}
+
+Bevor wir die ganze Tabelle zeigen, rechnen wir \textbf{zwei Zeilen komplett vor}.
+
+\bigskip
+\textbf{Beispiel A: Interpretation Nr.\,10 -- $(G_{1,1}, G_{1,2}, K_{2,1}, K_{2,2}, K_{1,3}) = (0, 1, 0, 0, 1)$}
+
+Wir pr\"ufen jeden der 7 Teile der KB:
+
+\begin{enumerate}
+\item $\neg G_{1,1} = \neg 0 = 1$ \checkmark
+\item $G_{1,2} = 1$ \checkmark
+\item $K_{2,1} \to G_{1,1} = 0 \to 0 = 1$ \checkmark
+\item $K_{2,2} \to G_{1,2} = 0 \to 1 = 1$ \checkmark
+\item $K_{1,3} \to G_{1,2} = 1 \to 1 = 1$ \checkmark
+\item $G_{1,1} \to K_{2,1} = 0 \to 0 = 1$ \checkmark
+\item $G_{1,2} \to (K_{2,2} \vee K_{1,3}) = 1 \to (0 \vee 1) = 1 \to 1 = 1$ \checkmark
+\end{enumerate}
+
+\textbf{Alle} 7 Teile sind wahr! Also:
+
+$\text{KB} = 1 \wedge 1 \wedge 1 \wedge 1 \wedge 1 \wedge 1 \wedge 1 = \mathbf{1}$
+
+$\Rightarrow$ \textbf{Interpretation Nr.\,10 ist ein Modell!}
+
+\bigskip
+\textbf{Beispiel B: Interpretation Nr.\,9 -- $(G_{1,1}, G_{1,2}, K_{2,1}, K_{2,2}, K_{1,3}) = (0, 1, 0, 0, 0)$}
+
+\begin{enumerate}
+\item $\neg G_{1,1} = \neg 0 = 1$ \checkmark
+\item $G_{1,2} = 1$ \checkmark
+\item $K_{2,1} \to G_{1,1} = 0 \to 0 = 1$ \checkmark
+\item $K_{2,2} \to G_{1,2} = 0 \to 1 = 1$ \checkmark
+\item $K_{1,3} \to G_{1,2} = 0 \to 1 = 1$ \checkmark
+\item $G_{1,1} \to K_{2,1} = 0 \to 0 = 1$ \checkmark
+\item $G_{1,2} \to (K_{2,2} \vee K_{1,3}) = 1 \to (0 \vee 0) = 1 \to 0 = \mathbf{0}$ \textbf{FALSCH!}
+\end{enumerate}
+
+Teil~7 ist falsch! Also:
+
+$\text{KB} = 1 \wedge 1 \wedge 1 \wedge 1 \wedge 1 \wedge 1 \wedge \mathbf{0} = \mathbf{0}$
+
+$\Rightarrow$ \textbf{Interpretation Nr.\,9 ist KEIN Modell.}
+
+\textbf{Warum?} Weil hier $K_{2,2} = 0$ und $K_{1,3} = 0$, also steht nirgends eine Tasse -- aber es riecht trotzdem nach Kaffee in $(1{,}2)$. Das kann nicht sein! Der Geruch muss von irgendwo kommen.
+
+\bigskip
+\textbf{Beispiel C: Interpretation Nr.\,5 -- $(G_{1,1}, G_{1,2}, K_{2,1}, K_{2,2}, K_{1,3}) = (0, 0, 1, 0, 0)$}
+
+\begin{enumerate}
+\item $\neg G_{1,1} = \neg 0 = 1$ \checkmark
+\item $G_{1,2} = 0$, aber die KB verlangt $G_{1,2} = 1$ $\Rightarrow$ \textbf{FALSCH!}
+\end{enumerate}
+
+Schon bei Teil~2 ist die KB falsch. Wir k\"onnen sofort aufh\"oren!
+
+$\Rightarrow$ \textbf{Interpretation Nr.\,5 ist KEIN Modell.}
+
+Au\ss erdem: $K_{2,1} = 1$ und $G_{1,1} = 0$, also w\"are auch Teil~3 falsch ($1 \to 0 = 0$). Diese Interpretation verletzt also gleich \textbf{zwei} Regeln.
+
+\subsubsection*{Die komplette Tabelle}
+
+Hier ist die Tabelle mit \textbf{allen 32 Interpretationen}. In der Spalte "`KB"' steht 1, wenn die KB wahr ist (= Modell), und 0, wenn sie falsch ist. In der letzten Spalte steht die Weltnummer, falls die Interpretation einer der 8 "`Welten"' entspricht (was das ist, erkl\"aren wir gleich danach).
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{r|ccccc|c|c}
+\toprule
+\# & $G_{1,1}$ & $G_{1,2}$ & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$
+   & KB & Welt \\
+\midrule
+1  & 0 & 0 & 0 & 0 & 0 & 0 & $W_1$ \\
+2  & 0 & 0 & 0 & 0 & 1 & 0 & \\
+3  & 0 & 0 & 0 & 1 & 0 & 0 & \\
+4  & 0 & 0 & 0 & 1 & 1 & 0 & \\
+5  & 0 & 0 & 1 & 0 & 0 & 0 & \\
+6  & 0 & 0 & 1 & 0 & 1 & 0 & \\
+7  & 0 & 0 & 1 & 1 & 0 & 0 & \\
+8  & 0 & 0 & 1 & 1 & 1 & 0 & \\
+\midrule
+9  & 0 & 1 & 0 & 0 & 0 & 0 & \\
+10 & 0 & 1 & 0 & 0 & 1 & \textbf{1} & $W_2$ \\
+11 & 0 & 1 & 0 & 1 & 0 & \textbf{1} & $W_3$ \\
+12 & 0 & 1 & 0 & 1 & 1 & \textbf{1} & $W_4$ \\
+13 & 0 & 1 & 1 & 0 & 0 & 0 & \\
+14 & 0 & 1 & 1 & 0 & 1 & 0 & \\
+15 & 0 & 1 & 1 & 1 & 0 & 0 & \\
+16 & 0 & 1 & 1 & 1 & 1 & 0 & \\
+\midrule
+17 & 1 & 0 & 0 & 0 & 0 & 0 & \\
+18 & 1 & 0 & 0 & 0 & 1 & 0 & \\
+19 & 1 & 0 & 0 & 1 & 0 & 0 & \\
+20 & 1 & 0 & 0 & 1 & 1 & 0 & \\
+21 & 1 & 0 & 1 & 0 & 0 & 0 & $W_5$ \\
+22 & 1 & 0 & 1 & 0 & 1 & 0 & \\
+23 & 1 & 0 & 1 & 1 & 0 & 0 & \\
+24 & 1 & 0 & 1 & 1 & 1 & 0 & \\
+\midrule
+25 & 1 & 1 & 0 & 0 & 0 & 0 & \\
+26 & 1 & 1 & 0 & 0 & 1 & 0 & \\
+27 & 1 & 1 & 0 & 1 & 0 & 0 & \\
+28 & 1 & 1 & 0 & 1 & 1 & 0 & \\
+29 & 1 & 1 & 1 & 0 & 0 & 0 & \\
+30 & 1 & 1 & 1 & 0 & 1 & 0 & $W_6$ \\
+31 & 1 & 1 & 1 & 1 & 0 & 0 & $W_7$ \\
+32 & 1 & 1 & 1 & 1 & 1 & 0 & $W_8$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Ergebnis:} Nur \textbf{3 von 32} Interpretationen machen die KB wahr -- das sind unsere Modelle (Nr.\,10, 11, 12).
+
+% ============================================================
+% TEIL 5: Die 8 Welten erklaeren
+% ============================================================
+
+\subsection{Die 8 Welten: Was ist das und warum gibt es sie?}
+
+\subsubsection*{Das Problem mit den 32 Interpretationen}
+
+Wir haben gerade 32~Interpretationen aufgelistet. Aber viele davon
+sind \textbf{totaler Unsinn} -- sie beschreiben Situationen, die in der
+echten Welt \textbf{niemals passieren k\"onnten}.
+
+\begin{analogie}[title={Analogie: Unsinnige Situationen}]
+Stell dir vor, du stellst eine hei\ss e Kaffeetasse auf deinen
+Schreibtisch. Dann riechst du Kaffee -- \textbf{immer}. Es ist
+\textbf{unm\"oglich}, dass da eine dampfende Tasse steht, aber
+du riechst nichts.
+
+\medskip
+Genauso andersrum: Wenn \textbf{keine} Tasse in der N\"ahe ist,
+\textbf{kann} es nicht nach Kaffee riechen (der Geruch kommt ja
+nirgendwo her).
+
+\medskip
+In der echten Welt h\"angen Tassen und Geruch \textbf{zwingend}
+zusammen. Viele der 32~Interpretationen ignorieren das aber!
+\end{analogie}
+
+\textbf{Konkretes Beispiel f\"ur Unsinn:}
+
+Interpretation Nr.\,2 sagt: $K_{1,3}=1$ (Tasse in $(1{,}3)$),
+aber $G_{1,2}=0$ (kein Geruch in $(1{,}2)$).
+$(1{,}3)$ liegt direkt neben $(1{,}2)$ -- wenn da eine Tasse steht,
+\textbf{muss} es in $(1{,}2)$ riechen. Tut es aber laut dieser
+Interpretation nicht. $\Rightarrow$ \textbf{Unsinn!}
+
+\subsubsection*{Was ist jetzt eine "`Welt"'?}
+
+\begin{merkbox}[title={Definition: Welt}]
+Eine \textbf{Welt} ist eine Interpretation, die \textbf{physikalisch
+Sinn ergibt} -- also eine Situation, die in der Realit\"at tats\"achlich
+\textbf{passieren k\"onnte}.
+
+\medskip
+Konkret hei\ss t das: \textbf{Geruch und Tassen passen zusammen.}
+\begin{itemize}
+\item Wenn eine Tasse neben einem Raum steht $\Rightarrow$ dann riecht
+      es in dem Raum.
+\item Wenn es in einem Raum riecht $\Rightarrow$ dann steht eine Tasse
+      nebenan.
+\item Wenn \textbf{keine} Tasse nebenan steht $\Rightarrow$ dann riecht
+      es auch \textbf{nicht}.
+\end{itemize}
+\end{merkbox}
+
+\subsubsection*{Warum gibt es genau 8 Welten?}
+
+In einer "`Welt"' entscheiden die Tassen \textbf{alles}. Wenn du
+wei\ss t, wo die Tassen stehen, wei\ss t du automatisch auch,
+wo es riecht:
+
+\begin{itemize}
+\item Tasse in $(2{,}1)$? $\Rightarrow$ Dann riecht es in $(1{,}1)$.
+      Keine Tasse in $(2{,}1)$? $\Rightarrow$ Kein Geruch in $(1{,}1)$.
+\item Tasse in $(2{,}2)$ oder $(1{,}3)$? $\Rightarrow$ Dann riecht es
+      in $(1{,}2)$.
+      Keine Tasse in $(2{,}2)$ und $(1{,}3)$? $\Rightarrow$ Kein Geruch
+      in $(1{,}2)$.
+\end{itemize}
+
+Es gibt \textbf{3~Tassenvariablen} ($K_{2,1}$, $K_{2,2}$, $K_{1,3}$),
+jede kann 0 oder 1 sein. Das ergibt $2^3 = \mathbf{8}$ Kombinationen.
+F\"ur jede Kombination sind die Geruchswerte ($G_{1,1}$, $G_{1,2}$)
+\textbf{automatisch festgelegt}. Daher: \textbf{8 Welten}.
+
+\medskip
+Die restlichen $32 - 8 = 24$ Interpretationen setzen den Geruch
+\textbf{falsch} (z.\,B.\ Tasse da, aber kein Geruch). Die k\"onnen
+in der Realit\"at nicht passieren.
+
+\subsubsection*{Die 8 Welten im \"Uberblick}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|ccc|cc|l}
+\toprule
+Welt & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$
+     & $G_{1,1}$ & $G_{1,2}$ & Bedeutung \\
+\midrule
+$W_1$ & 0 & 0 & 0 & 0 & 0 & Keine Tasse, nirgends Geruch \\
+$W_2$ & 0 & 0 & 1 & 0 & 1 & Tasse nur in $(1{,}3)$ \\
+$W_3$ & 0 & 1 & 0 & 0 & 1 & Tasse nur in $(2{,}2)$ \\
+$W_4$ & 0 & 1 & 1 & 0 & 1 & Tassen in $(2{,}2)$ und $(1{,}3)$ \\
+$W_5$ & 1 & 0 & 0 & 1 & 0 & Tasse nur in $(2{,}1)$ \\
+$W_6$ & 1 & 0 & 1 & 1 & 1 & Tassen in $(2{,}1)$ und $(1{,}3)$ \\
+$W_7$ & 1 & 1 & 0 & 1 & 1 & Tassen in $(2{,}1)$ und $(2{,}2)$ \\
+$W_8$ & 1 & 1 & 1 & 1 & 1 & Tassen \"uberall \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Schau dir z.\,B.\ $W_2$ an: Nur in $(1{,}3)$ steht eine Tasse.
+$(1{,}3)$ liegt neben $(1{,}2)$, also riecht es dort ($G_{1,2}=1$).
+In $(2{,}1)$ steht \textbf{keine} Tasse, also riecht es in $(1{,}1)$
+\textbf{nicht} ($G_{1,1}=0$). Alles logisch!
+
+\subsubsection*{Was ist der Unterschied zwischen Welt und Modell?}
+
+\begin{merkbox}[title={Welt vs.\ Modell}]
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l|p{10cm}}
+\textbf{Welt} & Eine Situation, die physikalisch Sinn ergibt
+(Geruch passt zu Tassen). Es gibt \textbf{8~Welten}. \\
+\hline
+\textbf{Modell} & Eine Welt, die \textbf{zus\"atzlich} zu unseren
+\textbf{Beobachtungen} passt (kein Geruch in $(1{,}1)$, Geruch
+in $(1{,}2)$). Es gibt nur \textbf{3~Modelle}. \\
+\end{tabular}
+
+\medskip
+Also: Jedes Modell ist eine Welt, aber nicht jede Welt ist ein Modell!
+
+Manche Welten sind zwar physikalisch m\"oglich, aber sie passen nicht
+zu dem, was wir beobachtet haben.
+\end{merkbox}
+
+\begin{analogie}[title={Analogie: Wetter-App}]
+Stell dir eine Wetter-App vor, die 8~m\"ogliche Wetter-Szenarien
+f\"ur morgen berechnet (z.\,B.\ sonnig, bew\"olkt, Regen, \ldots).
+Das sind die \textbf{8~Welten} -- alle physikalisch m\"oglich.
+
+\medskip
+Jetzt schaust du aus dem Fenster und siehst: Der Himmel ist grau.
+Damit fallen "`sonnig"'-Szenarien weg. Die Szenarien, die zu deiner
+Beobachtung passen, sind die \textbf{Modelle}.
+\end{analogie}
+
+% ============================================================
+% TEIL 6: Welche Welten sind Modelle?
+% ============================================================
+
+\subsection{Welche Welten sind Modelle?}
+
+Jetzt m\"ussen wir nur noch die \textbf{Beobachtungen} (Teil 1 und 2 der KB) pr\"ufen:
+\begin{itemize}
+\item $G_{1,1} = 0$ (kein Geruch in $(1{,}1)$)
+\item $G_{1,2} = 1$ (Geruch in $(1{,}2)$)
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|cc|cc|c|l}
+\toprule
+Welt & $K_{2,1}$ & $K_{2,2}$, $K_{1,3}$
+     & $G_{1,1}$ & $G_{1,2}$ & Modell? & Warum (nicht)? \\
+\midrule
+$W_1$ & 0 & 0, 0 & 0 & 0 & \textbf{Nein} & $G_{1,2}=0$ aber wir beobachten $G_{1,2}=1$ \\
+$W_2$ & 0 & 0, 1 & 0 & 1 & \textbf{Ja!} & Beide Beobachtungen passen \\
+$W_3$ & 0 & 1, 0 & 0 & 1 & \textbf{Ja!} & Beide Beobachtungen passen \\
+$W_4$ & 0 & 1, 1 & 0 & 1 & \textbf{Ja!} & Beide Beobachtungen passen \\
+$W_5$ & 1 & 0, 0 & 1 & 0 & \textbf{Nein} & $G_{1,1}=1$ aber wir beobachten $G_{1,1}=0$ \\
+$W_6$ & 1 & 0, 1 & 1 & 1 & \textbf{Nein} & $G_{1,1}=1$ aber wir beobachten $G_{1,1}=0$ \\
+$W_7$ & 1 & 1, 0 & 1 & 1 & \textbf{Nein} & $G_{1,1}=1$ aber wir beobachten $G_{1,1}=0$ \\
+$W_8$ & 1 & 1, 1 & 1 & 1 & \textbf{Nein} & $G_{1,1}=1$ aber wir beobachten $G_{1,1}=0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ============================================================
+% TEIL 7: Das grosse Bild
+% ============================================================
+
+\subsection{Das gro\ss e Bild: Von 32 zu 8 zu 3}
+
+\begin{merkbox}
+Hier ist die \textbf{Zusammenfassung} des ganzen Weges:
+
+\bigskip
+\textbf{32 Interpretationen} (alle m\"oglichen Kombinationen von 5 Variablen)
+
+$\downarrow$ \textit{Filtern: Nur die physikalisch sinnvollen (Geruch passt zu Tassen)}
+
+\textbf{8 Welten} ($W_1$ bis $W_8$, die \"ubrigen 24 sind physikalischer Unsinn)
+
+$\downarrow$ \textit{Filtern: Nur die, die zu unseren Beobachtungen passen}
+
+\textbf{3 Modelle} ($W_2$, $W_3$, $W_4$)
+\end{merkbox}
+
+Die 3 Modelle sagen uns, was in der Kaffeewelt m\"oglich ist:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|ccccc|l}
+\toprule
+Modell & $G_{1,1}$ & $G_{1,2}$ & $K_{2,1}$ & $K_{2,2}$ & $K_{1,3}$ & Bedeutung \\
+\midrule
+$W_2$ & 0 & 1 & 0 & 0 & 1 & Tasse \textbf{nur} in $(1{,}3)$ \\
+$W_3$ & 0 & 1 & 0 & 1 & 0 & Tasse \textbf{nur} in $(2{,}2)$ \\
+$W_4$ & 0 & 1 & 0 & 1 & 1 & Tassen in $(2{,}2)$ \textbf{und} $(1{,}3)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{analogie}[title={Analogie: Detektivarbeit abgeschlossen}]
+Der Detektiv fasst zusammen:
+\begin{itemize}
+\item "`In Raum $(2{,}1)$ steht \textbf{sicher keine} Tasse (sonst h\"atte ich in $(1{,}1)$ Kaffee gerochen)."'
+\item "`In $(2{,}2)$ oder $(1{,}3)$ (oder beiden) \textbf{muss} eine Tasse stehen (weil ich in $(1{,}2)$ Kaffee gerochen habe)."'
+\item "`Welche der drei M\"oglichkeiten die richtige ist, kann ich mit meinen bisherigen Beobachtungen nicht unterscheiden -- alle drei sind mit meinem Wissen vereinbar."'
 \end{itemize}
 \end{analogie}
 
-\subsection{Wahrheitstabelle}
+
+ewpage
+
+\section{Aufgabe 2: G\"ultigkeit, Erf\"ullbarkeit, \"Aquivalenz, logische Konsequenz}
+
+In dieser Aufgabe haben wir f\"unf Formeln mit zwei Variablen $P$ und $Q$:
+\begin{enumerate}[(a)]
+\item $P$
+\item $Q$
+\item $P \wedge Q$ \quad (P \textbf{und} Q)
+\item $\neg P \vee \neg Q$ \quad (\textbf{nicht} P \textbf{oder nicht} Q)
+\item $\neg(\neg P \vee \neg Q)$ \quad (\textbf{nicht} (\textbf{nicht} P \textbf{oder nicht} Q))
+\end{enumerate}
+
+Wir sollen herausfinden: Welche sind \textbf{g\"ultig}? Welche sind \textbf{erf\"ullbar}? Welche sind \textbf{\"aquivalent}? Welche sind \textbf{logische Konsequenzen} voneinander?
+
+Keine Angst -- wir gehen das \textbf{Schritt f\"ur Schritt} durch!
+
+%% -------------------------------------------------------
+%% SCHRITT 1: Die vier Begriffe erkl\"aren
+%% -------------------------------------------------------
+\subsection{Schritt 1: Was bedeuten die vier Begriffe?}
+
+\subsubsection*{Begriff 1: G\"ultigkeit (= Tautologie)}
+
+\begin{merkbox}
+\textbf{G\"ultig} bedeutet: Die Formel ist \textbf{IMMER wahr} -- egal welche Werte $P$ und $Q$ haben. Es gibt \textbf{keine einzige} Situation, in der sie falsch wird.
+\end{merkbox}
+
+\begin{analogie}
+\textbf{Alltagsbeispiel:} Die Aussage \glqq Es regnet oder es regnet nicht\grqq{} ist \textbf{immer} wahr. Egal ob du in der W\"uste bist oder im Monsun -- einer der beiden F\"alle tritt immer ein. Das ist eine g\"ultige Aussage (Tautologie).
+
+\smallskip
+Dagegen: \glqq Es regnet\grqq{} ist \textbf{nicht} g\"ultig -- an sonnigen Tagen ist es falsch.
+\end{analogie}
+
+\textbf{Wie erkenne ich G\"ultigkeit in der Wahrheitstabelle?}
+\begin{itemize}
+\item Schau dir die Spalte der Formel an.
+\item Stehen dort \textbf{NUR Einsen}? $\Rightarrow$ Die Formel ist g\"ultig!
+\item Steht auch nur \textbf{eine einzige Null} drin? $\Rightarrow$ NICHT g\"ultig.
+\end{itemize}
+
+\bigskip
+
+\subsubsection*{Begriff 2: Erf\"ullbarkeit}
+
+\begin{merkbox}
+\textbf{Erf\"ullbar} bedeutet: Es gibt \textbf{mindestens EINE} Situation (= Belegung der Variablen), in der die Formel wahr ist.
+\end{merkbox}
+
+\begin{analogie}
+\textbf{Alltagsbeispiel:} Die Aussage \glqq Es regnet\grqq{} ist erf\"ullbar -- es gibt Tage, an denen es regnet. Die Aussage muss nicht immer stimmen, aber \textbf{manchmal} schon.
+
+\smallskip
+Dagegen: \glqq Es regnet und es regnet nicht gleichzeitig\grqq{} ist \textbf{nicht} erf\"ullbar -- das kann \textbf{nie} passieren.
+\end{analogie}
+
+\textbf{Wie erkenne ich Erf\"ullbarkeit in der Wahrheitstabelle?}
+\begin{itemize}
+\item Schau dir die Spalte der Formel an.
+\item Steht dort \textbf{mindestens EINE Eins}? $\Rightarrow$ Die Formel ist erf\"ullbar!
+\item Stehen dort \textbf{nur Nullen}? $\Rightarrow$ NICHT erf\"ullbar (= Kontradiktion/Widerspruch).
+\end{itemize}
+
+\bigskip
+
+\subsubsection*{Begriff 3: \"Aquivalenz}
+
+\begin{merkbox}
+Zwei Formeln sind \textbf{\"aquivalent} ($F_1 \equiv F_2$), wenn sie in \textbf{JEDER} Situation \textbf{dasselbe Ergebnis} liefern. Sie sagen immer dasselbe, nur anders formuliert.
+\end{merkbox}
+
+\begin{analogie}
+\textbf{Alltagsbeispiel:} \glqq Es ist nicht nicht sonnig\grqq{} und \glqq Es ist sonnig\grqq{} -- das ist \textbf{dasselbe}! Egal wann du fragst: wenn das eine stimmt, stimmt auch das andere. Und wenn das eine falsch ist, ist auch das andere falsch. $\Rightarrow$ Die beiden Aussagen sind \"aquivalent.
+\end{analogie}
+
+\textbf{Wie erkenne ich \"Aquivalenz in der Wahrheitstabelle?}
+\begin{itemize}
+\item Vergleiche die \textbf{Spalten} zweier Formeln Zeile f\"ur Zeile.
+\item Sind die Spalten \textbf{komplett identisch} (jede Zeile hat denselben Wert)? $\Rightarrow$ \"Aquivalent!
+\item Unterscheiden sich die Spalten in \textbf{auch nur einer Zeile}? $\Rightarrow$ NICHT \"aquivalent.
+\end{itemize}
+
+\bigskip
+
+\subsubsection*{Begriff 4: Logische Konsequenz}
+
+\begin{merkbox}
+$F_1 \models F_2$ (\glqq$F_2$ ist logische Konsequenz von $F_1$\grqq{} oder \glqq$F_2$ folgt aus $F_1$\grqq{}) bedeutet:
+
+\textbf{IMMER wenn $F_1$ wahr ist, MUSS auch $F_2$ wahr sein.}
+
+Anders gesagt: Es gibt \textbf{keine} Situation, in der $F_1$ wahr ist, aber $F_2$ falsch.
+\end{merkbox}
+
+\begin{analogie}
+\textbf{Alltagsbeispiel:} Wenn gilt \glqq Es regnet \textbf{und} es ist kalt\grqq{}, dann folgt daraus sicher \glqq Es regnet\grqq{}.
+
+Denn: Immer wenn beides gleichzeitig wahr ist (Regen UND K\"alte), ist \textbf{insbesondere} auch \glqq Es regnet\grqq{} wahr.
+
+\smallskip
+Aber \textbf{umgekehrt gilt das nicht}: Nur weil es regnet, muss es nicht kalt sein! Es k\"onnte ein warmer Sommerregen sein. Deshalb: Aus \glqq Es regnet\grqq{} folgt \textbf{nicht} \glqq Es regnet und es ist kalt\grqq{}.
+\end{analogie}
+
+\textbf{Wie erkenne ich logische Konsequenz in der Wahrheitstabelle?}
+\begin{itemize}
+\item Finde alle Zeilen, in denen $F_1$ eine \textbf{1} hat (das sind die Situationen, wo $F_1$ wahr ist -- die sogenannten \textbf{Modelle} von $F_1$).
+\item Pr\"ufe: Hat $F_2$ in \textbf{genau diesen Zeilen} auch \"uberall eine \textbf{1}?
+\item Falls ja $\Rightarrow$ $F_1 \models F_2$ (jedes Modell von $F_1$ ist auch Modell von $F_2$).
+\item Falls nein (es gibt eine Zeile mit $F_1 = 1$ aber $F_2 = 0$) $\Rightarrow$ $F_1 \not\models F_2$.
+\end{itemize}
+
+%% -------------------------------------------------------
+%% SCHRITT 2: Wahrheitstabelle aufbauen
+%% -------------------------------------------------------
+\subsection{Schritt 2: Die Wahrheitstabelle aufbauen}
+
+\subsubsection*{Warum hat die Tabelle genau 4 Zeilen?}
+
+\begin{merkbox}
+Wir haben \textbf{2 Variablen}: $P$ und $Q$. Jede Variable kann entweder 0 (falsch) oder 1 (wahr) sein. Das ergibt:
+\[
+2 \times 2 = 2^2 = \textbf{4 Kombinationen}
+\]
+Bei 3 Variablen w\"aren es $2^3 = 8$, bei 4 Variablen $2^4 = 16$, usw.
+\end{merkbox}
+
+Die 4~Kombinationen f\"ur $P$ und $Q$ sind:
+\begin{center}
+\begin{tabular}{cc|l}
+$P$ & $Q$ & Alltagsbedeutung \\
+\midrule
+0 & 0 & Beide falsch \\
+0 & 1 & $P$ falsch, $Q$ wahr \\
+1 & 0 & $P$ wahr, $Q$ falsch \\
+1 & 1 & Beide wahr \\
+\end{tabular}
+\end{center}
+
+\subsubsection*{Jetzt f\"ullen wir die Spalten Schritt f\"ur Schritt aus}
+
+\textbf{Zeile 1: $P=0$, $Q=0$}
+
+\begin{itemize}
+\item \textbf{(a) $P$:} $P = 0$ $\Rightarrow$ Ergebnis: \textbf{0}
+\item \textbf{(b) $Q$:} $Q = 0$ $\Rightarrow$ Ergebnis: \textbf{0}
+\item \textbf{(c) $P \wedge Q$:} $0 \wedge 0 = 0$ (UND: nur wahr wenn \textbf{beide} wahr) $\Rightarrow$ Ergebnis: \textbf{0}
+\item \textbf{(d) $\neg P \vee \neg Q$:}
+  \begin{itemize}
+  \item $\neg P = \neg 0 = 1$ \quad (NICHT falsch = wahr)
+  \item $\neg Q = \neg 0 = 1$
+  \item $1 \vee 1 = 1$ \quad (ODER: wahr wenn \textbf{mindestens eines} wahr)
+  \end{itemize}
+  $\Rightarrow$ Ergebnis: \textbf{1}
+\item \textbf{(e) $\neg(\neg P \vee \neg Q)$:}
+  \begin{itemize}
+  \item Wir haben gerade berechnet: $\neg P \vee \neg Q = 1$
+  \item $\neg 1 = 0$ \quad (NICHT wahr = falsch)
+  \end{itemize}
+  $\Rightarrow$ Ergebnis: \textbf{0}
+\end{itemize}
+
+\bigskip
+
+\textbf{Zeile 4: $P=1$, $Q=1$}
+
+\begin{itemize}
+\item \textbf{(a) $P$:} $P = 1$ $\Rightarrow$ Ergebnis: \textbf{1}
+\item \textbf{(b) $Q$:} $Q = 1$ $\Rightarrow$ Ergebnis: \textbf{1}
+\item \textbf{(c) $P \wedge Q$:} $1 \wedge 1 = 1$ (beide wahr $\Rightarrow$ UND ist wahr!) $\Rightarrow$ Ergebnis: \textbf{1}
+\item \textbf{(d) $\neg P \vee \neg Q$:}
+  \begin{itemize}
+  \item $\neg P = \neg 1 = 0$ \quad (NICHT wahr = falsch)
+  \item $\neg Q = \neg 1 = 0$
+  \item $0 \vee 0 = 0$ \quad (ODER: falsch wenn \textbf{beide} falsch)
+  \end{itemize}
+  $\Rightarrow$ Ergebnis: \textbf{0}
+\item \textbf{(e) $\neg(\neg P \vee \neg Q)$:}
+  \begin{itemize}
+  \item Wir haben gerade berechnet: $\neg P \vee \neg Q = 0$
+  \item $\neg 0 = 1$
+  \end{itemize}
+  $\Rightarrow$ Ergebnis: \textbf{1}
+\end{itemize}
+
+\bigskip
+
+Die anderen beiden Zeilen gehen genauso. Hier die fertige Tabelle:
+
+\subsubsection*{Die fertige Wahrheitstabelle}
 
 \begin{center}
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{cc|ccccc}
 \toprule
 $P$ & $Q$
@@ -225,178 +945,582 @@ $P$ & $Q$
 \end{tabular}
 \end{center}
 
-\subsection{Analyse}
+%% -------------------------------------------------------
+%% SCHRITT 3: G\"ultigkeit ablesen
+%% -------------------------------------------------------
+\subsection{Schritt 3: G\"ultigkeit pr\"ufen}
 
-\subsubsection*{G\"ultigkeit}
+\begin{merkbox}
+\textbf{Erinnerung:} G\"ultig = die Spalte hat \textbf{NUR Einsen}.
+\end{merkbox}
 
-Eine Formel ist g\"ultig, wenn ihre Spalte \emph{nur} Einsen
-enth\"alt. Das trifft auf \textbf{keine} der f\"unf Formeln zu.
-
-\subsubsection*{Erf\"ullbarkeit}
-
-Eine Formel ist erf\"ullbar, wenn ihre Spalte \emph{mindestens
-eine} Eins enth\"alt. Das trifft auf \textbf{alle f\"unf} Formeln
-zu.
-
-\subsubsection*{\"Aquivalenz}
-
-Zwei Formeln sind \"aquivalent, wenn ihre Spalten
-\emph{identisch} sind.
-
+Schauen wir uns jede Spalte an:
 \begin{itemize}
-\item (c) hat die Werte $(0,0,0,1)$ und (e) hat die Werte
-$(0,0,0,1)$ $\Rightarrow$ \textbf{(c) $\equiv$ (e)}.
-
-Dies ist das \textbf{Gesetz von De~Morgan}:
-$P \wedge Q \equiv \neg(\neg P \vee \neg Q)$.
-
-\item Alle anderen Paare haben unterschiedliche Spalten
-$\Rightarrow$ nicht \"aquivalent.
+\item (a) $P$: Spalte ist $0, 0, 1, 1$ -- da sind Nullen dabei $\Rightarrow$ \textbf{nicht g\"ultig}
+\item (b) $Q$: Spalte ist $0, 1, 0, 1$ -- da sind Nullen dabei $\Rightarrow$ \textbf{nicht g\"ultig}
+\item (c) $P \wedge Q$: Spalte ist $0, 0, 0, 1$ -- da sind Nullen dabei $\Rightarrow$ \textbf{nicht g\"ultig}
+\item (d) $\neg P \vee \neg Q$: Spalte ist $1, 1, 1, 0$ -- da ist eine Null $\Rightarrow$ \textbf{nicht g\"ultig}
+\item (e) $\neg(\neg P \vee \neg Q)$: Spalte ist $0, 0, 0, 1$ -- da sind Nullen $\Rightarrow$ \textbf{nicht g\"ultig}
 \end{itemize}
 
 \begin{merkbox}
-\textbf{Zus\"atzliche Beobachtung:} (d) hat die Werte
-$(1,1,1,0)$ -- das ist das genaue Gegenteil von (c) bzw.\ (e).
-Also gilt: $(d) \equiv \neg(c) \equiv \neg(e)$. Das ist ebenfalls
-De~Morgan: $\neg P \vee \neg Q \equiv \neg(P \wedge Q)$.
+\textbf{Ergebnis:} \textbf{Keine} der f\"unf Formeln ist g\"ultig. Keine davon ist immer wahr.
 \end{merkbox}
 
-\subsubsection*{Logische Konsequenz}
+%% -------------------------------------------------------
+%% SCHRITT 4: Erf\"ullbarkeit ablesen
+%% -------------------------------------------------------
+\subsection{Schritt 4: Erf\"ullbarkeit pr\"ufen}
 
-$F_1 \models F_2$ gilt, wenn $\text{Mod}(F_1) \subseteq \text{Mod}(F_2)$.
+\begin{merkbox}
+\textbf{Erinnerung:} Erf\"ullbar = die Spalte hat \textbf{mindestens EINE Eins}.
+\end{merkbox}
 
-\smallskip
-Die Modellmengen (als Mengen von $(P,Q)$-Paaren):
-\begin{align*}
-\text{Mod}(a) &= \{(1,0),\;(1,1)\} \\
-\text{Mod}(b) &= \{(0,1),\;(1,1)\} \\
-\text{Mod}(c) &= \{(1,1)\} \\
-\text{Mod}(d) &= \{(0,0),\;(0,1),\;(1,0)\} \\
-\text{Mod}(e) &= \{(1,1)\}
-\end{align*}
-
-\textbf{Konsequenzen, die gelten:}
 \begin{itemize}
-\item $(c) \models (a)$: \;$\{(1,1)\} \subseteq \{(1,0),(1,1)\}$
-      \;\checkmark\quad
-      ($P \wedge Q$ impliziert $P$)
-\item $(c) \models (b)$: \;$\{(1,1)\} \subseteq \{(0,1),(1,1)\}$
-      \;\checkmark\quad
-      ($P \wedge Q$ impliziert $Q$)
-\item $(e) \models (a)$ und $(e) \models (b)$: \;\checkmark\quad
-      (folgt aus $(c) \equiv (e)$)
+\item (a) $P$: Spalte $0, 0, 1, 1$ -- ja, da sind Einsen! $\Rightarrow$ \textbf{erf\"ullbar}
+\item (b) $Q$: Spalte $0, 1, 0, 1$ -- ja! $\Rightarrow$ \textbf{erf\"ullbar}
+\item (c) $P \wedge Q$: Spalte $0, 0, 0, 1$ -- ja, eine Eins! $\Rightarrow$ \textbf{erf\"ullbar}
+\item (d) $\neg P \vee \neg Q$: Spalte $1, 1, 1, 0$ -- ja, sogar drei! $\Rightarrow$ \textbf{erf\"ullbar}
+\item (e) $\neg(\neg P \vee \neg Q)$: Spalte $0, 0, 0, 1$ -- ja! $\Rightarrow$ \textbf{erf\"ullbar}
 \end{itemize}
 
+\begin{merkbox}
+\textbf{Ergebnis:} \textbf{Alle f\"unf} Formeln sind erf\"ullbar. Jede hat mindestens eine Situation, in der sie wahr ist.
+\end{merkbox}
+
+%% -------------------------------------------------------
+%% SCHRITT 5: \"Aquivalenz pr\"ufen
+%% -------------------------------------------------------
+\subsection{Schritt 5: \"Aquivalenz pr\"ufen}
+
+\begin{merkbox}
+\textbf{Erinnerung:} \"Aquivalent = zwei Spalten sind \textbf{komplett identisch}.
+\end{merkbox}
+
+Vergleichen wir die Spalten:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c|ccccc}
+ & (a) & (b) & (c) & (d) & (e) \\
+\midrule
+Zeile 1 & 0 & 0 & \textbf{0} & 1 & \textbf{0} \\
+Zeile 2 & 0 & 1 & \textbf{0} & 1 & \textbf{0} \\
+Zeile 3 & 1 & 0 & \textbf{0} & 1 & \textbf{0} \\
+Zeile 4 & 1 & 1 & \textbf{1} & 0 & \textbf{1} \\
+\end{tabular}
+\end{center}
+
+Siehst du es? Die Spalten von \textbf{(c)} und \textbf{(e)} sind \textbf{identisch}: $0, 0, 0, 1$. Also:
+
+\[
+\boxed{(c) \equiv (e) \quad\text{d.\,h.}\quad P \wedge Q \;\equiv\; \neg(\neg P \vee \neg Q)}
+\]
+
+Alle anderen Paare haben irgendwo verschiedene Werte -- probier es aus! Zum Beispiel (a) und (b) in Zeile~2: (a)=0, (b)=1 $\Rightarrow$ nicht \"aquivalent.
+
+\subsubsection*{Warum sind (c) und (e) gleich? -- De Morgan einfach erkl\"art}
+
 \begin{analogie}
-\textbf{Warum $(c) \models (a)$?}
-Wenn du wei\ss t, dass \emph{sowohl} $P$ als auch $Q$ wahr sind
-($P \wedge Q$), dann ist insbesondere $P$ wahr.
-Das Spezielle impliziert das Allgemeine.
+\textbf{De Morgan} sagt:
+
+\glqq$P$ \textbf{und} $Q$\grqq{} ist dasselbe wie \glqq\textbf{Nicht}(\textbf{nicht} $P$ \textbf{oder nicht} $Q$)\grqq{}
+
+\medskip
+\textbf{Alltagsbeispiel:} Stell dir vor, du planst ein Picknick. Es soll klappen, wenn:
+
+\glqq Es ist sonnig \textbf{UND} es ist warm\grqq{}
+
+\medskip
+Wann geht das Picknick \textbf{nicht} kaputt? Genau dann, wenn es \textbf{NICHT} der Fall ist, dass:
+
+\glqq Es ist \textbf{nicht} sonnig \textbf{ODER} es ist \textbf{nicht} warm\grqq{}
+
+\medskip
+Denn: Das Picknick scheitert, sobald \textbf{mindestens eine} Bedingung nicht erf\"ullt ist (nicht sonnig ODER nicht warm). Wenn es \textbf{nicht} scheitert, dann m\"ussen \textbf{beide} Bedingungen erf\"ullt sein!
+
+\medskip
+\textbf{Kurzform:} $P \wedge Q = \neg(\neg P \vee \neg Q)$ \quad -- das ist De Morgan!
 \end{analogie}
 
-\textbf{Beispiel, warum $(a) \not\models (c)$:}
-$(1,0)$ ist ein Modell von $P$, aber kein Modell von $P \wedge Q$
-(da $Q=0$). Also impliziert $P$ allein \emph{nicht} $P \wedge Q$.
+\begin{merkbox}
+\textbf{Bonus-Beobachtung:} Schau dir (d) an -- die Spalte ist $1, 1, 1, 0$, also das \textbf{genaue Gegenteil} von (c) und (e), die $0, 0, 0, 1$ haben. Das ist kein Zufall: (d) ist die \textbf{Negation} von (c) und (e). Auch das ist De~Morgan:
+\[
+\neg P \vee \neg Q \;\equiv\; \neg(P \wedge Q)
+\]
+\end{merkbox}
 
-\newpage
+%% -------------------------------------------------------
+%% SCHRITT 6: Logische Konsequenz pr\"ufen
+%% -------------------------------------------------------
+\subsection{Schritt 6: Logische Konsequenz pr\"ufen}
 
-%% ============================================================
-%% AUFGABE 3
-%% ============================================================
+\begin{merkbox}
+\textbf{Erinnerung:} $F_1 \models F_2$ bedeutet: \textbf{\"Uberall wo $F_1$ eine 1 hat, muss auch $F_2$ eine 1 haben.}
+\end{merkbox}
+
+Daf\"ur brauchen wir die \textbf{Modellmengen} -- also die Situationen, in denen jede Formel wahr (= 1) ist. Wir lesen das direkt aus der Tabelle ab:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ll}
+\textbf{Formel} & \textbf{Modelle} (Zeilen mit Wert 1) \\
+\midrule
+(a) $P$ & $P\!=\!1, Q\!=\!0$ und $P\!=\!1, Q\!=\!1$ \\
+(b) $Q$ & $P\!=\!0, Q\!=\!1$ und $P\!=\!1, Q\!=\!1$ \\
+(c) $P \wedge Q$ & nur $P\!=\!1, Q\!=\!1$ \\
+(d) $\neg P \vee \neg Q$ & $P\!=\!0, Q\!=\!0$ und $P\!=\!0, Q\!=\!1$ und $P\!=\!1, Q\!=\!0$ \\
+(e) $\neg(\neg P \vee \neg Q)$ & nur $P\!=\!1, Q\!=\!1$ \\
+\end{tabular}
+\end{center}
+
+\subsubsection*{Jetzt pr\"ufen wir: Folgt (a) aus (c)?}
+
+Die Frage ist: $(c) \models (a)$?
+
+\begin{enumerate}
+\item \textbf{Wo ist (c) wahr?} Nur in einer einzigen Zeile: $P\!=\!1, Q\!=\!1$
+\item \textbf{Ist (a) in dieser Zeile auch wahr?} Ja! Denn $P = 1$ $\Rightarrow$ (a) ist wahr.
+\item \textbf{Ergebnis:} $(c) \models (a)$ \checkmark
+\end{enumerate}
+
+\begin{analogie}
+\textbf{In Worten:} Wenn $P$ \textbf{und} $Q$ beide wahr sind (das ist (c)), dann ist \textbf{insbesondere} auch $P$ allein wahr (das ist (a)). Das leuchtet ein!
+\end{analogie}
+
+\subsubsection*{Folgt (b) aus (c)?}
+
+Die Frage ist: $(c) \models (b)$?
+
+\begin{enumerate}
+\item \textbf{Wo ist (c) wahr?} Nur bei $P\!=\!1, Q\!=\!1$
+\item \textbf{Ist (b) dort auch wahr?} Ja! Denn $Q = 1$ $\Rightarrow$ (b) ist wahr.
+\item \textbf{Ergebnis:} $(c) \models (b)$ \checkmark
+\end{enumerate}
+
+\subsubsection*{Was ist mit (e)?}
+
+Da (c) und (e) \textbf{\"aquivalent} sind (gleiche Spalte!), gelten automatisch auch:
+\begin{itemize}
+\item $(e) \models (a)$ \checkmark \quad (denn (e) hat dieselben Modelle wie (c))
+\item $(e) \models (b)$ \checkmark
+\end{itemize}
+
+\subsubsection*{Gegenbeispiel: Folgt (c) aus (a)?}
+
+Die Frage ist: $(a) \models (c)$?
+
+\begin{enumerate}
+\item \textbf{Wo ist (a) wahr?} In zwei Zeilen: $P\!=\!1, Q\!=\!0$ \textbf{und} $P\!=\!1, Q\!=\!1$
+\item \textbf{Ist (c) in BEIDEN Zeilen auch wahr?}
+  \begin{itemize}
+  \item Bei $P\!=\!1, Q\!=\!1$: (c) = $1 \wedge 1 = 1$ \checkmark
+  \item Bei $P\!=\!1, Q\!=\!0$: (c) = $1 \wedge 0 = \textbf{0}$ $\boldsymbol{\times}$ $\leftarrow$ \textbf{Hier nicht!}
+  \end{itemize}
+\item \textbf{Ergebnis:} $(a) \not\models (c)$ -- es gibt ein \textbf{Gegenbeispiel}!
+\end{enumerate}
+
+\begin{analogie}
+\textbf{In Worten:} Nur weil $P$ wahr ist, m\"ussen nicht $P$ \textbf{und} $Q$ beide wahr sein. $Q$ k\"onnte ja falsch sein! Zum Beispiel: Nur weil es regnet, muss es nicht gleichzeitig kalt sein.
+\end{analogie}
+
+\subsubsection*{Alle Ergebnisse zur logischen Konsequenz}
+
+\begin{merkbox}
+Die logischen Konsequenzen, die gelten:
+\begin{itemize}
+\item $(c) \models (a)$: Aus $P \wedge Q$ folgt $P$ \checkmark
+\item $(c) \models (b)$: Aus $P \wedge Q$ folgt $Q$ \checkmark
+\item $(e) \models (a)$: Aus $\neg(\neg P \vee \neg Q)$ folgt $P$ \checkmark \; (wegen $(c) \equiv (e)$)
+\item $(e) \models (b)$: Aus $\neg(\neg P \vee \neg Q)$ folgt $Q$ \checkmark \; (wegen $(c) \equiv (e)$)
+\end{itemize}
+
+\medskip
+Alle anderen Kombinationen gelten \textbf{nicht}. Zum Beispiel:
+\begin{itemize}
+\item $(a) \not\models (c)$: Aus $P$ folgt NICHT $P \wedge Q$
+\item $(a) \not\models (b)$: Aus $P$ folgt NICHT $Q$ (die sind unabh\"angig!)
+\item $(d) \not\models (a)$: Aus $\neg P \vee \neg Q$ folgt NICHT $P$
+\end{itemize}
+\end{merkbox}
+
+%% -------------------------------------------------------
+%% ZUSAMMENFASSUNG
+%% -------------------------------------------------------
+\subsection{Zusammenfassung}
+
+\begin{merkbox}[title={Gesamtergebnis Aufgabe 2}]
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{ll}
+\textbf{G\"ultigkeit:} & \textbf{Keine} Formel ist g\"ultig (keine Spalte hat nur Einsen) \\
+\textbf{Erf\"ullbarkeit:} & \textbf{Alle f\"unf} Formeln sind erf\"ullbar \\
+\textbf{\"Aquivalenz:} & $(c) \equiv (e)$ \quad (De~Morgan: $P \wedge Q \equiv \neg(\neg P \vee \neg Q)$) \\
+\textbf{Log.\ Konsequenz:} & $(c) \models (a)$, \;$(c) \models (b)$, \;$(e) \models (a)$, \;$(e) \models (b)$ \\
+\end{tabular}
+\end{merkbox}
+
+\begin{merkbox}[title={Kochrezept: So l\"ost du solche Aufgaben}]
+\begin{enumerate}
+\item \textbf{Wahrheitstabelle aufstellen:} Alle Kombinationen der Variablen durchgehen ($2^n$ Zeilen bei $n$ Variablen) und f\"ur jede Formel den Wert berechnen.
+\item \textbf{G\"ultigkeit:} Spalte hat \textbf{nur} Einsen?
+\item \textbf{Erf\"ullbarkeit:} Spalte hat \textbf{mindestens eine} Eins?
+\item \textbf{\"Aquivalenz:} Zwei Spalten \textbf{identisch}?
+\item \textbf{Konsequenz:} Jede 1 in Spalte $F_1$ ist auch eine 1 in Spalte $F_2$?
+\end{enumerate}
+\end{merkbox}
+
+
+ewpage
+
 \section{Aufgabe 3: Erf\"ullbarkeitstester}
 
 \subsection{Was ist ein Erf\"ullbarkeitstester?}
 
-\begin{analogie}
-Ein Erf\"ullbarkeitstester (SAT-Solver) ist wie ein
-\textbf{Automat}: Du gibst ihm eine Formel, und er antwortet
-mit "`erf\"ullbar"' oder "`unerf\"ullbar"'. Mehr kann er nicht --
-aber das reicht, um viele Fragen zu beantworten!
-\end{analogie}
+Stell dir folgende Situation vor: Du hast eine logische Formel und willst
+etwas \"uber sie herausfinden -- z.\,B.\ ob sie \emph{immer} wahr ist,
+ob sie \emph{nie} wahr ist, oder ob eine Formel aus einer anderen folgt.
 
-\subsection{Die Schl\"usselbeziehungen}
+Daf\"ur gibt es ein Werkzeug: den \textbf{Erf\"ullbarkeitstester}
+(auch \textbf{SAT-Solver} genannt).
 
 \begin{merkbox}
+Ein Erf\"ullbarkeitstester ist wie ein \textbf{Automat}.
+Du wirfst eine Formel rein, und er sagt dir \textbf{genau eine von zwei Sachen}:
+\begin{itemize}
+\item \textbf{"`Erf\"ullbar"'} -- es gibt mindestens eine Belegung der Variablen,
+      die die Formel wahr macht.
+\item \textbf{"`Unerf\"ullbar"'} -- es gibt \emph{keine einzige} Belegung,
+      die die Formel wahr macht. Die Formel ist also \emph{immer} falsch.
+\end{itemize}
+
+\medskip
+\textbf{Das ist ALLES was er kann.} Er kann nicht direkt sagen "`Die Formel
+ist g\"ultig"' oder "`$F_2$ folgt aus $F_1$"'. Er kann \emph{nur} die Frage
+beantworten: \textbf{"`Gibt es eine Belegung, die diese Formel wahr macht -- ja oder nein?"'}
+\end{merkbox}
+
+\subsection{Der Trick: Wie beantwortet man damit andere Fragen?}
+
+Die Aufgabe verlangt, dass wir Fragen wie "`Ist $F$ g\"ultig?"' oder
+"`Folgt $F_2$ aus $F_1$?"' so \emph{umformulieren}, dass wir sie mit dem
+Erf\"ullbarkeitstester beantworten k\"onnen. Dazu gibt es einen cleveren Trick.
+
+\begin{analogie}
+\textbf{Alltagsbeispiel:} Du willst beweisen, dass \textbf{ALLE} Sch\"uler
+in deiner Klasse die Pr\"ufung bestanden haben.
+
+\medskip
+Dein Plan: Du suchst nach einem Sch\"uler, der \textbf{NICHT} bestanden hat.
+
+\medskip
+\begin{itemize}
+\item Findest du einen? $\Rightarrow$ Nicht alle haben bestanden.
+\item Findest du \textbf{keinen}? $\Rightarrow$ \textbf{Alle} haben bestanden!
+\end{itemize}
+
+\medskip
+Genau so funktioniert der Trick mit dem Erf\"ullbarkeitstester:
+Statt direkt zu pr\"ufen ob etwas \emph{immer} gilt, suchen wir nach
+einem \textbf{Gegenbeispiel}. Wenn es keins gibt, muss es immer gelten!
+\end{analogie}
+
+\subsection{Wichtig: G\"ultig = Tautologie}
+
+\begin{merkbox}
+Die W\"orter \textbf{"`g\"ultig"'} und \textbf{"`Tautologie"'} bedeuten
+\textbf{genau dasselbe}:
+
+\medskip
+Eine Formel ist g\"ultig (= eine Tautologie), wenn sie in \textbf{jeder
+m\"oglichen Belegung} wahr ist. Egal was du f\"ur $P$ und $Q$ einsetzt
+-- die Formel ist \emph{immer} wahr.
+
+\medskip
+Beispiel: $P \vee \neg P$ ist eine Tautologie/g\"ultig, weil
+egal ob $P = 1$ oder $P = 0$, die Formel ist immer wahr.
+\end{merkbox}
+
+\subsection{Die drei Rezepte (Umformulierungen)}
+
+Es gibt drei Typen von Fragen, die wir an den Tester stellen k\"onnen.
+F\"ur jeden Typ gibt es ein \textbf{Rezept}:
+
+\bigskip
+\textbf{Rezept 1: "`Ist $F$ g\"ultig / eine Tautologie?"'}
+
+\begin{itemize}
+\item \textbf{Gib dem Tester:} $\neg F$ (die Negation der Formel)
+\item \textbf{Wenn er "`unerf\"ullbar"' sagt} $\Rightarrow$ Ja, $F$ ist g\"ultig!
+\end{itemize}
+
+\textbf{Warum funktioniert das?}
+Wenn $\neg F$ unerf\"ullbar ist, bedeutet das: Es gibt \emph{keine} Belegung,
+die $\neg F$ wahr macht. Also gibt es kein Gegenbeispiel -- keine Situation, in
+der $F$ falsch w\"are. Wenn $F$ nie falsch sein kann, muss $F$
+\emph{immer} wahr sein = g\"ultig!
+
+\bigskip
+\textbf{Rezept 2: "`Ist $F$ eine Kontradiktion?"'}
+
+\begin{itemize}
+\item \textbf{Gib dem Tester:} $F$ (die Formel direkt, ohne \"Anderung!)
+\item \textbf{Wenn er "`unerf\"ullbar"' sagt} $\Rightarrow$ Ja, $F$ ist eine Kontradiktion!
+\end{itemize}
+
+\textbf{Warum funktioniert das?}
+Eine Kontradiktion ist eine Formel, die \emph{nie} wahr ist -- also in
+\emph{keiner} Belegung. Und genau das bedeutet "`unerf\"ullbar"'! Die Frage
+"`Ist $F$ eine Kontradiktion?"' ist also \emph{direkt} die Frage
+"`Ist $F$ unerf\"ullbar?"'. Hier brauchen wir keinen Trick.
+
+\bigskip
+\textbf{Rezept 3: "`Folgt $F_2$ aus $F_1$?"'}
+
+\begin{itemize}
+\item \textbf{Gib dem Tester:} $F_1 \wedge \neg F_2$
+\item \textbf{Wenn er "`unerf\"ullbar"' sagt} $\Rightarrow$ Ja, $F_2$ folgt aus $F_1$!
+\end{itemize}
+
+\textbf{Warum funktioniert das?}
+Die Formel $F_1 \wedge \neg F_2$ fragt: "`Gibt es eine Situation, in der $F_1$
+wahr ist, aber $F_2$ \textbf{nicht} wahr ist?"'
+
+Wenn das unerf\"ullbar ist, hei\ss t das: Nein, so eine Situation gibt es nicht.
+Es ist \emph{unm\"oglich}, dass $F_1$ gilt, ohne dass auch $F_2$ gilt.
+Also \emph{muss} $F_2$ aus $F_1$ folgen!
+
+\begin{analogie}
+\textbf{Zu Rezept 3:} Du willst zeigen, dass jeder, der eine Fahrkarte hat ($F_1$),
+auch im Zug sitzen darf ($F_2$).
+
+\medskip
+Du fragst: "`Gibt es jemanden, der eine Fahrkarte hat ($F_1$ wahr),
+aber \textbf{nicht} im Zug sitzen darf ($F_2$ falsch)?"'
+
+\medskip
+Wenn die Antwort "`Nein, so jemanden gibt es nicht"' ist $\Rightarrow$
+Wer eine Fahrkarte hat, darf immer im Zug sitzen. Also folgt $F_2$ aus $F_1$.
+\end{analogie}
+
+\subsection{Rezept-Tabelle zum Merken}
+
+\begin{merkbox}[title={Rezept-Tabelle}]
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l|l|l}
+\textbf{Frage} & \textbf{Gib dem Tester} & \textbf{Wenn unerf\"ullbar} \\
+\hline
+Ist $F$ g\"ultig? & $\neg F$ & $\Rightarrow$ Ja, g\"ultig! \\
+Ist $F$ eine Tautologie? & $\neg F$ & $\Rightarrow$ Ja, Tautologie! \\
+Ist $F$ eine Kontradiktion? & $F$ (direkt!) & $\Rightarrow$ Ja, Kontradiktion! \\
+Folgt $F_2$ aus $F_1$? & $F_1 \wedge \neg F_2$ & $\Rightarrow$ Ja, es folgt! \\
+\end{tabular}
+
+\medskip
+\textbf{Beachte:} Die ersten beiden Zeilen sind dasselbe, weil
+g\"ultig = Tautologie!
+\end{merkbox}
+
+\subsection{Die Teilaufgaben Schritt f\"ur Schritt}
+
+% ===================== (a) =====================
+\subsubsection*{(a) Ist $(P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)$ g\"ultig?}
+
+\textbf{Schritt 1 -- Was wird gefragt?}
+
+Wir sollen herausfinden, ob die Formel
+$(P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)$
+\emph{immer} wahr ist, egal welche Werte $P$ und $Q$ haben.
+
+\medskip
+\textbf{Schritt 2 -- Welches Rezept passt?}
+
+Es wird nach \emph{G\"ultigkeit} gefragt $\Rightarrow$ \textbf{Rezept 1} anwenden.
+
+\medskip
+\textbf{Schritt 3 -- Was geben wir dem Tester?}
+
+Wir negieren die ganze Formel und geben dem Tester:
+\[
+  \neg\Bigl(\bigl(P \vee (\neg P \to Q)\bigr) \leftrightarrow (P \vee Q)\Bigr)
+\]
+
+\textbf{Schritt 4 -- Was bedeutet die Antwort?}
+
+Wir fragen den Tester: "`Ist diese negierte Formel erf\"ullbar?"'
+\begin{itemize}
+\item Sagt er \textbf{"`unerf\"ullbar"'}: Es gibt kein Gegenbeispiel
+      $\Rightarrow$ die Originalformel ist \textbf{g\"ultig}.
+\item Sagt er \textbf{"`erf\"ullbar"'}: Es gibt ein Gegenbeispiel
+      $\Rightarrow$ die Originalformel ist \textbf{nicht g\"ultig}.
+\end{itemize}
+
+\medskip
+\textit{Flei\ss aufgabe:} $\neg P \to Q$ ist \"aquivalent zu $P \vee Q$
+(kann man per Wahrheitstabelle pr\"ufen). Damit vereinfacht sich die
+Formel zu $(P \vee Q) \leftrightarrow (P \vee Q)$, was offensichtlich
+\emph{immer} wahr ist. Die Negation davon ist unerf\"ullbar
+$\Rightarrow$ \textbf{g\"ultig}.
+
+% ===================== (b) =====================
+\subsubsection*{(b) Folgt $P \to Q$ aus $\neg Q \to \neg P$?}
+
+\textbf{Schritt 1 -- Was wird gefragt?}
+
+Wir sollen herausfinden, ob gilt: Wenn $\neg Q \to \neg P$ wahr ist,
+\emph{muss} dann auch $P \to Q$ wahr sein?
+
+In formaler Schreibweise: Gilt $(\neg Q \to \neg P) \models (P \to Q)$?
+
+Hier ist $F_1 = \neg Q \to \neg P$ (die Voraussetzung) und
+$F_2 = P \to Q$ (das, was folgen soll).
+
+\medskip
+\textbf{Schritt 2 -- Welches Rezept passt?}
+
+Es wird nach \emph{logischer Konsequenz} gefragt ("`folgt \ldots\ aus \ldots"')
+$\Rightarrow$ \textbf{Rezept 3} anwenden.
+
+\medskip
+\textbf{Schritt 3 -- Was geben wir dem Tester?}
+
+Rezept 3 sagt: Gib dem Tester $F_1 \wedge \neg F_2$. Also:
+\[
+  (\neg Q \to \neg P) \;\wedge\; \neg(P \to Q)
+\]
+
+In Worten: "`Kann es sein, dass $\neg Q \to \neg P$ wahr ist,
+aber $P \to Q$ gleichzeitig \emph{falsch}?"'
+
+\medskip
+\textbf{Schritt 4 -- Was bedeutet die Antwort?}
+\begin{itemize}
+\item Sagt er \textbf{"`unerf\"ullbar"'}: Es gibt keine Situation, in
+      der die Voraussetzung gilt, aber die Folgerung nicht
+      $\Rightarrow$ \textbf{ja, es folgt}.
+\item Sagt er \textbf{"`erf\"ullbar"'}: Es gibt so eine Situation
+      $\Rightarrow$ \textbf{nein, es folgt nicht}.
+\end{itemize}
+
+\medskip
+\textit{Flei\ss aufgabe:} $\neg Q \to \neg P$ ist die sogenannte
+\textbf{Kontraposition} von $P \to Q$. Diese beiden Formeln sind
+immer \"aquivalent (haben immer denselben Wahrheitswert). Also gibt
+es keine Situation, in der die eine wahr und die andere falsch ist.
+Die Formel ist unerf\"ullbar $\Rightarrow$ \textbf{ja, es folgt}.
+
+% ===================== (c) =====================
+\subsubsection*{(c) Ist $P \leftrightarrow Q \wedge P$ eine Kontradiktion?}
+
+\textbf{Schritt 1 -- Was wird gefragt?}
+
+Wir sollen herausfinden, ob die Formel $P \leftrightarrow Q \wedge P$
+\emph{nie} wahr ist -- also in keiner einzigen Belegung.
+
+\begin{merkbox}[title={Achtung: Operatorpr\"azedenz!}]
+Die Formel hei\ss t $P \leftrightarrow Q \wedge P$. Aber wie wird das gelesen?
+
+\medskip
+\textbf{Regel:} Das $\wedge$ (UND) \textbf{bindet st\"arker} als das
+$\leftrightarrow$ (Bikonditional). Das hei\ss t: $Q \wedge P$ wird
+\emph{zuerst} ausgewertet.
+
+\medskip
+Die vollst\"andig geklammerte Version ist also:
+\[
+  P \leftrightarrow (Q \wedge P)
+\]
+
+Das ist \textbf{nicht} dasselbe wie $(P \leftrightarrow Q) \wedge P$!
+\end{merkbox}
+
+\textbf{Schritt 2 -- Welches Rezept passt?}
+
+Es wird nach \emph{Kontradiktion} gefragt $\Rightarrow$ \textbf{Rezept 2} anwenden.
+
+\medskip
+\textbf{Schritt 3 -- Was geben wir dem Tester?}
+
+Rezept 2 sagt: Gib die Formel \emph{direkt} an den Tester (ohne Negation!):
+\[
+  P \leftrightarrow (Q \wedge P)
+\]
+
+\textbf{Schritt 4 -- Was bedeutet die Antwort?}
+\begin{itemize}
+\item Sagt er \textbf{"`unerf\"ullbar"'}: Die Formel ist nie wahr
+      $\Rightarrow$ \textbf{ja, Kontradiktion}.
+\item Sagt er \textbf{"`erf\"ullbar"'}: Die Formel ist manchmal wahr
+      $\Rightarrow$ \textbf{nein, keine Kontradiktion}.
+\end{itemize}
+
+\medskip
+\textit{Flei\ss aufgabe:} Setzen wir $P = 0$ und $Q = 0$ ein:
+\[
+  0 \leftrightarrow (0 \wedge 0) = 0 \leftrightarrow 0 = 1 \quad\checkmark
+\]
+Die Formel ist wahr! Der Tester w\"urde also "`erf\"ullbar"' sagen
+$\Rightarrow$ \textbf{keine Kontradiktion}.
+
+% ===================== (d) =====================
+\subsubsection*{(d) Ist $P \leftrightarrow P \vee \bot$ eine Tautologie?}
+
+\textbf{Schritt 1 -- Was wird gefragt?}
+
+Wir sollen herausfinden, ob die Formel $P \leftrightarrow P \vee \bot$
+\emph{immer} wahr ist (in jeder Belegung).
+
+\begin{merkbox}[title={Was ist $\bot$ (Bottom/Falsum)?}]
+Das Symbol $\bot$ steht f\"ur eine Aussage, die \textbf{IMMER falsch} ist.
+Man kann sich $\bot$ als eine "`eingebaute L\"uge"' vorstellen -- egal
+was passiert, $\bot$ ist falsch. In Wahrheitswerten: $\bot = 0$.
+
+\medskip
+Deshalb gilt: $P \vee \bot = P \vee 0$. Da ein ODER mit etwas Falschem
+nichts \"andert, ist das einfach $= P$.
+\end{merkbox}
+
+\textbf{Schritt 2 -- Welches Rezept passt?}
+
+Es wird nach \emph{Tautologie} gefragt. Eine Tautologie ist dasselbe wie
+"`g\"ultig"' $\Rightarrow$ \textbf{Rezept 1} anwenden.
+
+\medskip
+\textbf{Schritt 3 -- Was geben wir dem Tester?}
+
+Rezept 1 sagt: Negiere die Formel. Also:
+\[
+  \neg\Bigl(P \leftrightarrow (P \vee \bot)\Bigr)
+\]
+
+\textbf{Schritt 4 -- Was bedeutet die Antwort?}
+\begin{itemize}
+\item Sagt er \textbf{"`unerf\"ullbar"'}: Es gibt kein Gegenbeispiel
+      $\Rightarrow$ \textbf{ja, Tautologie}.
+\item Sagt er \textbf{"`erf\"ullbar"'}: Es gibt ein Gegenbeispiel
+      $\Rightarrow$ \textbf{nein, keine Tautologie}.
+\end{itemize}
+
+\medskip
+\textit{Flei\ss aufgabe:} Da $P \vee \bot = P$, wird die Formel zu
+$P \leftrightarrow P$. Das ist offensichtlich \emph{immer} wahr
+(etwas ist immer \"aquivalent zu sich selbst). Die Negation davon ist
+unerf\"ullbar $\Rightarrow$ \textbf{Tautologie}.
+
+\subsection{Zusammenfassung}
+
+\begin{merkbox}[title={Zusammenfassung Aufgabe 3}]
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{lll}
-\textbf{Frage} & \textbf{Gib dem Tester} & \textbf{Antwort} \\
-\midrule
-Ist $F$ g\"ultig? & $\neg F$ & unerf.\ $\Rightarrow$ ja \\
-Ist $F$ Kontradiktion? & $F$ & unerf.\ $\Rightarrow$ ja \\
-Folgt $F_2$ aus $F_1$? & $F_1 \wedge \neg F_2$
-  & unerf.\ $\Rightarrow$ ja \\
-Ist $F$ Tautologie? & $\neg F$ & unerf.\ $\Rightarrow$ ja \\
+\begin{tabular}{c|l|l|l}
+ & \textbf{Frage} & \textbf{Rezept / dem Tester geben} & \textbf{Ergebnis} \\
+\hline
+(a) & G\"ultig? & $\neg\bigl((P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)\bigr)$
+    & unerf. $\Rightarrow$ g\"ultig \\
+(b) & Folgt? & $(\neg Q \to \neg P) \wedge \neg(P \to Q)$
+    & unerf. $\Rightarrow$ folgt \\
+(c) & Kontradiktion? & $P \leftrightarrow (Q \wedge P)$ direkt
+    & erf\"ullbar $\Rightarrow$ \textbf{nein} \\
+(d) & Tautologie? & $\neg\bigl(P \leftrightarrow (P \vee \bot)\bigr)$
+    & unerf. $\Rightarrow$ Tautologie \\
 \end{tabular}
 \end{merkbox}
 
-\textbf{Idee dahinter:} Wenn die Negation einer Aussage
-unerf\"ullbar ist (es gibt kein Gegenbeispiel), dann muss
-die Aussage selbst immer wahr sein.
-
-\subsection{Umformulierungen}
-
-\begin{enumerate}[(a)]
-\item \textbf{Ist $(P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)$
-      g\"ultig?}
-
-      \textbf{Umformulierung:} Ist
-      $\neg\bigl((P \vee (\neg P \to Q)) \leftrightarrow (P \vee Q)\bigr)$
-      unerf\"ullbar?
-
-      Falls ja $\Rightarrow$ die Formel ist g\"ultig.
-
-      \smallskip
-      \textit{Antwort (Flei\ss aufgabe):}
-      $\neg P \to Q \equiv P \vee Q$, also vereinfacht sich
-      die Formel zu $(P \vee Q) \leftrightarrow (P \vee Q)$,
-      was stets wahr ist. Die Negation ist unerf\"ullbar
-      $\Rightarrow$ \textbf{g\"ultig}.
-
-\item \textbf{Folgt $P \to Q$ aus $\neg Q \to \neg P$?}
-
-      \textbf{Umformulierung:} Ist
-      $(\neg Q \to \neg P) \wedge \neg(P \to Q)$
-      unerf\"ullbar?
-
-      Falls ja $\Rightarrow$ es folgt.
-
-      \smallskip
-      \textit{Antwort (Flei\ss aufgabe):}
-      $\neg Q \to \neg P$ ist die Kontraposition von $P \to Q$.
-      Beide sind \"aquivalent, also folgt $P \to Q$ aus
-      $\neg Q \to \neg P$ $\Rightarrow$ \textbf{ja, es folgt}.
-
-\item \textbf{Ist $P \leftrightarrow Q \wedge P$ eine Kontradiktion?}
-
-      Vollst\"andig geklammert: $P \leftrightarrow (Q \wedge P)$.
-
-      \textbf{Umformulierung:} Ist
-      $P \leftrightarrow (Q \wedge P)$ unerf\"ullbar?
-
-      Falls ja $\Rightarrow$ Kontradiktion.
-
-      \smallskip
-      \textit{Antwort (Flei\ss aufgabe):}
-      F\"ur $P=0$, $Q=0$: $0 \leftrightarrow (0 \wedge 0) =
-      0 \leftrightarrow 0 = 1$.
-      Die Formel ist erf\"ullbar $\Rightarrow$
-      \textbf{keine Kontradiktion}.
-
-\item \textbf{Ist $P \leftrightarrow P \vee \bot$ eine Tautologie?}
-
-      Vollst\"andig geklammert: $P \leftrightarrow (P \vee \bot)$.
-
-      \textbf{Umformulierung:} Ist
-      $\neg\bigl(P \leftrightarrow (P \vee \bot)\bigr)$ unerf\"ullbar?
-
-      Falls ja $\Rightarrow$ Tautologie.
-
-      \smallskip
-      \textit{Antwort (Flei\ss aufgabe):}
-      $P \vee \bot = P \vee 0 = P$, also wird die Formel zu
-      $P \leftrightarrow P$, was stets wahr ist.
-      Die Negation ist unerf\"ullbar $\Rightarrow$
-      \textbf{Tautologie}.
-\end{enumerate}
-
-\end{document}
+\end{document}
