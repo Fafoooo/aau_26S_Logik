@@ -1,0 +1,1529 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tcolorbox}
+
+\tcbuselibrary{breakable}
+
+\newtcolorbox{merkbox}[1][]{
+  colback=blue!5,
+  colframe=blue!40,
+  fonttitle=\bfseries,
+  title={Merke},
+  breakable,
+  #1
+}
+
+\newtcolorbox{analogie}[1][]{
+  colback=green!5,
+  colframe=green!40,
+  fonttitle=\bfseries,
+  title={Analogie},
+  breakable,
+  #1
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 3 -- Erkl\"arungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+% ============================================================
+% TEIL 0: Grundlagen
+% ============================================================
+
+\section*{Teil 0: Grundlagen -- alles, was man wissen muss}
+
+Bevor wir uns an die Aufgaben setzen, lernen wir in aller Ruhe die
+Begriffe, die im ganzen \"Ubungsblatt vorkommen. Keine Panik: jedes
+Wort, jedes Symbol wird erkl\"art. Wir tun so, als h\"atten wir noch
+nie etwas von Logik geh\"ort. Am Ende von Teil~0 bist du bestens
+ger\"ustet f\"ur die drei Aufgaben.
+
+\subsection*{0.1 Die f\"unf Symbole der Aussagenlogik}
+
+In der Logik verwenden wir nicht lange S\"atze, sondern kleine Symbole,
+damit wir schnell und eindeutig schreiben k\"onnen. Es gibt f\"unf
+Symbole, die in diesem \"Ubungsblatt immer wieder vorkommen. Wir
+schauen sie uns einzeln an.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{c|l|l}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Bedeutung in Alltagssprache} \\
+\midrule
+$\neg A$ & Negation (Nicht) & "`$A$ ist falsch"' / "`Nicht $A$"' \\
+$A \wedge B$ & Konjunktion (Und) & "`Beide, $A$ und $B$, sind wahr"' \\
+$A \vee B$ & Disjunktion (Oder) & "`Mindestens eines von beiden ist wahr"' \\
+$A \to B$ & Implikation (Wenn-Dann) & "`Wenn $A$ wahr ist, dann auch $B$"' \\
+$A \leftrightarrow B$ & Biimplikation (Genau dann) & "`$A$ und $B$ haben denselben Wert"' \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{merkbox}
+In der Logik gibt es nur zwei Werte:
+\begin{itemize}[nosep]
+\item $1$ = \textbf{wahr} (die Aussage stimmt)
+\item $0$ = \textbf{falsch} (die Aussage stimmt nicht)
+\end{itemize}
+Jede Variable, jede Formel hat am Ende einen dieser beiden Werte.
+Es gibt kein "`vielleicht"'.
+\end{merkbox}
+
+\subsubsection*{Wahrheitstabelle f\"ur jedes Symbol einzeln}
+
+Jedes Symbol hat eine kleine Tabelle, die festlegt, wie es rechnet.
+Diese Tabellen muss man im Kopf haben -- ohne sie kommt man nirgendwo
+hin.
+
+\textbf{Negation $\neg A$} (dreht den Wert um):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c|c}
+\toprule
+$A$ & $\neg A$ \\
+\midrule
+0 & 1 \\
+1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Analogie: Ein Lichtschalter mit Umkehrfunktion. Ist das Licht an,
+macht die Negation es aus. Ist es aus, macht sie es an.
+
+\textbf{Konjunktion $A \wedge B$} (wahr nur wenn beide wahr sind):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|c}
+\toprule
+$A$ & $B$ & $A \wedge B$ \\
+\midrule
+0 & 0 & 0 \\
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{analogie}
+"`Ich darf fernsehen \textbf{und} ich habe meine Hausaufgaben
+gemacht."' Nur wenn \emph{beide} Aussagen zutreffen, stimmt der ganze
+Satz. Fehlt einer der beiden Teile, ist das Ganze falsch -- dann sagt
+Mama "`kein Fernsehen"'.
+\end{analogie}
+
+\textbf{Disjunktion $A \vee B$} (wahr wenn mindestens eines wahr ist):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|c}
+\toprule
+$A$ & $B$ & $A \vee B$ \\
+\midrule
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{analogie}
+"`Zum Mittagessen gibt es Nudeln \textbf{oder} Pizza."' Wenn es Nudeln
+gibt, stimmt der Satz. Wenn es Pizza gibt, stimmt er auch. Wenn es
+\emph{beides} gibt (gro{\ss}er Hunger!), stimmt er ebenfalls. Nur wenn
+es weder Nudeln noch Pizza gibt, ist die Aussage falsch. In der Logik
+ist das "`Oder"' also ein \emph{einschlie{\ss}endes} Oder, nicht das
+"`entweder...oder"' der Alltagssprache.
+\end{analogie}
+
+\textbf{Implikation $A \to B$} (nur falsch, wenn $A$ wahr und $B$ falsch):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|c}
+\toprule
+$A$ & $B$ & $A \to B$ \\
+\midrule
+0 & 0 & 1 \\
+0 & 1 & 1 \\
+1 & 0 & \textbf{0} \\
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{analogie}[title={Analogie: Regenversprechen}]
+Dein Freund sagt: \textbf{"`Wenn es regnet, bringe ich einen Schirm
+mit."'} Wann hat er gelogen?
+\begin{itemize}[nosep]
+\item Es regnet nicht, kein Schirm dabei $\Rightarrow$ \textbf{nicht
+      gelogen}. Er hat ja nichts versprochen f\"ur "`kein Regen"'.
+\item Es regnet nicht, aber er hat trotzdem einen Schirm
+      $\Rightarrow$ \textbf{nicht gelogen}. Das ist h\"ochstens
+      vorsichtig, aber kein Wortbruch.
+\item Es regnet, aber er hat keinen Schirm $\Rightarrow$
+      \textbf{gelogen!} Das war genau der Fall, den er versprochen
+      hat abzudecken.
+\item Es regnet, er hat einen Schirm $\Rightarrow$
+      \textbf{nicht gelogen}. Versprechen gehalten.
+\end{itemize}
+Die Implikation ist also genau dann falsch, wenn die Voraussetzung
+($A$, "`es regnet"') wahr ist und die Folge ($B$, "`Schirm dabei"')
+falsch.
+\end{analogie}
+
+\begin{merkbox}
+Die Implikation $A \to B$ ist \textbf{nur in einem einzigen Fall}
+falsch: $A = 1$ und $B = 0$. In allen anderen drei F\"allen ist sie
+wahr. Ein Spezialfall: Wenn $A = 0$, dann ist $A \to B$ automatisch
+wahr -- egal, was $B$ ist. Das nennt man "`ex falso quodlibet"' oder
+"`aus Falschem folgt alles"'.
+\end{merkbox}
+
+\textbf{Biimplikation $A \leftrightarrow B$} (wahr wenn beide
+denselben Wert haben):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|c}
+\toprule
+$A$ & $B$ & $A \leftrightarrow B$ \\
+\midrule
+0 & 0 & 1 \\
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{analogie}
+"`Ich gehe genau dann ins Schwimmbad, wenn die Sonne scheint."' Das
+ist eine Biimplikation, weil sie \emph{beide} Richtungen behauptet:
+(1)~Sonne $\to$ Schwimmbad, und (2)~Schwimmbad $\to$ Sonne. Du kannst
+dich also nie im Schwimmbad befinden, ohne dass die Sonne scheint.
+Biimplikation ist wahr, wenn beide Aussagen dasselbe tun -- entweder
+beide wahr oder beide falsch.
+\end{analogie}
+
+\subsection*{0.2 Operatorpr\"azedenz -- wer bindet st\"arker?}
+
+Jetzt kommt ein heikles Thema, das in Aufgabe~1 ganz wichtig wird:
+Wenn in einer Formel keine Klammern stehen, in welcher Reihenfolge
+werden dann die Operatoren ausgewertet? Zum Beispiel:
+\[
+\neg X \leftrightarrow Z \to \neg Y \wedge Z
+\]
+Was bindet hier zuerst? Ohne Regel k\"onnte man die Formel auf viele
+verschiedene Arten lesen und w\"urde jedes Mal ein anderes Ergebnis
+bekommen. Damit alle Menschen (und Computer) dieselbe Lesart haben,
+gibt es feste Pr\"azedenzregeln:
+
+\begin{merkbox}
+\textbf{Operatorpr\"azedenz in der Aussagenlogik} (von stark nach schwach):
+\begin{enumerate}[nosep]
+\item $\neg$ (Negation) -- \textbf{st\"arkste} Bindung
+\item $\wedge$ (Und)
+\item $\vee$ (Oder)
+\item $\to$ (Implikation)
+\item $\leftrightarrow$ (Biimplikation) -- \textbf{schw\"achste} Bindung
+\end{enumerate}
+Eselsbr\"ucke: \textbf{N, U, O, W, G} -- \textbf{N}icht, \textbf{U}nd,
+\textbf{O}der, \textbf{W}enn-dann, \textbf{G}enau-dann-wenn.
+\end{merkbox}
+
+\begin{analogie}[title={Analogie: Punkt-vor-Strich}]
+In der Schule hast du gelernt: $3 + 4 \cdot 2 = 3 + 8 = 11$ und nicht
+$14$, weil $\cdot$ st\"arker bindet als $+$. Die Mal-Rechnung wird
+zuerst gemacht, und erst danach die Plus-Rechnung. In der Logik ist
+es genauso: $\neg$ und $\wedge$ binden fest wie Mal-Rechnungen, $\to$
+und $\leftrightarrow$ sind wie das lose $+$. Im Zweifel: Klammere
+stillschweigend die "`stark"' gebundenen Operatoren zusammen, bevor du
+die "`schwachen"' dranh\"angst.
+\end{analogie}
+
+\textbf{Beispiel.} Schauen wir uns nochmal die Formel aus Aufgabe~1 an:
+\[
+\neg X \leftrightarrow Z \to \neg Y \wedge Z.
+\]
+Nach der Pr\"azedenz klammern wir sie Schritt f\"ur Schritt:
+\begin{enumerate}[nosep]
+\item Am st\"arksten bindet $\neg$: aus $\neg X$ und $\neg Y$ werden
+      Bausteine, die nichts mehr verlieren k\"onnen.
+\item Dann $\wedge$: das Paar $\neg Y \wedge Z$ wird zu einem
+      einzigen Baustein zusammengefasst.
+\item Dann $\to$: jetzt bindet sich $Z$ mit dem schon zusammengesetzten
+      $(\neg Y \wedge Z)$ zu $Z \to (\neg Y \wedge Z)$.
+\item Zuletzt $\leftrightarrow$: das ganz oben stehende
+      $\neg X$ wird mit dem rechten Baustein durch die Biimplikation
+      verbunden.
+\end{enumerate}
+Das Endergebnis der Klammerung lautet:
+\[
+\neg X \;\leftrightarrow\; \bigl(\,Z \to (\neg Y \wedge Z)\,\bigr).
+\]
+
+\subsection*{0.3 Literal -- der kleinste Baustein}
+
+\begin{merkbox}
+Ein \textbf{Literal} ist entweder eine Variable oder ihre Negation.
+Also: $A$ ist ein Literal. $\neg A$ ist auch ein Literal. Mehr nicht.
+\end{merkbox}
+
+\begin{analogie}
+Stell dir ein Literal wie einen Legostein mit einem einzigen Knopf
+vor. Entweder steht er "`an"' (die Variable) oder "`aus"' (die
+negierte Variable). Gr\"o{\ss}ere Bauwerke (Formeln) entstehen aus
+vielen solcher kleinen Bausteine.
+\end{analogie}
+
+\subsection*{0.4 Klausel und Minterm}
+
+Jetzt bauen wir etwas gr\"o{\ss}ere Bauteile. Zwei Arten von
+Zusammenbauten sind besonders wichtig:
+
+\begin{merkbox}
+\textbf{Klausel} = Disjunktion (ODER-Verkn\"upfung) von Literalen.\\
+Beispiel: $(A \vee \neg B \vee C)$.
+
+\medskip
+\textbf{Minterm} = Konjunktion (UND-Verkn\"upfung) von Literalen.\\
+Beispiel: $(A \wedge \neg B \wedge C)$.
+\end{merkbox}
+
+Der Unterschied ist, welcher Junktor im Inneren verwendet wird. Eine
+Klausel verwendet nur $\vee$, ein Minterm nur $\wedge$.
+
+\begin{analogie}
+Eine \textbf{Klausel} ist wie eine Liste mit \textbf{Notausg\"angen}:
+Mindestens einer muss offen sein, damit man rauskommt (mindestens ein
+Literal muss wahr sein, damit die Klausel wahr ist).
+
+\medskip
+Ein \textbf{Minterm} ist wie eine Liste mit \textbf{T\"urcodes}: Alle
+m\"ussen stimmen, sonst geht der Safe nicht auf (alle Literale
+m\"ussen wahr sein, damit der Minterm wahr ist).
+\end{analogie}
+
+\subsection*{0.5 CNF -- Konjunktive Normalform}
+
+\begin{merkbox}
+\textbf{CNF (Konjunktive Normalform)} ist ein "`UND von ODERs"'. Die
+Formel sieht aus wie:
+\[
+(L_1 \vee L_2 \vee \dots) \;\wedge\; (L_3 \vee L_4 \vee \dots)
+  \;\wedge\; \dots
+\]
+Im Klartext: Eine Konjunktion (UND) von Klauseln. Jede Klausel ist
+selbst eine Disjunktion (ODER) von Literalen.
+\end{merkbox}
+
+\begin{analogie}
+CNF ist wie eine \textbf{Checkliste mit Anforderungen}. Jede Zeile
+der Checkliste ist eine Klausel. Die ganze Formel ist nur dann wahr,
+wenn \emph{jede} Anforderung erf\"ullt ist (UND). Eine einzelne
+Anforderung ist erf\"ullt, wenn \emph{mindestens eine} ihrer
+Alternativen zutrifft (ODER).
+
+\medskip
+Beispiel: "`Das Auto f\"ahrt, wenn (Diesel \textbf{oder} Benzin im
+Tank) \textbf{und} (Batterie voll \textbf{oder} an der Steckdose)
+\textbf{und} der Fahrer eingestiegen ist."' Alle drei Checks m\"ussen
+bestanden werden, und jeder Check hat evtl.\ Alternativen.
+\end{analogie}
+
+\subsection*{0.6 DNF -- Disjunktive Normalform}
+
+\begin{merkbox}
+\textbf{DNF (Disjunktive Normalform)} ist ein "`ODER von UNDs"'. Die
+Formel sieht aus wie:
+\[
+(L_1 \wedge L_2 \wedge \dots) \;\vee\; (L_3 \wedge L_4 \wedge \dots)
+  \;\vee\; \dots
+\]
+Im Klartext: Eine Disjunktion (ODER) von Mintermen. Jeder Minterm ist
+selbst eine Konjunktion (UND) von Literalen.
+\end{merkbox}
+
+\begin{analogie}
+DNF ist wie eine \textbf{Liste von Erfolgsszenarien}. Jedes Szenario
+(Minterm) beschreibt einen Zustand, in dem es klappt. Die ganze Formel
+ist wahr, wenn mindestens \emph{ein} Szenario voll zutrifft (ODER),
+und ein Szenario trifft zu, wenn \emph{alle} seine Bedingungen erf\"ullt
+sind (UND).
+
+\medskip
+Beispiel: "`Ich gehe Essen, wenn (Mama kocht \textbf{und} es gibt
+Nudeln) \textbf{oder} (Freund ruft an \textbf{und} bietet Pizza an)
+\textbf{oder} (ich selbst habe Zeit \textbf{und} Geld)."' Jedes dieser
+Szenarien reicht aus.
+\end{analogie}
+
+\begin{merkbox}
+\textbf{Eselsbr\"ucke CNF vs.\ DNF.}
+\begin{itemize}[nosep]
+\item \textbf{D}NF = "`\textbf{D}as \textbf{N}ormale \textbf{F}ormat"'
+      = Summe aus Produkten. (In der booleschen Algebra wird $\vee$
+      oft als $+$ und $\wedge$ oft als $\cdot$ geschrieben, daher
+      "`Summe von Produkten"'.)
+\item \textbf{C}NF = wie sa\textbf{C}-gepackt = Produkt aus Summen.
+      Die \"au{\ss}ere Struktur ist Multiplikation ($\wedge$), innen
+      stehen Summen ($\vee$).
+\end{itemize}
+\end{merkbox}
+
+\subsection*{0.7 Wahrheitstabelle -- die Landkarte einer Formel}
+
+Eine Wahrheitstabelle listet f\"ur jede m\"ogliche Belegung der
+Variablen den Wert der Formel auf. Bei $n$ Variablen gibt es $2^n$
+Zeilen, weil jede Variable 2 M\"oglichkeiten hat und sich diese
+multiplizieren.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c|c|l}
+\toprule
+\textbf{Variablen} & \textbf{Zeilen} & \textbf{Erkl\"arung} \\
+\midrule
+1 & 2 & $A = 0$ oder $A = 1$ \\
+2 & 4 & Jede Kombination von $A$ und $B$ \\
+3 & 8 & $2 \cdot 2 \cdot 2$ \\
+4 & 16 & $2^4$ \\
+$n$ & $2^n$ & Allgemein \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In Aufgabe~1 ist $n = 3$ (Variablen $X, Y, Z$), also brauchen wir
+$8$~Zeilen. In Aufgabe~3 ist $n = 4$ (Variablen $A, B, C, D$), also
+$16$~Zeilen. Die \"ublichste Reihenfolge ist das bin\"are Hochz\"ahlen
+von $0\dots 0$ bis $1\dots 1$.
+
+\subsection*{0.8 \"Aquivalenz ($\equiv$)}
+
+\begin{merkbox}
+Zwei Formeln $F$ und $G$ sind \textbf{\"aquivalent} ($F \equiv G$),
+wenn sie \textbf{dieselbe Wahrheitstabelle} haben -- also f\"ur jede
+Belegung denselben Wert liefern.
+\end{merkbox}
+
+Wichtig: $\equiv$ ist \emph{nicht} dasselbe wie $\leftrightarrow$!
+\begin{itemize}[nosep]
+\item $\leftrightarrow$ ist ein Operator \emph{innerhalb} einer Formel.
+      Zum Beispiel: $A \leftrightarrow B$ ist selbst wieder eine
+      Formel, die je nach Belegung wahr oder falsch sein kann.
+\item $\equiv$ ist eine Aussage \emph{\"uber} zwei Formeln auf der
+      Metaebene: "`Diese beiden Formeln berechnen dieselbe boolesche
+      Funktion."'
+\end{itemize}
+
+\begin{analogie}
+Stell dir zwei Kuchenrezepte vor. Wenn sie am Ende jedes Mal exakt
+denselben Kuchen liefern, egal welche Zutaten verf\"ugbar sind, dann
+sind die Rezepte \emph{\"aquivalent} -- auch wenn sie im Wortlaut
+ganz unterschiedlich sind. Nicht "`dasselbe Rezept"', sondern
+"`dasselbe Ergebnis"'. Genauso ist es mit Formeln und $\equiv$.
+\end{analogie}
+
+\subsection*{0.9 Wichtige \"Aquivalenzen zum Ausrechnen}
+
+Wir brauchen ein paar Umformungsregeln, mit denen man Formeln
+elegant umbauen kann. Diese werden sp\"ater, besonders in Aufgabe~2,
+sehr n\"utzlich.
+
+\begin{merkbox}
+\textbf{Wichtige \"Aquivalenzen.}
+\begin{align*}
+\neg\neg A &\equiv A \quad &\text{(Doppelnegation)}\\
+A \wedge B &\equiv \neg(\neg A \vee \neg B) \quad &\text{(De Morgan 1)}\\
+A \vee B &\equiv \neg(\neg A \wedge \neg B) \quad &\text{(De Morgan 2)}\\
+A \to B &\equiv \neg A \vee B \quad &\text{(Implikation als Oder)}\\
+A \leftrightarrow B &\equiv (A \to B) \wedge (B \to A) \quad &\text{(Biimplikation zerlegen)}
+\end{align*}
+\end{merkbox}
+
+\begin{analogie}[title={Analogie zu De Morgan}]
+"`Nicht beide sind zu Hause"' ist dasselbe wie "`Mindestens einer ist
+weg"'. Das ist De Morgan: Wenn ein UND verneint wird, wird es zu einem
+ODER mit verneinten Einzelteilen. Und umgekehrt: "`Keiner ist zu
+Hause"' ist dasselbe wie "`Sowohl $A$ ist weg als auch $B$ ist weg"'
+-- aus einem verneinten ODER wird ein UND mit verneinten Teilen.
+\end{analogie}
+
+\subsection*{0.10 Aus Wahrheitstabelle zu CNF und DNF}
+
+Jetzt kommt der \textbf{wichtigste Trick} f\"ur Aufgaben~1 und~3.
+Wenn man die Wahrheitstabelle einer Formel hat, kann man daraus
+mechanisch sowohl die CNF als auch die DNF ablesen.
+
+\begin{merkbox}[title={Strategie: Wahrheitstabelle $\to$ DNF}]
+\textbf{DNF-Rezept:}
+\begin{enumerate}[nosep]
+\item Gehe jede Zeile der Wahrheitstabelle durch, bei der die Formel
+      den Wert $1$ hat ("`Einser-Zeilen"').
+\item F\"ur jede solche Zeile bildest du einen Minterm (eine
+      UND-Verkn\"upfung):
+      \begin{itemize}[nosep]
+      \item Ist eine Variable in der Zeile~$1$, \"ubernimm sie
+            \emph{positiv} (z.\,B.\ $X$).
+      \item Ist eine Variable in der Zeile~$0$, \"ubernimm sie
+            \emph{negiert} (z.\,B.\ $\neg X$).
+      \end{itemize}
+\item Verbinde alle Minterme mit $\vee$. Fertig ist die DNF.
+\end{enumerate}
+\end{merkbox}
+
+\begin{merkbox}[title={Strategie: Wahrheitstabelle $\to$ CNF}]
+\textbf{CNF-Rezept:}
+\begin{enumerate}[nosep]
+\item Gehe jede Zeile durch, bei der die Formel den Wert $0$ hat
+      ("`Nuller-Zeilen"').
+\item F\"ur jede solche Zeile bildest du einen Maxterm (eine
+      ODER-Verkn\"upfung), aber \textbf{umgekehrt} im Vorzeichen:
+      \begin{itemize}[nosep]
+      \item Ist eine Variable in der Zeile~$1$, \"ubernimm sie
+            \emph{negiert} (z.\,B.\ $\neg X$).
+      \item Ist eine Variable in der Zeile~$0$, \"ubernimm sie
+            \emph{positiv} (z.\,B.\ $X$).
+      \end{itemize}
+\item Verbinde alle Maxterme mit $\wedge$. Fertig ist die CNF.
+\end{enumerate}
+\end{merkbox}
+
+\begin{merkbox}
+\textbf{Kurzform zum Merken:}
+\begin{center}
+"`\textbf{DNF aus den Einsen, CNF aus den Nullen} -- bei der CNF
+dreht man zus\"atzlich die Literale um."'
+\end{center}
+\end{merkbox}
+
+\begin{analogie}[title={Analogie: Einsen zusammenf\"ugen, Nullen ausschlie{\ss}en}]
+\textbf{DNF-Idee:} Du hast eine Liste aller Zeilen, in denen es
+"`klappt"'. Du baust f\"ur jede Zeile eine Blaupause: "`\emph{Genau
+diese} Belegung der Variablen macht mich wahr."' Die DNF sagt: "`Sei
+eine dieser Blaupausen wahr, dann bin ich wahr."' Deshalb ODER.
+
+\medskip
+\textbf{CNF-Idee:} Statt die "`Einsen"' aufzuz\"ahlen, schlie{\ss}t du
+die "`Nullen"' aus. F\"ur jede Null-Zeile baust du eine Klausel, die
+\emph{nur in genau dieser einen Zeile} falsch ist -- und in allen
+anderen wahr. Da die Klausel in genau einer Zeile falsch wird,
+"`schlie{\ss}t"' sie diese Zeile aus. Macht man das f\"ur alle
+Null-Zeilen und verkn\"upft alle Klauseln mit UND, bleibt nur in den
+Einser-Zeilen alles wahr. Deshalb funktioniert das Umdrehen der
+Literale.
+\end{analogie}
+
+\textbf{Warum dreht man die Literale bei CNF um?} Das ist der Punkt,
+der viele verwirrt. Schauen wir es uns genau an. Eine Klausel
+$(L_1 \vee L_2 \vee L_3)$ ist \emph{nur dann} falsch, wenn
+\emph{alle} drei Literale falsch sind. Wir wollen eine Klausel bauen,
+die genau in \emph{einer bestimmten} Null-Zeile falsch wird. Also
+m\"ussen wir die Literale so w\"ahlen, dass genau f\"ur diese eine
+Zeile jedes einzelne Literal falsch wird.
+
+\textbf{Beispiel.} Angenommen die Formel ist in Zeile $(X,Y,Z) = (1,0,1)$ falsch.
+Welche Literale werden in dieser Zeile falsch?
+\begin{itemize}[nosep]
+\item $X$ ist in der Zeile $1$. Also ist $X$ wahr, $\neg X$ ist falsch.
+      Wir w\"ahlen $\neg X$.
+\item $Y$ ist in der Zeile $0$. Also ist $Y$ falsch, $\neg Y$ ist wahr.
+      Wir w\"ahlen $Y$.
+\item $Z$ ist in der Zeile $1$. Also w\"ahlen wir $\neg Z$.
+\end{itemize}
+Die Klausel $(\neg X \vee Y \vee \neg Z)$ wird in der Zeile $(1,0,1)$
+zu $(0 \vee 0 \vee 0) = 0$ -- wie gew\"unscht. In jeder anderen Zeile
+wird mindestens ein Literal wahr, die Klausel ist dort also wahr.
+Jetzt merkt man die Regel: F\"ur eine Variable, die in der
+betrachteten Zeile den Wert $1$ hat, schreibt man im Maxterm
+$\neg$Variable. F\"ur eine Variable mit Wert $0$ in der Zeile schreibt
+man Variable ohne Negation. \textbf{Umgekehrt zu den Einsen bei der
+DNF} -- genau das ist der "`Trick"' mit dem Umdrehen der Literale.
+
+\subsection*{0.11 Funktionale Vollst\"andigkeit}
+
+\begin{merkbox}
+Eine Menge $M$ von Operatoren (Junktoren) hei{\ss}t \textbf{funktional
+vollst\"andig}, wenn man \emph{jede} boolesche Funktion durch eine
+Formel ausdr\"ucken kann, die nur Operatoren aus $M$ verwendet. Kurz:
+"`Mit diesen Werkzeugen kann man alles bauen."'
+\end{merkbox}
+
+\begin{analogie}
+Stell dir vor, du darfst einen Werkzeugkasten zum Bau eines Hauses
+mitnehmen. Ein Werkzeugkasten ist "`vollst\"andig"', wenn du damit
+alles reparieren oder bauen kannst. Ein Werkzeugkasten mit nur einem
+Schraubenzieher ist \emph{nicht} vollst\"andig -- du kommst nicht an
+jede Ecke. Ein Werkzeugkasten mit Hammer, Zange, Schraubenzieher,
+S\"age, Bohrer ist ganz sicher vollst\"andig. Die Frage in Aufgabe~2
+ist: Reicht der kleine Werkzeugkasten $\{\vee, \neg\}$ aus, um alle
+booleschen Funktionen zu "`bauen"'?
+\end{analogie}
+
+In Aufgabe~2 zeigen wir genau das: $\{\vee, \neg\}$ ist funktional
+vollst\"andig. Das hei{\ss}t, jede Formel, die andere Operatoren
+benutzt ($\wedge$, $\to$, $\leftrightarrow$), kann man so umformen,
+dass nur noch $\vee$ und $\neg$ vorkommen.
+
+\subsection*{0.12 Strukturelle Induktion}
+
+Jetzt kommt die Beweistechnik aus Aufgabe~2. Sie hei{\ss}t
+\textbf{strukturelle Induktion} und ist eigentlich ganz harmlos, wenn
+man sie einmal verstanden hat.
+
+\begin{merkbox}
+\textbf{Strukturelle Induktion} ist eine Beweistechnik, mit der man
+Aussagen \"uber \emph{alle} Formeln zeigen kann. Sie hat zwei
+Schritte:
+\begin{enumerate}[nosep]
+\item \textbf{Induktionsanfang:} Zeige, dass die Aussage f\"ur die
+      einfachsten Formeln gilt (die "`Bl\"atter"' des Syntaxbaums --
+      meist atomare Variablen).
+\item \textbf{Induktionsschritt:} Zeige, dass aus der G\"ultigkeit
+      der Aussage f\"ur \emph{alle echten Teilformeln} einer Formel
+      auch die G\"ultigkeit f\"ur die Gesamtformel folgt.
+\end{enumerate}
+\end{merkbox}
+
+\begin{analogie}[title={Analogie: Dominosteine}]
+Stell dir eine lange Reihe von Dominosteinen vor.
+\begin{enumerate}[nosep]
+\item \textbf{Schritt 1 -- Anfang:} Du zeigst, dass der erste Stein
+      f\"allt. (Aussage gilt f\"ur die einfachsten Formeln.)
+\item \textbf{Schritt 2 -- Sto{\ss}en:} Du zeigst, dass \emph{jeder}
+      fallende Stein den n\"achsten umst\"o{\ss}t. (Aus G\"ultigkeit
+      f\"ur Teilformeln folgt G\"ultigkeit f\"ur die Gesamtformel.)
+\end{enumerate}
+Folge: Alle Steine fallen -- auch ohne dass wir jeden einzelnen
+anschauen m\"ussen. Die strukturelle Induktion gilt f\"ur \emph{alle}
+Formeln, weil jede Formel irgendwann aus endlich vielen solcher
+Schritte aufgebaut wurde.
+\end{analogie}
+
+\textbf{Warum "`strukturell"'?} Weil wir der Reihe nach alle
+m\"oglichen \emph{Strukturen} (Formen) einer Formel durchgehen: Ist
+die Formel eine atomare Variable? Eine Negation? Eine Konjunktion?
+Eine Disjunktion? Eine Implikation? Eine Biimplikation? F\"ur jede
+dieser Strukturen zeigen wir einen eigenen Fall.
+
+\bigskip
+Damit haben wir alle Werkzeuge zusammen. Jetzt k\"onnen wir uns an
+die drei Aufgaben machen.
+
+\newpage
+
+% ============================================================
+% AUFGABE 1
+% ============================================================
+
+\section*{Aufgabe 1: CNF und DNF f\"ur $\neg X \leftrightarrow Z \to \neg Y \wedge Z$}
+
+\textbf{Aufgabenstellung in einfachen Worten.} Wir bekommen eine
+Formel ohne Klammern. Daraus sollen wir zwei \"aquivalente Formeln
+bauen: eine in Konjunktiver Normalform (CNF) und eine in Disjunktiver
+Normalform (DNF). Der Weg daf\"ur: Zuerst verstehen, wie die Formel
+geklammert wird; dann eine Wahrheitstabelle aufstellen; und am Ende
+die CNF/DNF daraus ablesen.
+
+\subsection*{Schritt 1: Die Formel klammern}
+
+Die Formel ist
+\[
+F \;\equiv\; \neg X \leftrightarrow Z \to \neg Y \wedge Z.
+\]
+Ohne Klammern k\"onnte man sie auf viele Arten lesen. Die
+Operatorpr\"azedenz aus Teil~0 sagt uns, was Vorrang hat:
+$\neg > \wedge > \vee > \to > \leftrightarrow$.
+
+Wir gehen von \emph{innen nach au{\ss}en}:
+
+\begin{enumerate}
+\item \textbf{Negationen} binden am st\"arksten. Also werden
+      $\neg X$ und $\neg Y$ zu eigenen kleinen Bausteinen:
+\[
+\underline{\neg X} \;\leftrightarrow\; Z \to \underline{\neg Y} \wedge Z.
+\]
+
+\item \textbf{Konjunktion} ($\wedge$) bindet st\"arker als
+      $\to$ und $\leftrightarrow$. Also wird $\neg Y \wedge Z$ zu
+      einem Baustein:
+\[
+\neg X \;\leftrightarrow\; Z \to \underline{(\neg Y \wedge Z)}.
+\]
+
+\item \textbf{Implikation} ($\to$) bindet st\"arker als
+      $\leftrightarrow$. Also wird die rechte Seite der
+      Biimplikation zu einem Baustein:
+\[
+\neg X \;\leftrightarrow\; \underline{\bigl(Z \to (\neg Y \wedge Z)\bigr)}.
+\]
+
+\item Zuletzt bleibt die \textbf{Biimplikation} als \"au{\ss}erster
+      Operator:
+\[
+F \;\equiv\; \neg X \;\leftrightarrow\; \bigl(\,Z \to (\neg Y \wedge Z)\,\bigr).
+\]
+\end{enumerate}
+
+\begin{merkbox}
+Die endg\"ultige Klammerung lautet:
+\[
+F \;\equiv\; \neg X \;\leftrightarrow\; \bigl(\,Z \to (\neg Y \wedge Z)\,\bigr).
+\]
+Das ist die \textbf{einzige} Lesart, die mit der Pr\"azedenzregel
+vertr\"aglich ist. Alle anderen Lesarten w\"aren schlicht falsch.
+\end{merkbox}
+
+\textbf{Der Syntaxbaum anschaulich.} Man kann sich die Formel als
+einen kleinen Baum vorstellen: Die Wurzel ist der oberste Operator,
+darunter h\"angen die Operanden. F\"ur unsere Formel:
+
+\begin{center}
+\begin{tabular}{c}
+$\leftrightarrow$ (Wurzel) \\
+$\diagup \quad \diagdown$ \\
+$\neg X$ \quad $\to$ \\
+\quad\quad\quad $\diagup \quad \diagdown$ \\
+\quad\quad\quad $Z$ \quad $\wedge$ \\
+\quad\quad\quad\quad\quad\quad $\diagup \quad \diagdown$ \\
+\quad\quad\quad\quad\quad\quad $\neg Y$ \quad $Z$ \\
+\end{tabular}
+\end{center}
+
+Lies von unten nach oben: Ganz unten die Bl\"atter ($\neg Y$, $Z$),
+dar\"uber $\wedge$, dar\"uber $\to$, dar\"uber $\leftrightarrow$, die
+Wurzel. Genau diese Baumstruktur entspricht der Klammerung von oben.
+
+\subsection*{Schritt 2: Wahrheitstabelle aufstellen}
+
+Wir haben drei Variablen ($X$, $Y$, $Z$). Also brauchen wir
+$2^3 = 8$~Zeilen. Um Fehler zu vermeiden, berechnen wir
+\textbf{Spalte f\"ur Spalte} von innen nach au{\ss}en -- genau in
+derselben Reihenfolge, in der wir die Formel geklammert haben.
+
+\begin{enumerate}[nosep]
+\item Erst $\neg X$ und $\neg Y$ (das sind direkt die Negationen).
+\item Dann $\neg Y \wedge Z$ (Konjunktion).
+\item Dann $Z \to (\neg Y \wedge Z)$ (Implikation).
+\item Zuletzt $\neg X \leftrightarrow (Z \to (\neg Y \wedge Z))$
+      (Biimplikation). Das ist die ganze Formel $F$.
+\end{enumerate}
+
+Hier die vollst\"andige Tabelle:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ccc|c|c|c|c|c}
+\toprule
+$X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y$ & $\neg Y \wedge Z$ &
+$Z \to (\neg Y \wedge Z)$ & $F$ \\
+\midrule
+0 & 0 & 0 & 1 & 1 & 0 & 1 & \textbf{1} \\
+0 & 0 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+0 & 1 & 0 & 1 & 0 & 0 & 1 & \textbf{1} \\
+0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 1 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 1 & 1 & 1 & 0 \\
+1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 \\
+1 & 1 & 1 & 0 & 0 & 0 & 0 & \textbf{1} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Durchsprache einzelner Zeilen.} Wir gehen ein paar Zeilen
+ausf\"uhrlich durch, damit wirklich kein Zweifel bleibt.
+
+\medskip
+\textbf{Zeile 1: $(X,Y,Z) = (0,0,0)$.}
+\begin{itemize}[nosep]
+\item $\neg X$: $X = 0$, also $\neg X = 1$.
+\item $\neg Y$: $Y = 0$, also $\neg Y = 1$.
+\item $\neg Y \wedge Z$: $1 \wedge 0 = 0$ (weil $Z=0$).
+\item $Z \to (\neg Y \wedge Z)$: $0 \to 0 = 1$. Die Implikation ist
+      immer wahr, wenn die Voraussetzung ($Z$) falsch ist -- erinnere
+      dich an die Analogie mit dem Regenversprechen: Wenn es nicht
+      regnet, kann niemand dein Versprechen brechen.
+\item $F \equiv \neg X \leftrightarrow \dots$: $1 \leftrightarrow 1 = 1$.
+      Beide Seiten haben denselben Wert, die Biimplikation ist wahr.
+\end{itemize}
+
+\textbf{Zeile 2: $(X,Y,Z) = (0,0,1)$.}
+\begin{itemize}[nosep]
+\item $\neg X = 1$.
+\item $\neg Y = 1$.
+\item $\neg Y \wedge Z$: $1 \wedge 1 = 1$.
+\item $Z \to (\neg Y \wedge Z)$: $1 \to 1 = 1$. Hier gilt: Regenwarnung
+      (Voraussetzung $Z = 1$) und Schirm dabei (Folge $= 1$). Alles
+      gut.
+\item $F$: $1 \leftrightarrow 1 = 1$.
+\end{itemize}
+
+\textbf{Zeile 4: $(X,Y,Z) = (0,1,1)$.} Hier wird es erstmals
+interessant.
+\begin{itemize}[nosep]
+\item $\neg X = 1$.
+\item $\neg Y = 0$ (weil $Y = 1$).
+\item $\neg Y \wedge Z$: $0 \wedge 1 = 0$.
+\item $Z \to (\neg Y \wedge Z)$: $1 \to 0 = 0$. \textbf{Das ist der
+      eine Fall, in dem die Implikation falsch ist:} Voraussetzung
+      wahr, Folge falsch. Regenwarnung, aber kein Schirm.
+\item $F$: $1 \leftrightarrow 0 = 0$. Die beiden Seiten haben
+      unterschiedliche Werte, die Biimplikation ist falsch.
+\end{itemize}
+
+\textbf{Zeile 8: $(X,Y,Z) = (1,1,1)$.}
+\begin{itemize}[nosep]
+\item $\neg X = 0$.
+\item $\neg Y = 0$.
+\item $\neg Y \wedge Z$: $0 \wedge 1 = 0$.
+\item $Z \to (\neg Y \wedge Z)$: $1 \to 0 = 0$. Wieder der falsche
+      Fall der Implikation.
+\item $F$: $0 \leftrightarrow 0 = 1$. \textbf{Beide Seiten sind
+      falsch} -- und das macht die Biimplikation \emph{wahr}. Sie ist
+      n\"amlich nicht nur bei "`beide wahr"', sondern auch bei
+      "`beide falsch"' wahr.
+\end{itemize}
+
+Die \"ubrigen Zeilen funktionieren analog. Man sollte einmal mit dem
+Bleistift alle 8~Zeilen durchgehen, das sichert das Verst\"andnis.
+
+\begin{merkbox}
+\textbf{Wahre Zeilen} (hier steht $F = 1$):
+\[
+(X,Y,Z) \in \{(0,0,0),\,(0,0,1),\,(0,1,0),\,(1,1,1)\}.
+\]
+\textbf{Falsche Zeilen} (hier steht $F = 0$):
+\[
+(X,Y,Z) \in \{(0,1,1),\,(1,0,0),\,(1,0,1),\,(1,1,0)\}.
+\]
+Aus den wahren Zeilen bauen wir die DNF, aus den falschen die CNF.
+\end{merkbox}
+
+\subsection*{Schritt 3: DNF ablesen}
+
+Wir gehen jetzt die \textbf{4 wahren Zeilen} durch und bauen f\"ur
+jede einen Minterm. Rezept: Wo die Variable in der Zeile $1$ ist,
+schreiben wir sie positiv; wo sie $0$ ist, schreiben wir sie negiert.
+
+\textbf{Zeile 1: $(X,Y,Z) = (0,0,0)$.}
+\begin{itemize}[nosep]
+\item $X = 0 \Rightarrow$ $\neg X$
+\item $Y = 0 \Rightarrow$ $\neg Y$
+\item $Z = 0 \Rightarrow$ $\neg Z$
+\end{itemize}
+Minterm: $\neg X \wedge \neg Y \wedge \neg Z$. Dieser Minterm ist
+\emph{nur} in der Zeile $(0,0,0)$ wahr (da sind alle drei negierten
+Variablen wahr) und in allen anderen Zeilen falsch.
+
+\textbf{Zeile 2: $(X,Y,Z) = (0,0,1)$.}
+\begin{itemize}[nosep]
+\item $X = 0 \Rightarrow$ $\neg X$
+\item $Y = 0 \Rightarrow$ $\neg Y$
+\item $Z = 1 \Rightarrow$ $Z$
+\end{itemize}
+Minterm: $\neg X \wedge \neg Y \wedge Z$.
+
+\textbf{Zeile 3: $(X,Y,Z) = (0,1,0)$.}
+Minterm: $\neg X \wedge Y \wedge \neg Z$.
+
+\textbf{Zeile 8: $(X,Y,Z) = (1,1,1)$.}
+Minterm: $X \wedge Y \wedge Z$.
+
+Alle 4 Minterme werden mit ODER verkn\"upft. Das ergibt die DNF:
+
+\begin{merkbox}[title={Ergebnis: DNF}]
+\[
+\text{DNF}(F) \;\equiv\; \begin{aligned}[t]
+  &(\neg X \wedge \neg Y \wedge \neg Z) \;\vee\; \\
+  &(\neg X \wedge \neg Y \wedge Z) \;\vee\; \\
+  &(\neg X \wedge Y \wedge \neg Z) \;\vee\; \\
+  &(X \wedge Y \wedge Z).
+\end{aligned}
+\]
+\end{merkbox}
+
+\subsection*{Schritt 4: CNF ablesen}
+
+Wir gehen jetzt die \textbf{4 falschen Zeilen} durch und bauen f\"ur
+jede einen Maxterm. Rezept: Wo die Variable in der Zeile $1$ ist,
+schreiben wir sie \emph{negiert}; wo sie $0$ ist, schreiben wir sie
+\emph{positiv}. (Umgekehrt zu DNF!)
+
+\textbf{Zeile 4: $(X,Y,Z) = (0,1,1)$.}
+\begin{itemize}[nosep]
+\item $X = 0 \Rightarrow$ positiv: $X$
+\item $Y = 1 \Rightarrow$ negiert: $\neg Y$
+\item $Z = 1 \Rightarrow$ negiert: $\neg Z$
+\end{itemize}
+Maxterm: $(X \vee \neg Y \vee \neg Z)$. Diese Klausel wird \emph{nur}
+in der Zeile $(0,1,1)$ falsch: dort ist $X = 0$, $\neg Y = 0$,
+$\neg Z = 0$, also $0 \vee 0 \vee 0 = 0$. In allen anderen Zeilen ist
+mindestens eines der drei Literale wahr.
+
+\textbf{Zeile 5: $(X,Y,Z) = (1,0,0)$.}
+\begin{itemize}[nosep]
+\item $X = 1 \Rightarrow$ $\neg X$
+\item $Y = 0 \Rightarrow$ $Y$
+\item $Z = 0 \Rightarrow$ $Z$
+\end{itemize}
+Maxterm: $(\neg X \vee Y \vee Z)$.
+
+\textbf{Zeile 6: $(X,Y,Z) = (1,0,1)$.}
+\begin{itemize}[nosep]
+\item $X = 1 \Rightarrow$ $\neg X$
+\item $Y = 0 \Rightarrow$ $Y$
+\item $Z = 1 \Rightarrow$ $\neg Z$
+\end{itemize}
+Maxterm: $(\neg X \vee Y \vee \neg Z)$.
+
+\textbf{Zeile 7: $(X,Y,Z) = (1,1,0)$.}
+\begin{itemize}[nosep]
+\item $X = 1 \Rightarrow$ $\neg X$
+\item $Y = 1 \Rightarrow$ $\neg Y$
+\item $Z = 0 \Rightarrow$ $Z$
+\end{itemize}
+Maxterm: $(\neg X \vee \neg Y \vee Z)$.
+
+Alle 4 Maxterme werden mit UND verkn\"upft. Das ergibt die CNF:
+
+\begin{merkbox}[title={Ergebnis: CNF}]
+\[
+\text{CNF}(F) \;\equiv\; \begin{aligned}[t]
+  &(X \vee \neg Y \vee \neg Z) \;\wedge\; \\
+  &(\neg X \vee Y \vee Z) \;\wedge\; \\
+  &(\neg X \vee Y \vee \neg Z) \;\wedge\; \\
+  &(\neg X \vee \neg Y \vee Z).
+\end{aligned}
+\]
+\end{merkbox}
+
+\subsection*{Schritt 5: Warum das Umdrehen bei CNF funktioniert}
+
+Das ist der Punkt, der oft fehlt. Wir haben es schon in Teil~0
+erkl\"art, aber hier nochmal an einem konkreten Beispiel.
+
+Nimm die erste Klausel der CNF: $(X \vee \neg Y \vee \neg Z)$. In
+welchen Zeilen ist sie falsch?
+\begin{itemize}[nosep]
+\item Damit die Disjunktion $(X \vee \neg Y \vee \neg Z)$ falsch wird,
+      m\"ussen alle drei Literale falsch sein.
+\item $X$ falsch bedeutet $X = 0$.
+\item $\neg Y$ falsch bedeutet $Y = 1$.
+\item $\neg Z$ falsch bedeutet $Z = 1$.
+\end{itemize}
+Die Klausel ist also \emph{nur} in der Zeile $(X,Y,Z) = (0,1,1)$
+falsch. In allen anderen sieben Zeilen ist sie wahr.
+
+Das ist \emph{exakt} die Zeile, f\"ur die wir sie gebaut haben. Sie
+"`schlie{\ss}t"' also nur diese eine Zeile aus. Die zweite Klausel
+schlie{\ss}t nur $(1,0,0)$ aus, die dritte nur $(1,0,1)$, die vierte
+nur $(1,1,0)$. Die Gesamte CNF ist die Konjunktion dieser vier
+Klauseln. Sie ist \emph{nur} dann wahr, wenn \emph{keine} dieser vier
+Zeilen getroffen wird -- also wenn wir in einer der vier
+\emph{wahren} Zeilen sind. Genau wie die Formel $F$ selbst. Damit ist
+die CNF zu $F$ \"aquivalent. Genau was wir wollten!
+
+\subsection*{Zusammenfassung Aufgabe~1}
+
+\begin{merkbox}[title={Ergebnis Aufgabe~1}]
+F\"ur $F \;\equiv\; \neg X \leftrightarrow (Z \to (\neg Y \wedge Z))$
+gilt:
+
+\medskip
+\textbf{DNF:}
+\[
+(\neg X \wedge \neg Y \wedge \neg Z)
+ \vee (\neg X \wedge \neg Y \wedge Z)
+ \vee (\neg X \wedge Y \wedge \neg Z)
+ \vee (X \wedge Y \wedge Z).
+\]
+
+\textbf{CNF:}
+\[
+(X \vee \neg Y \vee \neg Z)
+ \wedge (\neg X \vee Y \vee Z)
+ \wedge (\neg X \vee Y \vee \neg Z)
+ \wedge (\neg X \vee \neg Y \vee Z).
+\]
+
+\medskip
+Sanity-Check: 4~wahre Zeilen + 4~falsche Zeilen = 8~Gesamtzeilen.
+Passt.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% AUFGABE 2
+% ============================================================
+
+\section*{Aufgabe 2: Jede Formel ist \"aquivalent zu einer nur mit $\vee$ und $\neg$}
+
+\textbf{Aufgabenstellung in einfachen Worten.} Wir sollen zeigen:
+Egal wie kompliziert eine logische Formel ist -- wie viele $\wedge$,
+$\to$ oder $\leftrightarrow$ sie auch enth\"alt -- man kann sie immer
+in eine \"aquivalente Formel umschreiben, die nur $\vee$ und $\neg$
+benutzt. Das hei{\ss}t: $\{\vee, \neg\}$ ist ein "`vollst\"andiges
+Werkzeugset"'.
+
+\begin{analogie}
+Stell dir vor, du hast in der K\"uche nur ein Messer und einen
+L\"offel. Kann man damit alles essen? Vielleicht mit etwas M\"uhe,
+aber ja. Genauso die Frage in dieser Aufgabe: Reichen uns die beiden
+Werkzeuge $\vee$ und $\neg$, um jede logische Aussage auszudr\"ucken?
+Die Antwort ist \textbf{ja}, und wir zeigen das hier sauber.
+\end{analogie}
+
+\subsection*{Ziel pr\"azise formulieren}
+
+\textbf{Behauptung.} F\"ur jede aussagenlogische Formel $F$ existiert
+eine Formel $F'$ mit folgenden Eigenschaften:
+\begin{enumerate}[nosep]
+\item $F'$ verwendet nur die Junktoren $\vee$ und $\neg$ (also keine
+      $\wedge$, $\to$, $\leftrightarrow$).
+\item $F' \equiv F$, das hei{\ss}t: $F'$ hat dieselbe Wahrheitstabelle
+      wie $F$.
+\end{enumerate}
+
+\subsection*{Beweisidee: Strukturelle Induktion}
+
+Wir gehen alle m\"oglichen Formen einer Formel durch. Am Anfang steht
+die einfachste: atomare Variablen. Dann kommen die Formen mit
+Operatoren. F\"ur jede Form zeigen wir, wie man die Formel mithilfe
+von $\vee$ und $\neg$ ausdr\"uckt.
+
+\begin{analogie}[title={Analogie: Dominokette}]
+Denk an Dominosteine: Wir stellen eine Kette auf, und jeder fallende
+Stein sto{\ss}t den n\"achsten um. Hier sind die Steine die
+verschiedenen M\"oglichkeiten, wie eine Formel aufgebaut sein kann.
+Wir zeigen: Der erste Stein f\"allt (Atome sind trivial), und jeder
+zusammengesetzte Stein f\"allt, wenn seine Teilformeln schon fallen
+k\"onnen. Das l\"auft bis ganz oben zum Wurzeloperator jeder Formel.
+\end{analogie}
+
+\subsection*{Induktionsanfang: atomare Formeln}
+
+Sei $F$ eine \textbf{atomare Formel}, also nur eine einzelne
+Aussagenvariable $p$ (oder $q$, $r$, $X$ -- egal wie sie hei{\ss}t).
+Dann enth\"alt $F$ \emph{keine Junktoren} -- also sicher keine
+verbotenen $\wedge$, $\to$, $\leftrightarrow$.
+
+Wir setzen $F' := p$. Dann ist $F' \equiv F$ trivialerweise (sie sind
+ja dieselbe Formel), und $F'$ verwendet nur... naja, eigentlich gar
+keine Junktoren. Das ist aber erlaubt: "`nur $\vee$ und $\neg$
+verwenden"' schlie{\ss}t nicht aus, dass man \emph{gar nichts}
+verwendet.
+
+\textbf{Fertig mit dem Anfang.} Der erste Dominostein ist umgefallen.
+
+\subsection*{Induktionsschritt: zusammengesetzte Formeln}
+
+Sei nun $F$ eine zusammengesetzte Formel (also nicht nur eine
+einzelne Variable). Dann hat $F$ einen \textbf{obersten Operator}
+("`Hauptoperator"'). Je nach diesem Operator hat $F$ eine
+bestimmte Form.
+
+\textbf{Induktionsvoraussetzung (IV).} F\"ur alle \emph{echten
+Teilformeln} von $F$ gilt die Behauptung bereits. Das hei{\ss}t:
+Zu jeder Teilformel $G$ von $F$ existiert schon eine
+\"aquivalente Formel $G'$ \"uber $\{\vee, \neg\}$. Das k\"onnen wir
+annehmen, weil Teilformeln strikt kleiner sind als $F$, und f\"ur
+kleinere Formeln haben wir die Behauptung als Induktionsannahme.
+
+Wir unterscheiden jetzt nach dem Hauptoperator von $F$. Es gibt f\"unf
+F\"alle.
+
+\subsubsection*{Fall 1: $F = \neg G$}
+
+Die Formel ist eine Negation, der Hauptoperator ist also $\neg$. Nach
+IV existiert $G' \equiv G$ mit $G' \in \{\vee, \neg\}$. Setze
+\[
+F' \;:=\; \neg G'.
+\]
+Dann ist $F' = \neg G' \equiv \neg G = F$. Und $F'$ benutzt nur
+$\vee$ und $\neg$ (die Negation geh\"ort dazu, und $G'$ auch).
+\textbf{Fertig.}
+
+\subsubsection*{Fall 2: $F = G \vee H$}
+
+Die Formel ist eine Disjunktion. Nach IV existieren
+$G' \equiv G$ und $H' \equiv H$ mit $G', H' \in \{\vee, \neg\}$.
+Setze
+\[
+F' \;:=\; G' \vee H'.
+\]
+Dann ist $F' \equiv G \vee H = F$, und $F'$ benutzt nur $\vee$ und
+$\neg$. \textbf{Fertig.}
+
+\subsubsection*{Fall 3: $F = G \wedge H$}
+
+Jetzt wird es interessant: Die Formel benutzt ein $\wedge$, das wir
+"`wegbekommen"' m\"ussen. Wir verwenden die \textbf{De-Morgan-Regel}:
+\[
+G \wedge H \;\equiv\; \neg(\neg G \vee \neg H).
+\]
+
+\textbf{Warum gilt das?} \"Uberlegen wir in Alltagssprache:
+\begin{itemize}[nosep]
+\item $G \wedge H$ ist genau dann wahr, wenn \emph{beide}, $G$ und
+      $H$, wahr sind -- wenn also \emph{keiner von beiden falsch}
+      ist.
+\item "`Keiner von beiden falsch"' bedeutet: $\neg G$ ist falsch UND
+      $\neg H$ ist falsch.
+\item Wenn $\neg G$ und $\neg H$ beide falsch sind, ist auch ihre
+      Disjunktion $\neg G \vee \neg H$ falsch.
+\item Und wenn $\neg G \vee \neg H$ falsch ist, dann ist
+      $\neg(\neg G \vee \neg H)$ wahr.
+\end{itemize}
+Ergebnis: $G \wedge H$ wahr $\iff$ $\neg(\neg G \vee \neg H)$ wahr.
+Also sind die beiden Formeln \"aquivalent. \checkmark
+
+Nach IV existieren $G' \equiv G$ und $H' \equiv H$ \"uber
+$\{\vee, \neg\}$. Setze
+\[
+F' \;:=\; \neg(\neg G' \vee \neg H').
+\]
+Dann ist $F' \equiv \neg(\neg G \vee \neg H) \equiv G \wedge H = F$,
+und $F'$ benutzt nur $\vee$ und $\neg$. \textbf{Fertig.}
+
+\subsubsection*{Fall 4: $F = G \to H$}
+
+Jetzt haben wir eine Implikation, die auch "`weg"' muss. Die Regel
+ist:
+\[
+G \to H \;\equiv\; \neg G \vee H.
+\]
+
+\textbf{Warum gilt das?} Die Implikation $G \to H$ ist (wie wir aus
+Teil~0 wissen) genau dann falsch, wenn $G$ wahr und $H$ falsch.
+Schauen wir, wann $\neg G \vee H$ falsch ist:
+\begin{itemize}[nosep]
+\item $\neg G \vee H$ ist falsch, wenn \emph{beide} Disjunkte falsch
+      sind.
+\item $\neg G$ falsch bedeutet: $G$ wahr.
+\item $H$ falsch bedeutet: $H$ falsch.
+\end{itemize}
+Also ist $\neg G \vee H$ falsch genau dann, wenn $G$ wahr und $H$
+falsch ist -- dieselbe Bedingung wie f\"ur $G \to H$. In allen anderen
+drei F\"allen sind beide Formeln wahr. Die Wahrheitstabellen stimmen
+\"uberein. \checkmark
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|c|c|c}
+\toprule
+$G$ & $H$ & $\neg G$ & $\neg G \vee H$ & $G \to H$ \\
+\midrule
+0 & 0 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 & 0 \\
+1 & 1 & 0 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die beiden rechten Spalten sind identisch -- damit ist die
+\"Aquivalenz gezeigt.
+
+Nach IV existieren $G' \equiv G$ und $H' \equiv H$. Setze
+\[
+F' \;:=\; \neg G' \vee H'.
+\]
+\textbf{Fertig.}
+
+\subsubsection*{Fall 5: $F = G \leftrightarrow H$}
+
+Die Biimplikation ist der komplizierteste Fall, aber wir zerlegen
+sie Schritt f\"ur Schritt:
+\[
+G \leftrightarrow H \;\equiv\; (G \to H) \wedge (H \to G).
+\]
+
+\textbf{Warum gilt das?} Die Biimplikation sagt "`beide haben
+denselben Wert"', und das ist genau dasselbe wie "`$G$ impliziert $H$
+\emph{und} $H$ impliziert $G$"'. Anders gesagt: Wenn beide Implikationen
+gelten, kann man weder in $G$ noch in $H$ sein, ohne auch im anderen
+zu sein. Beide m\"ussen also gleich wahr/falsch sein.
+
+Nun ersetzen wir die Implikationen nach Fall~4:
+\[
+(G \to H) \wedge (H \to G) \;\equiv\; (\neg G \vee H) \wedge (\neg H \vee G).
+\]
+Wir sind fast da, aber es ist noch ein $\wedge$ \"ubrig. Das ersetzen
+wir nach Fall~3 (De Morgan):
+\[
+(\neg G \vee H) \wedge (\neg H \vee G) \;\equiv\;
+\neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr).
+\]
+Jetzt sind keine $\wedge$, $\to$ oder $\leftrightarrow$ mehr
+enthalten. Nach IV ersetzen wir $G \to G'$ und $H \to H'$:
+\[
+F' \;:=\; \neg\bigl(\neg(\neg G' \vee H') \vee \neg(\neg H' \vee G')\bigr).
+\]
+\textbf{Fertig.}
+
+\subsection*{Abschluss des Beweises}
+
+Wir haben f\"ur jeden m\"oglichen Hauptoperator gezeigt, wie man die
+Formel in eine \"aquivalente $\vee/\neg$-Formel \"uberf\"uhrt, unter
+Verwendung der IV f\"ur die Teilformeln. Da jede Formel einen
+\emph{endlichen} Syntaxbaum hat, k\"onnen wir den Prozess immer
+konsequent von den Bl\"attern zur Wurzel hochklettern: Zuerst l\"osen
+wir die atomaren Formeln (Induktionsanfang), dann die Operatoren
+auf der Ebene dar\"uber, dann die n\"achste Ebene, und so weiter, bis
+wir oben bei der Wurzel angekommen sind. Die Umwandlung terminiert
+wegen der Endlichkeit des Syntaxbaums, und das Ergebnis ist eine
+\"aquivalente Formel, die nur $\vee$ und $\neg$ verwendet.
+
+\textbf{Damit ist gezeigt: Jede Formel ist \"aquivalent zu einer
+Formel \"uber $\{\vee, \neg\}$.} $\qquad\square$
+
+\begin{merkbox}[title={Ergebnis Aufgabe~2: $\{\vee, \neg\}$ ist funktional vollst\"andig}]
+Die Ersetzungsregeln aus dem Beweis sind:
+\begin{align*}
+G \wedge H &\;\equiv\; \neg(\neg G \vee \neg H) \\
+G \to H &\;\equiv\; \neg G \vee H \\
+G \leftrightarrow H &\;\equiv\;
+   \neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr)
+\end{align*}
+Mit diesen drei Regeln und der Doppelnegation kann man jede Formel
+Schritt f\"ur Schritt in $\vee/\neg$-Form bringen.
+\end{merkbox}
+
+\begin{merkbox}[title={Bonus: weitere funktional vollst\"andige Mengen}]
+$\{\vee, \neg\}$ ist nicht die einzige funktional vollst\"andige
+Menge. Auch diese reichen:
+\begin{itemize}[nosep]
+\item $\{\wedge, \neg\}$ -- genau dieselbe Idee, nur mit vertauschten
+      Rollen.
+\item $\{\to, \neg\}$ -- Implikation plus Negation reichen auch.
+\item $\{\to, \bot\}$ -- Implikation plus "`falsch"' als Konstante.
+\item $\{\text{NAND}\}$ -- der Sheffer-Strich ist allein vollst\"andig!
+\item $\{\text{NOR}\}$ -- das Peirce-Symbol ist auch allein
+      vollst\"andig.
+\end{itemize}
+NAND und NOR sind in der Digitaltechnik besonders wichtig, weil man
+mit nur einem Gattertyp jedes beliebige Schaltwerk bauen kann.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% AUFGABE 3
+% ============================================================
+
+\section*{Aufgabe 3: CNF und DNF aus einer Wahrheitstabelle}
+
+\textbf{Aufgabenstellung in einfachen Worten.} Wir bekommen eine
+Wahrheitstabelle mit 16 Zeilen (also f\"ur vier Variablen $A, B, C, D$).
+Daraus sollen wir die CNF und die DNF der zugeh\"origen Formel
+schreiben. Der Weg ist genau derselbe wie in Aufgabe~1, nur mit
+einer gr\"o{\ss}eren Tabelle.
+
+\subsection*{Strategie wiederholen}
+
+\begin{merkbox}
+\textbf{DNF:} Disjunktion (ODER) aller Minterme f\"ur die Zeilen, in
+denen die Formel wahr ist (Einser-Zeilen). Literale wie in der Zeile
+stehen: $1 \to $~Variable, $0 \to$~negierte Variable.
+
+\medskip
+\textbf{CNF:} Konjunktion (UND) aller Maxterme f\"ur die Zeilen, in
+denen die Formel falsch ist (Nuller-Zeilen). Literale \textbf{umgedreht}:
+$1 \to$~negierte Variable, $0 \to$~Variable.
+\end{merkbox}
+
+\subsection*{Schritt 1: Zeilen z\"ahlen und markieren}
+
+Wir schreiben die Wahrheitstabelle nochmal sauber auf und markieren
+neben jeder Zeile, ob sie f\"ur CNF oder DNF verwendet wird.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{r|cccc|c|l}
+\toprule
+\# & $A$ & $B$ & $C$ & $D$ & $f$ & verwendet f\"ur \\
+\midrule
+ 1 & 0 & 0 & 0 & 0 & 0 & CNF-Maxterm \\
+ 2 & 0 & 0 & 0 & 1 & \textbf{1} & DNF-Minterm \\
+ 3 & 0 & 0 & 1 & 0 & \textbf{1} & DNF-Minterm \\
+ 4 & 0 & 0 & 1 & 1 & 0 & CNF-Maxterm \\
+ 5 & 0 & 1 & 0 & 0 & \textbf{1} & DNF-Minterm \\
+ 6 & 0 & 1 & 0 & 1 & \textbf{1} & DNF-Minterm \\
+ 7 & 0 & 1 & 1 & 0 & 0 & CNF-Maxterm \\
+ 8 & 0 & 1 & 1 & 1 & \textbf{1} & DNF-Minterm \\
+ 9 & 1 & 0 & 0 & 0 & 0 & CNF-Maxterm \\
+10 & 1 & 0 & 0 & 1 & 0 & CNF-Maxterm \\
+11 & 1 & 0 & 1 & 0 & \textbf{1} & DNF-Minterm \\
+12 & 1 & 0 & 1 & 1 & 0 & CNF-Maxterm \\
+13 & 1 & 1 & 0 & 0 & \textbf{1} & DNF-Minterm \\
+14 & 1 & 1 & 0 & 1 & 0 & CNF-Maxterm \\
+15 & 1 & 1 & 1 & 0 & \textbf{1} & DNF-Minterm \\
+16 & 1 & 1 & 1 & 1 & \textbf{1} & DNF-Minterm \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Z\"ahlen wir nach:}
+\begin{itemize}[nosep]
+\item Einser-Zeilen (Formel wahr): 2, 3, 5, 6, 8, 11, 13, 15, 16
+      $\Rightarrow$ \textbf{9 Zeilen}.
+\item Nuller-Zeilen (Formel falsch): 1, 4, 7, 9, 10, 12, 14
+      $\Rightarrow$ \textbf{7 Zeilen}.
+\end{itemize}
+Also: $9 + 7 = 16$, passt zur Gesamtanzahl der Zeilen. Die DNF wird
+9~Minterme haben, die CNF wird 7~Maxterme haben.
+
+\subsection*{Schritt 2: DNF aufstellen}
+
+Wir gehen die 9~Einser-Zeilen durch. F\"ur jede bauen wir einen
+Minterm nach dem Rezept "`Variable wie in der Zeile"'. Wir machen die
+ersten drei richtig ausf\"uhrlich und fassen den Rest knapper.
+
+\textbf{Zeile 2: $(A,B,C,D) = (0,0,0,1)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow \neg A$
+\item $B = 0 \Rightarrow \neg B$
+\item $C = 0 \Rightarrow \neg C$
+\item $D = 1 \Rightarrow D$
+\end{itemize}
+Minterm: $\neg A \wedge \neg B \wedge \neg C \wedge D$.
+
+\textbf{Zeile 3: $(A,B,C,D) = (0,0,1,0)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow \neg A$
+\item $B = 0 \Rightarrow \neg B$
+\item $C = 1 \Rightarrow C$
+\item $D = 0 \Rightarrow \neg D$
+\end{itemize}
+Minterm: $\neg A \wedge \neg B \wedge C \wedge \neg D$.
+
+\textbf{Zeile 5: $(A,B,C,D) = (0,1,0,0)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow \neg A$
+\item $B = 1 \Rightarrow B$
+\item $C = 0 \Rightarrow \neg C$
+\item $D = 0 \Rightarrow \neg D$
+\end{itemize}
+Minterm: $\neg A \wedge B \wedge \neg C \wedge \neg D$.
+
+\textbf{Zeilen 6, 8, 11, 13, 15, 16.} Wir gehen sie jetzt schneller
+durch:
+\begin{itemize}[nosep]
+\item Zeile 6: $(0,1,0,1)$ $\Rightarrow$ $\neg A \wedge B \wedge \neg C \wedge D$
+\item Zeile 8: $(0,1,1,1)$ $\Rightarrow$ $\neg A \wedge B \wedge C \wedge D$
+\item Zeile 11: $(1,0,1,0)$ $\Rightarrow$ $A \wedge \neg B \wedge C \wedge \neg D$
+\item Zeile 13: $(1,1,0,0)$ $\Rightarrow$ $A \wedge B \wedge \neg C \wedge \neg D$
+\item Zeile 15: $(1,1,1,0)$ $\Rightarrow$ $A \wedge B \wedge C \wedge \neg D$
+\item Zeile 16: $(1,1,1,1)$ $\Rightarrow$ $A \wedge B \wedge C \wedge D$
+\end{itemize}
+
+Alle 9 Minterme werden mit $\vee$ verkn\"upft:
+
+\begin{merkbox}[title={Ergebnis: DNF}]
+\begin{align*}
+\text{DNF}(f) \;\equiv\; &(\neg A \wedge \neg B \wedge \neg C \wedge D) \vee {} \\
+& (\neg A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
+& (\neg A \wedge B \wedge \neg C \wedge \neg D) \vee {} \\
+& (\neg A \wedge B \wedge \neg C \wedge D) \vee {} \\
+& (\neg A \wedge B \wedge C \wedge D) \vee {} \\
+& (A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
+& (A \wedge B \wedge \neg C \wedge \neg D) \vee {} \\
+& (A \wedge B \wedge C \wedge \neg D) \vee {} \\
+& (A \wedge B \wedge C \wedge D).
+\end{align*}
+\end{merkbox}
+
+\subsection*{Schritt 3: CNF aufstellen}
+
+Jetzt die 7~Nuller-Zeilen. F\"ur jede bauen wir einen Maxterm mit dem
+\emph{umgekehrten} Rezept: Wo die Variable in der Zeile $1$ ist,
+schreiben wir sie \textbf{negiert}; wo sie $0$ ist, schreiben wir sie
+\textbf{positiv}. Auch hier die ersten drei ausf\"uhrlich.
+
+\textbf{Zeile 1: $(A,B,C,D) = (0,0,0,0)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow A$ (positiv, weil Zeilenwert 0)
+\item $B = 0 \Rightarrow B$
+\item $C = 0 \Rightarrow C$
+\item $D = 0 \Rightarrow D$
+\end{itemize}
+Maxterm: $(A \vee B \vee C \vee D)$. Diese Klausel wird nur in der
+Zeile $(0,0,0,0)$ falsch -- da sind alle Literale $0$. In allen
+anderen Zeilen ist mindestens eine der vier Variablen $1$, also wahr.
+
+\textbf{Zeile 4: $(A,B,C,D) = (0,0,1,1)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow A$
+\item $B = 0 \Rightarrow B$
+\item $C = 1 \Rightarrow \neg C$
+\item $D = 1 \Rightarrow \neg D$
+\end{itemize}
+Maxterm: $(A \vee B \vee \neg C \vee \neg D)$. Kurzer Check: In der
+Zeile $(0,0,1,1)$ wird das zu $(0 \vee 0 \vee \neg 1 \vee \neg 1) =
+(0 \vee 0 \vee 0 \vee 0) = 0$. Passt.
+
+\textbf{Zeile 7: $(A,B,C,D) = (0,1,1,0)$.}
+\begin{itemize}[nosep]
+\item $A = 0 \Rightarrow A$
+\item $B = 1 \Rightarrow \neg B$
+\item $C = 1 \Rightarrow \neg C$
+\item $D = 0 \Rightarrow D$
+\end{itemize}
+Maxterm: $(A \vee \neg B \vee \neg C \vee D)$.
+
+\textbf{Zeilen 9, 10, 12, 14.} Schneller durch:
+\begin{itemize}[nosep]
+\item Zeile 9: $(1,0,0,0)$ $\Rightarrow$ $(\neg A \vee B \vee C \vee D)$
+\item Zeile 10: $(1,0,0,1)$ $\Rightarrow$ $(\neg A \vee B \vee C \vee \neg D)$
+\item Zeile 12: $(1,0,1,1)$ $\Rightarrow$ $(\neg A \vee B \vee \neg C \vee \neg D)$
+\item Zeile 14: $(1,1,0,1)$ $\Rightarrow$ $(\neg A \vee \neg B \vee C \vee \neg D)$
+\end{itemize}
+
+Alle 7 Maxterme werden mit $\wedge$ verkn\"upft:
+
+\begin{merkbox}[title={Ergebnis: CNF}]
+\begin{align*}
+\text{CNF}(f) \;\equiv\; &(A \vee B \vee C \vee D) \wedge {} \\
+& (A \vee B \vee \neg C \vee \neg D) \wedge {} \\
+& (A \vee \neg B \vee \neg C \vee D) \wedge {} \\
+& (\neg A \vee B \vee C \vee D) \wedge {} \\
+& (\neg A \vee B \vee C \vee \neg D) \wedge {} \\
+& (\neg A \vee B \vee \neg C \vee \neg D) \wedge {} \\
+& (\neg A \vee \neg B \vee C \vee \neg D).
+\end{align*}
+\end{merkbox}
+
+\subsection*{Schritt 4: Sanity-Check}
+
+\textbf{Anzahlen stimmen:} 9~Minterme (DNF) + 7~Maxterme (CNF) =
+16~Zeilen. Alles korrekt gez\"ahlt.
+
+\textbf{Stichprobe DNF.} Zeile 2 ist $(0,0,0,1)$ mit $f = 1$. Der
+entsprechende Minterm ist $\neg A \wedge \neg B \wedge \neg C \wedge D$.
+Setzen wir die Werte ein:
+$(\neg 0) \wedge (\neg 0) \wedge (\neg 0) \wedge 1 =
+1 \wedge 1 \wedge 1 \wedge 1 = 1$. Der Minterm ist in genau dieser
+Zeile wahr, wie gew\"unscht. In allen anderen Zeilen ist mindestens
+ein Literal falsch (weil $(A,B,C,D)$ einen anderen Wert hat), und
+damit der ganze Minterm falsch.
+
+\textbf{Stichprobe CNF.} Zeile 9 ist $(1,0,0,0)$ mit $f = 0$. Der
+entsprechende Maxterm ist $(\neg A \vee B \vee C \vee D)$. Einsetzen:
+$(\neg 1 \vee 0 \vee 0 \vee 0) = (0 \vee 0 \vee 0 \vee 0) = 0$. Der
+Maxterm ist in genau dieser Zeile falsch, wie gew\"unscht. In allen
+anderen Zeilen ist mindestens ein Literal wahr.
+
+\begin{merkbox}[title={Ergebnis Aufgabe~3}]
+Die CNF hat 7 Klauseln (aus den 7 Nuller-Zeilen), die DNF hat
+9 Minterme (aus den 9 Einser-Zeilen). Beide sind zur urspr\"unglichen
+Formel \"aquivalent. Check: $7 + 9 = 16$ Zeilen.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% ZUSAMMENFASSUNG
+% ============================================================
+
+\section*{Zusammenfassung und goldene Regeln}
+
+\subsection*{Kurz\"ubersicht der Ergebnisse}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l}
+\toprule
+\textbf{Aufgabe} & \textbf{Ergebnis} \\
+\midrule
+1 (DNF) & 4 Minterme aus 4 wahren Zeilen \\
+1 (CNF) & 4 Maxterme aus 4 falschen Zeilen \\
+2 & $\{\vee, \neg\}$ ist funktional vollst\"andig (Induktion) \\
+3 (DNF) & 9 Minterme aus 9 wahren Zeilen \\
+3 (CNF) & 7 Maxterme aus 7 falschen Zeilen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Goldene Regeln}
+
+\begin{merkbox}[title={Goldene Regeln zum Mitnehmen}]
+\begin{enumerate}
+\item \textbf{Pr\"azedenz zuerst.} Bevor du eine klammerfreie Formel
+      auswertest, klammere sie mental nach $\neg > \wedge > \vee > \to
+      > \leftrightarrow$ (stark $\to$ schwach). Sonst passieren
+      Fl\"uchtigkeitsfehler.
+
+\item \textbf{DNF aus den Einsen.} F\"ur jede Zeile mit $f = 1$:
+      Minterm bauen. Variable mit Wert $1$ $\to$ positiv; Variable mit
+      Wert $0$ $\to$ negiert. Alles mit $\vee$ verbinden.
+
+\item \textbf{CNF aus den Nullen mit umgedrehten Literalen.} F\"ur
+      jede Zeile mit $f = 0$: Maxterm bauen. Variable mit Wert $1$
+      $\to$ negiert; Variable mit Wert $0$ $\to$ positiv. Alles mit
+      $\wedge$ verbinden.
+
+\item \textbf{Sanity-Check.} Anzahl Minterme (DNF) + Anzahl Maxterme
+      (CNF) = Anzahl Zeilen der Wahrheitstabelle.
+
+\item \textbf{Funktionale Vollst\"andigkeit.} Um zu zeigen, dass eine
+      Junktorenmenge vollst\"andig ist, reicht es, jeden "`fremden"'
+      Junktor durch eine \"aquivalente Formel aus der erlaubten Menge
+      zu ersetzen. F\"ur $\{\vee, \neg\}$ sind die Ersetzungen:
+      \begin{align*}
+        G \wedge H &\equiv \neg(\neg G \vee \neg H) \\
+        G \to H &\equiv \neg G \vee H \\
+        G \leftrightarrow H &\equiv \neg(\neg(\neg G \vee H) \vee \neg(\neg H \vee G))
+      \end{align*}
+
+\item \textbf{Strukturelle Induktion.} Beweist Aussagen "`f\"ur alle
+      Formeln"'. Zwei Schritte: (a) Aussage gilt f\"ur atomare Formeln
+      (Induktionsanfang); (b) wenn sie f\"ur alle echten Teilformeln
+      gilt, gilt sie auch f\"ur die Gesamtformel (Induktionsschritt),
+      und zwar getrennt f\"ur jeden m\"oglichen Hauptoperator.
+\end{enumerate}
+\end{merkbox}
+
+\begin{analogie}[title={Merke: DNF vs.\ CNF}]
+\textbf{DNF = Einsen aufsammeln.} F\"ur jede Zeile, in der die Formel
+wahr ist, baue ein Szenario, das genau diese Zeile beschreibt. Die
+DNF sagt: "`Sei eines dieser Szenarien wahr, dann bin ich wahr."'
+
+\medskip
+\textbf{CNF = Nullen ausschlie{\ss}en.} F\"ur jede Zeile, in der die
+Formel falsch ist, baue eine Ausschlussklausel, die nur f\"ur diese
+eine Zeile falsch wird. Die CNF sagt: "`Sei keine dieser Nuller-Zeilen
+getroffen, dann bin ich wahr."'
+
+\medskip
+Beide Wege f\"uhren zum selben Ergebnis -- sie sind nur zwei
+verschiedene Perspektiven auf dieselbe Funktion.
+\end{analogie}
+
+\bigskip
+\bigskip
+
+Damit sind alle drei Aufgaben inhaltlich abgeschlossen. Die
+schrittweise Erkl\"arung sollte es auch jemandem, der vorher noch nie
+etwas von CNF, DNF oder struktureller Induktion geh\"ort hat,
+m\"oglich gemacht haben, die Gedankeng\"ange nachzuvollziehen. Viel
+Spa{\ss} beim Nachrechnen!
+
+\end{document}
