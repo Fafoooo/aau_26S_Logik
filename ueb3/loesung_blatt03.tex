@@ -222,24 +222,24 @@ Operator vor -- genau wie beim Auswerten einer Wahrheitstabelle
 von innen nach au\ss en.
 
 \medskip
-\textbf{Induktionsanfang.}\\
-$F = p$ ist eine einzelne Variable, z.\,B.\ $X$.
-Enth\"alt gar keine Operatoren $\Rightarrow$ ist schon eine
-Formel \"uber $\{\vee, \neg\}$. Setze $F' := p$. \checkmark
+\textbf{Induktionsanfang.}
+Wenn die Formel nur aus einer einzelnen Variable besteht
+(z.\,B.\ $X$), dann kommt darin kein Operator vor --
+also auch kein verbotener. Nichts zu tun. \checkmark
 
 \medskip
-\textbf{Induktionsvoraussetzung (IV).}\\
-Alle Teilformeln, die \emph{kleiner} als~$F$ sind,
-lassen sich bereits umschreiben.
-Wenn also $F$ aus den Teilformeln $G$ und $H$ aufgebaut ist,
-dann existieren $G'$ und $H'$ \"uber $\{\vee, \neg\}$ mit
-$G \equiv G'$ und $H \equiv H'$.
+\textbf{Induktionsvoraussetzung (IV).}
+Angenommen, f\"ur die inneren Teile der Formel hat die
+Umwandlung schon geklappt. Wenn $F$ also z.\,B.\ die Form
+$G \wedge H$ hat, dann d\"urfen wir annehmen, dass $G$ und $H$
+bereits jeweils in eine \"aquivalente Formel $G'$ bzw.\ $H'$ mit
+nur $\vee$ und $\neg$ umgeschrieben wurden.
 
 \medskip
-\textbf{Induktionsschritt.}\\
-Man schaut sich den \emph{\"au\ss ersten} Operator von~$F$ an und
-ersetzt ihn mit den Regeln aus Schritt~2. Die Teilformeln $G, H$
-darf man laut IV schon als $G', H'$ (nur $\vee, \neg$) schreiben.
+\textbf{Induktionsschritt.}
+Jetzt muss man sich nur noch um den \"au\ss ersten Operator
+k\"ummern -- die inneren Teile ($G'$, $H'$) sind laut IV schon
+erledigt. Man wendet die Ersetzungsregeln aus Schritt~2 an:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
