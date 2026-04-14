@@ -300,69 +300,126 @@ Formel \"uber $\{\vee, \neg\}$.
 \subsection*{Aufgabe 3 \textnormal{(2 Punkte)} -- CNF und DNF aus
 Wahrheitstabelle \"uber $\sigma = \{A,B,C,D\}$}
 
-Wahrheitstabelle mit $2^4 = 16$ Zeilen:
+\textbf{Angabe.} Finden Sie eine Formel in CNF und eine in DNF,
+die die gegebene Wahrheitstabelle besitzen.
+
+\medskip
+\textbf{Schritt 1: Wahrheitstabelle \"ubernehmen.}
+4~Variablen $\Rightarrow$ $2^4 = 16$~Zeilen.
+Davon sind 9~Zeilen wahr ($f=1$) und 7~Zeilen falsch ($f=0$).
 
 \begin{center}
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{r|cccc|c|l}
+\begin{tabular}{r|cccc|c}
 \toprule
-\# & $A$ & $B$ & $C$ & $D$ & $f$ & verwendet f\"ur \\
+\# & $A$ & $B$ & $C$ & $D$ & $f$ \\
 \midrule
- 1 & 0 & 0 & 0 & 0 & 0 & CNF-Maxterm \\
- 2 & 0 & 0 & 0 & 1 & \textbf{1} & DNF-Minterm \\
- 3 & 0 & 0 & 1 & 0 & \textbf{1} & DNF-Minterm \\
- 4 & 0 & 0 & 1 & 1 & 0 & CNF-Maxterm \\
- 5 & 0 & 1 & 0 & 0 & \textbf{1} & DNF-Minterm \\
- 6 & 0 & 1 & 0 & 1 & \textbf{1} & DNF-Minterm \\
- 7 & 0 & 1 & 1 & 0 & 0 & CNF-Maxterm \\
- 8 & 0 & 1 & 1 & 1 & \textbf{1} & DNF-Minterm \\
- 9 & 1 & 0 & 0 & 0 & 0 & CNF-Maxterm \\
-10 & 1 & 0 & 0 & 1 & 0 & CNF-Maxterm \\
-11 & 1 & 0 & 1 & 0 & \textbf{1} & DNF-Minterm \\
-12 & 1 & 0 & 1 & 1 & 0 & CNF-Maxterm \\
-13 & 1 & 1 & 0 & 0 & \textbf{1} & DNF-Minterm \\
-14 & 1 & 1 & 0 & 1 & 0 & CNF-Maxterm \\
-15 & 1 & 1 & 1 & 0 & \textbf{1} & DNF-Minterm \\
-16 & 1 & 1 & 1 & 1 & \textbf{1} & DNF-Minterm \\
+ 1 & 0 & 0 & 0 & 0 & 0 \\
+ 2 & 0 & 0 & 0 & 1 & \textbf{1} \\
+ 3 & 0 & 0 & 1 & 0 & \textbf{1} \\
+ 4 & 0 & 0 & 1 & 1 & 0 \\
+ 5 & 0 & 1 & 0 & 0 & \textbf{1} \\
+ 6 & 0 & 1 & 0 & 1 & \textbf{1} \\
+ 7 & 0 & 1 & 1 & 0 & 0 \\
+ 8 & 0 & 1 & 1 & 1 & \textbf{1} \\
+ 9 & 1 & 0 & 0 & 0 & 0 \\
+10 & 1 & 0 & 0 & 1 & 0 \\
+11 & 1 & 0 & 1 & 0 & \textbf{1} \\
+12 & 1 & 0 & 1 & 1 & 0 \\
+13 & 1 & 1 & 0 & 0 & \textbf{1} \\
+14 & 1 & 1 & 0 & 1 & 0 \\
+15 & 1 & 1 & 1 & 0 & \textbf{1} \\
+16 & 1 & 1 & 1 & 1 & \textbf{1} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\medskip
-9~wahre Zeilen $\to$ 9~Minterme (DNF),
-7~falsche Zeilen $\to$ 7~Maxterme (CNF).
+\textbf{Schritt 2: DNF ablesen.}
+Gleiches Vorgehen wie in Aufgabe~1: Jede Zeile mit $f=1$ liefert
+eine Konjunktion. Variable mit Wert~1 $\to$ positiv,
+Variable mit Wert~0 $\to$ negiert. Alle Konjunktionen mit $\vee$
+verbinden.
 
-\bigskip
-\textbf{DNF} (Minterme der wahren Zeilen):
+Die ersten drei Zeilen im Detail:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{r|cccc|l}
+\toprule
+\# & $A$ & $B$ & $C$ & $D$ & Konjunktion \\
+\midrule
+2 & 0 & 0 & 0 & 1
+  & $A\!=\!0 \to \neg A$,\; $B\!=\!0 \to \neg B$,\;
+    $C\!=\!0 \to \neg C$,\; $D\!=\!1 \to D$
+    \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge \neg C \wedge D)$ \\
+3 & 0 & 0 & 1 & 0
+  & $A\!=\!0 \to \neg A$,\; $B\!=\!0 \to \neg B$,\;
+    $C\!=\!1 \to C$,\; $D\!=\!0 \to \neg D$
+    \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge C \wedge \neg D)$ \\
+5 & 0 & 1 & 0 & 0
+  & $A\!=\!0 \to \neg A$,\; $B\!=\!1 \to B$,\;
+    $C\!=\!0 \to \neg C$,\; $D\!=\!0 \to \neg D$
+    \;$\Rightarrow$\; $(\neg A \wedge B \wedge \neg C \wedge \neg D)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die restlichen 6~Zeilen (Nr.\,6, 8, 11, 13, 15, 16) analog.
+Alle 9~Konjunktionen mit $\vee$ verbinden:
 
 \begin{align*}
-\text{DNF}(f) \;\equiv\; &(\neg A \wedge \neg B \wedge \neg C \wedge D) \vee {} \\
-& (\neg A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
-& (\neg A \wedge B \wedge \neg C \wedge \neg D) \vee {} \\
-& (\neg A \wedge B \wedge \neg C \wedge D) \vee {} \\
-& (\neg A \wedge B \wedge C \wedge D) \vee {} \\
-& (A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
-& (A \wedge B \wedge \neg C \wedge \neg D) \vee {} \\
-& (A \wedge B \wedge C \wedge \neg D) \vee {} \\
+\text{DNF} \;\equiv\; &(\neg A \wedge \neg B \wedge \neg C \wedge D) \vee
+(\neg A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
+& (\neg A \wedge B \wedge \neg C \wedge \neg D) \vee
+(\neg A \wedge B \wedge \neg C \wedge D) \vee {} \\
+& (\neg A \wedge B \wedge C \wedge D) \vee
+(A \wedge \neg B \wedge C \wedge \neg D) \vee {} \\
+& (A \wedge B \wedge \neg C \wedge \neg D) \vee
+(A \wedge B \wedge C \wedge \neg D) \vee {} \\
 & (A \wedge B \wedge C \wedge D).
 \end{align*}
 
-\textbf{CNF} (ein Maxterm pro falscher Zeile, insgesamt 7~St\"uck):
+\textbf{Schritt 3: CNF ablesen.}
+Jede Zeile mit $f=0$ liefert eine Disjunktion.
+Literale \emph{umgekehrt}: Variable mit Wert~1 $\to$ negiert,
+Variable mit Wert~0 $\to$ positiv. Alle Disjunktionen mit $\wedge$
+verbinden.
+
+Die ersten drei Zeilen im Detail:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{r|cccc|l}
+\toprule
+\# & $A$ & $B$ & $C$ & $D$ & Disjunktion \\
+\midrule
+1 & 0 & 0 & 0 & 0
+  & $A\!=\!0 \to A$,\; $B\!=\!0 \to B$,\;
+    $C\!=\!0 \to C$,\; $D\!=\!0 \to D$
+    \;$\Rightarrow$\; $(A \vee B \vee C \vee D)$ \\
+4 & 0 & 0 & 1 & 1
+  & $A\!=\!0 \to A$,\; $B\!=\!0 \to B$,\;
+    $C\!=\!1 \to \neg C$,\; $D\!=\!1 \to \neg D$
+    \;$\Rightarrow$\; $(A \vee B \vee \neg C \vee \neg D)$ \\
+7 & 0 & 1 & 1 & 0
+  & $A\!=\!0 \to A$,\; $B\!=\!1 \to \neg B$,\;
+    $C\!=\!1 \to \neg C$,\; $D\!=\!0 \to D$
+    \;$\Rightarrow$\; $(A \vee \neg B \vee \neg C \vee D)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die restlichen 4~Zeilen (Nr.\,9, 10, 12, 14) analog.
+Alle 7~Disjunktionen mit $\wedge$ verbinden:
 
 \begin{align*}
-\text{CNF}(f) \;\equiv\; &(A \vee B \vee C \vee D) \wedge {} \\
-& (A \vee B \vee \neg C \vee \neg D) \wedge {} \\
-& (A \vee \neg B \vee \neg C \vee D) \wedge {} \\
-& (\neg A \vee B \vee C \vee D) \wedge {} \\
-& (\neg A \vee B \vee C \vee \neg D) \wedge {} \\
-& (\neg A \vee B \vee \neg C \vee \neg D) \wedge {} \\
+\text{CNF} \;\equiv\; &(A \vee B \vee C \vee D) \wedge
+(A \vee B \vee \neg C \vee \neg D) \wedge {} \\
+& (A \vee \neg B \vee \neg C \vee D) \wedge
+(\neg A \vee B \vee C \vee D) \wedge {} \\
+& (\neg A \vee B \vee C \vee \neg D) \wedge
+(\neg A \vee B \vee \neg C \vee \neg D) \wedge {} \\
 & (\neg A \vee \neg B \vee C \vee \neg D).
 \end{align*}
-
-\medskip
-\medskip
-\textbf{Stichprobe:} Zeile~9, $(A,B,C,D)=(1,0,0,0)$, $f=0$.
-Maxterm $(\neg A \vee B \vee C \vee D) = (0 \vee 0 \vee 0 \vee 0) = 0$
-$\Rightarrow$ CNF wird in dieser Zeile~$0$. \checkmark
 
 \end{document}
