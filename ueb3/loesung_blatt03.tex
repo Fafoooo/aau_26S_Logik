@@ -72,16 +72,16 @@ $X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y$ & $\neg Y \wedge Z$
 \medskip
 \textbf{Schritt 3: DNF ablesen.}
 Man nimmt alle Zeilen, in denen die Formel \textbf{wahr}~(1) ist,
-und baut pro Zeile einen \textbf{Minterm}. Regel f\"ur jede Variable
-im Minterm: steht in der Zeile eine~1, schreibt man die Variable
-positiv; steht eine~0, schreibt man sie negiert. Alle Minterme
-werden mit $\vee$ (ODER) verbunden.
+und baut pro Zeile eine Konjunktion (UND-Verkn\"upfung).
+Regel f\"ur jede Variable: steht in der Zeile eine~1, schreibt man
+die Variable positiv; steht eine~0, schreibt man sie negiert.
+Alle Konjunktionen werden mit $\vee$ (ODER) verbunden.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{ccc|l}
 \toprule
-$X$ & $Y$ & $Z$ & Minterm \\
+$X$ & $Y$ & $Z$ & Konjunktion \\
 \midrule
 0 & 0 & 0
   & $X\!=\!0 \to \neg X$,\; $Y\!=\!0 \to \neg Y$,\;
@@ -103,7 +103,7 @@ $X$ & $Y$ & $Z$ & Minterm \\
 \end{tabular}
 \end{center}
 
-Diese 4~Minterme mit $\vee$ verkn\"upfen:
+Diese 4~Konjunktionen mit $\vee$ verkn\"upfen:
 \begin{align*}
 \text{DNF} \;\equiv\; &(\neg X \wedge \neg Y \wedge \neg Z) \vee
 (\neg X \wedge \neg Y \wedge Z) \vee {} \\
@@ -113,17 +113,17 @@ Diese 4~Minterme mit $\vee$ verkn\"upfen:
 
 \textbf{Schritt 4: CNF ablesen.}
 Man nimmt alle Zeilen, in denen die Formel \textbf{falsch}~(0) ist,
-und baut pro Zeile einen \textbf{Maxterm}. Die Regel ist
-\emph{umgekehrt} wie bei der DNF: steht in der Zeile eine~1,
-schreibt man die Variable \emph{negiert}; steht eine~0, schreibt man
-sie \emph{positiv}. Alle Maxterme werden mit $\wedge$ (UND)
-verbunden.
+und baut pro Zeile eine Disjunktion (ODER-Verkn\"upfung).
+Die Regel ist \emph{umgekehrt} wie bei der DNF: steht in der Zeile
+eine~1, schreibt man die Variable \emph{negiert}; steht eine~0,
+schreibt man sie \emph{positiv}. Alle Disjunktionen werden mit
+$\wedge$ (UND) verbunden.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{ccc|l}
 \toprule
-$X$ & $Y$ & $Z$ & Maxterm \\
+$X$ & $Y$ & $Z$ & Disjunktion \\
 \midrule
 0 & 1 & 1
   & $X\!=\!0 \to X$,\; $Y\!=\!1 \to \neg Y$,\;
@@ -145,7 +145,7 @@ $X$ & $Y$ & $Z$ & Maxterm \\
 \end{tabular}
 \end{center}
 
-Diese 4~Maxterme mit $\wedge$ verkn\"upfen:
+Diese 4~Disjunktionen mit $\wedge$ verkn\"upfen:
 \begin{align*}
 \text{CNF} \;\equiv\; &(X \vee \neg Y \vee \neg Z) \wedge
 (\neg X \vee Y \vee Z) \wedge {} \\
