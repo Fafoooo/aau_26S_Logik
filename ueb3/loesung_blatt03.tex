@@ -71,18 +71,39 @@ $X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y$ & $\neg Y \wedge Z$
 
 \medskip
 \textbf{Schritt 3: DNF ablesen.}
-F\"ur jede Zeile mit Ergebnis~\textbf{1} wird ein \textbf{Minterm}
-gebildet: Variable mit Wert~1 bleibt positiv, Variable mit Wert~0
-wird negiert. Alle Minterme werden mit $\vee$ verbunden.
+Man nimmt alle Zeilen, in denen die Formel \textbf{wahr}~(1) ist,
+und baut pro Zeile einen \textbf{Minterm}. Regel f\"ur jede Variable
+im Minterm: steht in der Zeile eine~1, schreibt man die Variable
+positiv; steht eine~0, schreibt man sie negiert. Alle Minterme
+werden mit $\vee$ (ODER) verbunden.
 
-Wahre Zeilen:
-$(X,Y,Z) \in \{(0,0,0),\,(0,0,1),\,(0,1,0),\,(1,1,1)\}$.
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ccc|l}
+\toprule
+$X$ & $Y$ & $Z$ & Minterm \\
+\midrule
+0 & 0 & 0
+  & $X\!=\!0 \to \neg X$,\; $Y\!=\!0 \to \neg Y$,\;
+    $Z\!=\!0 \to \neg Z$
+    \;$\Rightarrow$\; $(\neg X \wedge \neg Y \wedge \neg Z)$ \\
+0 & 0 & 1
+  & $X\!=\!0 \to \neg X$,\; $Y\!=\!0 \to \neg Y$,\;
+    $Z\!=\!1 \to Z$
+    \;$\Rightarrow$\; $(\neg X \wedge \neg Y \wedge Z)$ \\
+0 & 1 & 0
+  & $X\!=\!0 \to \neg X$,\; $Y\!=\!1 \to Y$,\;
+    $Z\!=\!0 \to \neg Z$
+    \;$\Rightarrow$\; $(\neg X \wedge Y \wedge \neg Z)$ \\
+1 & 1 & 1
+  & $X\!=\!1 \to X$,\; $Y\!=\!1 \to Y$,\;
+    $Z\!=\!1 \to Z$
+    \;$\Rightarrow$\; $(X \wedge Y \wedge Z)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\smallskip
-Beispiel Zeile~$(0,0,0)$: $X\!=\!0 \to \neg X$,
-$Y\!=\!0 \to \neg Y$, $Z\!=\!0 \to \neg Z$
-$\;\Rightarrow\;$ Minterm $(\neg X \wedge \neg Y \wedge \neg Z)$.
-
+Diese 4~Minterme mit $\vee$ verkn\"upfen:
 \begin{align*}
 \text{DNF} \;\equiv\; &(\neg X \wedge \neg Y \wedge \neg Z) \vee
 (\neg X \wedge \neg Y \wedge Z) \vee {} \\
@@ -91,19 +112,40 @@ $\;\Rightarrow\;$ Minterm $(\neg X \wedge \neg Y \wedge \neg Z)$.
 \end{align*}
 
 \textbf{Schritt 4: CNF ablesen.}
-F\"ur jede Zeile mit Ergebnis~\textbf{0} wird ein \textbf{Maxterm}
-gebildet: hier werden die Literale \emph{umgedreht} -- Variable mit
-Wert~1 wird negiert, Variable mit Wert~0 bleibt positiv.
-Alle Maxterme werden mit $\wedge$ verbunden.
+Man nimmt alle Zeilen, in denen die Formel \textbf{falsch}~(0) ist,
+und baut pro Zeile einen \textbf{Maxterm}. Die Regel ist
+\emph{umgekehrt} wie bei der DNF: steht in der Zeile eine~1,
+schreibt man die Variable \emph{negiert}; steht eine~0, schreibt man
+sie \emph{positiv}. Alle Maxterme werden mit $\wedge$ (UND)
+verbunden.
 
-Falsche Zeilen:
-$(X,Y,Z) \in \{(0,1,1),\,(1,0,0),\,(1,0,1),\,(1,1,0)\}$.
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ccc|l}
+\toprule
+$X$ & $Y$ & $Z$ & Maxterm \\
+\midrule
+0 & 1 & 1
+  & $X\!=\!0 \to X$,\; $Y\!=\!1 \to \neg Y$,\;
+    $Z\!=\!1 \to \neg Z$
+    \;$\Rightarrow$\; $(X \vee \neg Y \vee \neg Z)$ \\
+1 & 0 & 0
+  & $X\!=\!1 \to \neg X$,\; $Y\!=\!0 \to Y$,\;
+    $Z\!=\!0 \to Z$
+    \;$\Rightarrow$\; $(\neg X \vee Y \vee Z)$ \\
+1 & 0 & 1
+  & $X\!=\!1 \to \neg X$,\; $Y\!=\!0 \to Y$,\;
+    $Z\!=\!1 \to \neg Z$
+    \;$\Rightarrow$\; $(\neg X \vee Y \vee \neg Z)$ \\
+1 & 1 & 0
+  & $X\!=\!1 \to \neg X$,\; $Y\!=\!1 \to \neg Y$,\;
+    $Z\!=\!0 \to Z$
+    \;$\Rightarrow$\; $(\neg X \vee \neg Y \vee Z)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\smallskip
-Beispiel Zeile~$(0,1,1)$: $X\!=\!0 \to X$,
-$Y\!=\!1 \to \neg Y$, $Z\!=\!1 \to \neg Z$
-$\;\Rightarrow\;$ Maxterm $(X \vee \neg Y \vee \neg Z)$.
-
+Diese 4~Maxterme mit $\wedge$ verkn\"upfen:
 \begin{align*}
 \text{CNF} \;\equiv\; &(X \vee \neg Y \vee \neg Z) \wedge
 (\neg X \vee Y \vee Z) \wedge {} \\
