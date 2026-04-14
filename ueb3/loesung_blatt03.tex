@@ -22,18 +22,13 @@
 \subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- CNF und DNF f\"ur
 $\neg X \leftrightarrow Z \to \neg Y \wedge Z$}
 
-Zuerst kl\"are ich, wie die Formel zu lesen ist. Die Pr\"azedenzen sind
-$\neg > \wedge > \vee > \to > \leftrightarrow$, also binden Negation
-und Konjunktion st\"arker als die Implikation und die Implikation
-st\"arker als die Biimplikation. Damit klammert sich die Formel so:
+Mit den Pr\"azedenzen $\neg > \wedge > \vee > \to > \leftrightarrow$
+klammert sich die Formel als
 \[
 F \;\equiv\; \neg X \leftrightarrow \bigl(Z \to (\neg Y \wedge Z)\bigr).
 \]
 
-Ich stelle eine Wahrheitstabelle mit $2^3 = 8$ Zeilen auf und werte
-Schritt f\"ur Schritt aus. Ich berechne zuerst $\neg X$, dann den
-Ausdruck $\neg Y \wedge Z$, dann die Implikation
-$Z \to (\neg Y \wedge Z)$ und schlie\ss lich die Biimplikation:
+Wahrheitstabelle ($2^3 = 8$ Zeilen):
 
 \begin{center}
 \renewcommand{\arraystretch}{1.15}
@@ -55,27 +50,14 @@ $X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y \wedge Z$
 \end{center}
 
 \medskip
-\textbf{Kurze Begr\"undung einzelner Spalten:}
-\begin{itemize}[nosep]
-\item $Z \to (\neg Y \wedge Z)$: Wenn $Z=0$, ist die Implikation
-      trivialerweise wahr. Wenn $Z=1$, muss $\neg Y \wedge Z = 1$
-      sein, also $Y=0$.
-\item $F \equiv \neg X \leftrightarrow \dots$: wahr genau dann,
-      wenn beide Seiten denselben Wahrheitswert haben.
-\end{itemize}
-
-\medskip
-\textbf{Wahre Zeilen} (hier lese ich die DNF ab):
+\textbf{Wahre Zeilen:}
 $(X,Y,Z) \in \{(0,0,0),\,(0,0,1),\,(0,1,0),\,(1,1,1)\}$.
 
-\textbf{Falsche Zeilen} (hier lese ich die CNF ab):
+\textbf{Falsche Zeilen:}
 $(X,Y,Z) \in \{(0,1,1),\,(1,0,0),\,(1,0,1),\,(1,1,0)\}$.
 
 \bigskip
-\textbf{DNF (Disjunktion der Minterme \"uber die wahren Zeilen).}
-F\"ur jede wahre Zeile baue ich einen Minterm, bei dem jede Variable,
-die den Wert~$1$ hat, positiv, und jede Variable, die den Wert~$0$
-hat, negiert auftaucht:
+\textbf{DNF} (Minterme der wahren Zeilen):
 \begin{align*}
 \text{DNF}(F) \;\equiv\; &(\neg X \wedge \neg Y \wedge \neg Z) \vee {} \\
 & (\neg X \wedge \neg Y \wedge Z) \vee {} \\
@@ -83,10 +65,7 @@ hat, negiert auftaucht:
 & (X \wedge Y \wedge Z).
 \end{align*}
 
-\textbf{CNF (Konjunktion der Maxterme \"uber die falschen Zeilen).}
-F\"ur jede falsche Zeile baue ich einen Maxterm mit genau umgekehrtem
-Schema: wer in der Zeile $1$ war, wird negiert, wer $0$ war, wird
-positiv \"ubernommen:
+\textbf{CNF} (Maxterme der falschen Zeilen, Literale umgekehrt):
 \begin{align*}
 \text{CNF}(F) \;\equiv\; &(X \vee \neg Y \vee \neg Z) \wedge {} \\
 & (\neg X \vee Y \vee Z) \wedge {} \\
@@ -120,101 +99,58 @@ eine Formel~$F'$, die nur die Junktoren $\vee$ und $\neg$ verwendet
 und $F \equiv F'$ erf\"ullt.
 
 \medskip
-Ich beweise die Behauptung per struktureller Induktion \"uber den
-Aufbau der Formel. Die Idee ist einfach: f\"ur jeden m\"oglichen
-Hauptoperator zeige ich, wie ich ihn durch $\vee$ und $\neg$
-ausdr\"ucken kann.
+Beweis per struktureller Induktion \"uber den Formelaufbau.
 
 \medskip
-\textbf{Induktionsanfang.} Sei $F$ eine atomare Formel, also eine
-Aussagenvariable~$p$. Dann enth\"alt $F$ \"uberhaupt keine
-Junktoren, insbesondere keine aus $\{\wedge, \to, \leftrightarrow\}$.
-Ich setze $F' := p$; trivialerweise ist $F' \equiv F$ und $F'$ ist
-eine Formel \"uber $\{\vee, \neg\}$.
+\textbf{Induktionsanfang.} Sei $F = p$ eine Aussagenvariable.
+Dann enth\"alt $F$ keine Junktoren, also ist $F' := p$ bereits
+eine Formel \"uber $\{\vee, \neg\}$ mit $F' \equiv F$.
 
 \medskip
-\textbf{Induktionsschritt.} Sei nun $F$ eine zusammengesetzte Formel.
-Als Induktionsvoraussetzung (IV) nehme ich an, dass die Behauptung
-f\"ur alle echten Teilformeln von~$F$ bereits gilt, d.\,h.\ f\"ur jede
-Teilformel~$G$ gibt es eine \"aquivalente Formel~$G'$ \"uber
-$\{\vee, \neg\}$. Ich unterscheide nach dem Hauptoperator von~$F$:
+\textbf{Induktionsschritt.} Sei $F$ zusammengesetzt.
+IV: F\"ur alle echten Teilformeln~$G$ von~$F$ existiert ein
+\"aquivalentes~$G'$ \"uber $\{\vee, \neg\}$.
+Fallunterscheidung nach Hauptoperator:
 
 \medskip
 \textbf{Fall 1: $F = \neg G$.}\\
-Nach IV gibt es $G' \in \{\vee,\neg\}$ mit $G \equiv G'$. Dann ist
-$\neg G \equiv \neg G'$ und $\neg G'$ benutzt nur $\vee$ und $\neg$.
-Ich setze $F' := \neg G'$.
+Nach IV existiert $G'$ \"uber $\{\vee,\neg\}$ mit $G \equiv G'$.
+Setze $F' := \neg G'$. \checkmark
 
 \medskip
 \textbf{Fall 2: $F = G \vee H$.}\\
-Nach IV gibt es $G', H'$ \"uber $\{\vee, \neg\}$ mit $G \equiv G'$
-und $H \equiv H'$. Dann ist $G \vee H \equiv G' \vee H'$ und die
-rechte Seite ist bereits \"uber $\{\vee, \neg\}$. Ich setze
-$F' := G' \vee H'$.
+Nach IV existieren $G', H'$ \"uber $\{\vee, \neg\}$.
+Setze $F' := G' \vee H'$. \checkmark
 
 \medskip
 \textbf{Fall 3: $F = G \wedge H$.}\\
-Hier benutze ich das De~Morgansche Gesetz:
-\[
-G \wedge H \;\equiv\; \neg(\neg G \vee \neg H).
-\]
-Begr\"undung der \"Aquivalenz: $G \wedge H$ ist genau dann wahr, wenn
-\emph{beide} Teilformeln wahr sind, also wenn \emph{keine} der beiden
-falsch ist. Das ist wiederum \"aquivalent dazu, dass $\neg G \vee \neg H$
-falsch ist, also zu $\neg(\neg G \vee \neg H)$. Nach IV habe ich
-$G \equiv G'$ und $H \equiv H'$ und erhalte
-\[
-G \wedge H \;\equiv\; \neg(\neg G' \vee \neg H'),
-\]
-und die rechte Seite benutzt nur $\vee$ und $\neg$. Ich setze
-$F' := \neg(\neg G' \vee \neg H')$.
+De~Morgan: $G \wedge H \equiv \neg(\neg G \vee \neg H)$.
+
+$G \wedge H$ ist wahr gdw.\ beide wahr sind, gdw.\ keines falsch ist,
+gdw.\ $\neg G \vee \neg H$ falsch ist, gdw.\ $\neg(\neg G \vee \neg H)$
+wahr ist. Mit IV:
+$F' := \neg(\neg G' \vee \neg H')$. \checkmark
 
 \medskip
 \textbf{Fall 4: $F = G \to H$.}\\
-Nach der bekannten \"Aquivalenz ist
-\[
-G \to H \;\equiv\; \neg G \vee H.
-\]
-Begr\"undung: $G \to H$ ist nur in einer einzigen Situation falsch,
-n\"amlich wenn $G$ wahr und $H$ falsch ist; genau dann ist aber auch
-$\neg G \vee H$ falsch (beide Disjunkte sind~$0$). In allen anderen
-F\"allen sind beide Seiten wahr, also stimmen die Wahrheitstabellen
-\"uberein. Mit der IV ist damit
-\[
-G \to H \;\equiv\; \neg G' \vee H',
-\]
-und ich setze $F' := \neg G' \vee H'$.
+$G \to H \equiv \neg G \vee H$
+(gleiche Wahrheitstabelle: beide nur falsch wenn $G=1, H=0$).
+Mit IV: $F' := \neg G' \vee H'$. \checkmark
 
 \medskip
 \textbf{Fall 5: $F = G \leftrightarrow H$.}\\
-Ich zerlege die Biimplikation \"uber die bekannte Regel
-\[
-G \leftrightarrow H \;\equiv\; (G \to H) \wedge (H \to G).
-\]
-Mit Fall~4 werden beide Implikationen zu Disjunktionen mit Negation:
-\[
-G \leftrightarrow H \;\equiv\; (\neg G \vee H) \wedge (\neg H \vee G).
-\]
-Und mit Fall~3 (De~Morgan) wird aus der Konjunktion wieder eine
-Disjunktion mit Negationen:
-\[
-G \leftrightarrow H \;\equiv\;
-\neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr).
-\]
-Einsetzen der nach IV vorhandenen \"Aquivalente $G'$ und $H'$ liefert
-\[
-F' \;:=\; \neg\bigl(\neg(\neg G' \vee H') \vee \neg(\neg H' \vee G')\bigr),
-\]
-und diese Formel benutzt ausschlie\ss lich $\vee$ und $\neg$.
+$G \leftrightarrow H \equiv (G \to H) \wedge (H \to G)$.
+Mit Fall~4 (Implikation) und Fall~3 (De~Morgan):
+\begin{align*}
+G \leftrightarrow H &\;\equiv\; (\neg G \vee H) \wedge (\neg H \vee G) \\
+&\;\equiv\; \neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr).
+\end{align*}
+Mit IV: $F' := \neg\bigl(\neg(\neg G' \vee H') \vee \neg(\neg H' \vee G')\bigr)$. \checkmark
 
 \medskip
-\textbf{Schluss.} In jedem der f\"unf F\"alle habe ich aus den (nach
-IV existierenden) $\vee/\neg$-\"Aquivalenten der Teilformeln eine
-$\vee/\neg$-Formel $F'$ mit $F \equiv F'$ konstruiert. Da jede
-aussagenlogische Formel aus endlich vielen Anwendungen der Regeln
-(atomare Formel, Negation, bin\"are Junktoren) aufgebaut ist, zeigt
-die Induktion, dass \emph{jede} Formel zu einer Formel \"uber
-$\{\vee, \neg\}$ \"aquivalent ist. \hfill$\square$
+\textbf{Schluss.} Damit ist in jedem Fall eine \"aquivalente Formel
+\"uber $\{\vee, \neg\}$ konstruiert. Da jede Formel einen endlichen
+Syntaxbaum hat, liefert die Induktion die Behauptung. \hfill$\square$
 
 \bigskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
@@ -238,9 +174,7 @@ G \leftrightarrow H &\;\equiv\;
 \subsection*{Aufgabe 3 \textnormal{(2 Punkte)} -- CNF und DNF aus
 Wahrheitstabelle \"uber $\sigma = \{A,B,C,D\}$}
 
-Gegeben ist eine Wahrheitstabelle mit $2^4 = 16$ Zeilen. Zun\"achst
-schreibe ich sie nochmal sauber auf und markiere, welche Zeilen zur
-DNF bzw.\ zur CNF beitragen.
+Wahrheitstabelle mit $2^4 = 16$ Zeilen:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.1}
@@ -269,34 +203,11 @@ DNF bzw.\ zur CNF beitragen.
 \end{center}
 
 \medskip
-Ich z\"ahle nach: 9~wahre Zeilen (Minterme f\"ur die DNF) und
-7~falsche Zeilen (Maxterme f\"ur die CNF), zusammen $9 + 7 = 16$
--- passt.
+9~wahre Zeilen $\to$ 9~Minterme (DNF),
+7~falsche Zeilen $\to$ 7~Maxterme (CNF).
 
 \bigskip
-\textbf{Standardtrick.} Bevor ich die beiden Normalformen hinschreibe,
-halte ich die Regel noch einmal explizit fest, weil Maxterm und
-Minterm sich gerne verwechseln lassen:
-
-\medskip
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Minterm vs.\ Maxterm.}
-\begin{itemize}[nosep]
-\item \textbf{DNF} entsteht als Disjunktion von \emph{Mintermen}.
-      Pro \emph{wahrer} Zeile bilde ich einen Minterm: jede Variable
-      wird so \"ubernommen, wie sie in der Zeile steht
-      ($1 \to$ Variable, $0 \to$ negierte Variable). Der Minterm ist
-      nur in dieser einen Zeile wahr.
-\item \textbf{CNF} entsteht als Konjunktion von \emph{Maxtermen}.
-      Pro \emph{falscher} Zeile bilde ich einen Maxterm: jede
-      Variable wird \emph{umgekehrt} eingetragen
-      ($1 \to$ negierte Variable, $0 \to$ Variable). Der Maxterm ist
-      nur in dieser einen Zeile falsch.
-\end{itemize}
-}}
-
-\bigskip
-\textbf{DNF} (ein Minterm pro wahrer Zeile, insgesamt 9~St\"uck):
+\textbf{DNF} (Minterme der wahren Zeilen):
 
 \begin{align*}
 \text{DNF}(f) \;\equiv\; &(\neg A \wedge \neg B \wedge \neg C \wedge D) \vee {} \\
@@ -323,27 +234,9 @@ Minterm sich gerne verwechseln lassen:
 \end{align*}
 
 \medskip
-\textbf{Kurze Stichprobe.} Zeile~9 ist $(A,B,C,D)=(1,0,0,0)$ mit
-$f=0$. Der zugeh\"orige Maxterm ist
-$(\neg A \vee B \vee C \vee D)$: eingesetzt ergibt das
-$(0 \vee 0 \vee 0 \vee 0) = 0$, die Klausel ist in genau dieser Zeile
-falsch, und das macht die ganze CNF in Zeile~9 zu $0$. In allen
-anderen Zeilen ist mindestens ein Literal der Klausel wahr. Damit
-stimmt Zeile~9 wie erwartet.
-
 \medskip
-Genauso pr\"ufe ich Zeile~2 f\"ur die DNF: $(A,B,C,D)=(0,0,0,1)$ mit
-$f=1$. Der Minterm
-$(\neg A \wedge \neg B \wedge \neg C \wedge D)$ wird zu
-$(1 \wedge 1 \wedge 1 \wedge 1) = 1$, also ist die DNF in dieser
-Zeile wahr, wie sie soll.
-
-\bigskip
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Ergebnis Aufgabe~3.} Die Wahrheitstabelle hat 9~Einsen und
-7~Nullen. Die DNF ist eine Disjunktion von 9~Mintermen, die CNF
-eine Konjunktion von 7~Maxtermen (siehe die beiden
-\texttt{align*}-Bl\"ocke oben).
-}}
+\textbf{Stichprobe:} Zeile~9, $(A,B,C,D)=(1,0,0,0)$, $f=0$.
+Maxterm $(\neg A \vee B \vee C \vee D) = (0 \vee 0 \vee 0 \vee 0) = 0$
+$\Rightarrow$ CNF wird in dieser Zeile~$0$. \checkmark
 
 \end{document}
