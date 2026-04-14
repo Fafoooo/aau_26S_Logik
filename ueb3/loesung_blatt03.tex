@@ -46,25 +46,25 @@ Vollst\"andig geklammert:
 \textbf{Schritt 2: Wahrheitstabelle aufstellen.}
 3~Variablen $\Rightarrow$ $2^3 = 8$~Zeilen. Man wertet in der
 gleichen Reihenfolge wie beim Klammern aus -- von innen nach au\ss en:
-erst $\neg X$, dann $\neg Y \wedge Z$, dann
+erst $\neg X$ und $\neg Y$, dann $\neg Y \wedge Z$, dann
 $Z \to (\neg Y \wedge Z)$, dann die Biimplikation.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular}{ccc|c|c|c|c}
+\begin{tabular}{ccc|cc|c|c|c}
 \toprule
-$X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y \wedge Z$
+$X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y$ & $\neg Y \wedge Z$
       & $Z \to (\neg Y \wedge Z)$
       & $\neg X \leftrightarrow (\ldots)$ \\
 \midrule
-0 & 0 & 0 & 1 & 0 & 1 & \textbf{1} \\
-0 & 0 & 1 & 1 & 1 & 1 & \textbf{1} \\
-0 & 1 & 0 & 1 & 0 & 1 & \textbf{1} \\
-0 & 1 & 1 & 1 & 0 & 0 & 0 \\
-1 & 0 & 0 & 0 & 0 & 1 & 0 \\
-1 & 0 & 1 & 0 & 1 & 1 & 0 \\
-1 & 1 & 0 & 0 & 0 & 1 & 0 \\
-1 & 1 & 1 & 0 & 0 & 0 & \textbf{1} \\
+0 & 0 & 0 & 1 & 1 & 0 & 1 & \textbf{1} \\
+0 & 0 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+0 & 1 & 0 & 1 & 0 & 0 & 1 & \textbf{1} \\
+0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 1 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 1 & 1 & 1 & 0 \\
+1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 \\
+1 & 1 & 1 & 0 & 0 & 0 & 0 & \textbf{1} \\
 \bottomrule
 \end{tabular}
 \end{center}
