@@ -22,20 +22,40 @@
 \subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- CNF und DNF f\"ur
 $\neg X \leftrightarrow Z \to \neg Y \wedge Z$}
 
-Mit den Pr\"azedenzen $\neg > \wedge > \vee > \to > \leftrightarrow$
-klammert sich die Formel als
+\textbf{Schritt 1: Klammern setzen (Pr\"azedenz).}
+Die Formel enth\"alt keine Klammern, also muss man die
+Operatorpr\"azedenz beachten:
+$\neg > \wedge > \vee > \to > \leftrightarrow$ (st\"arkste
+$\to$ schw\"achste Bindung). Man geht von innen nach au\ss en vor:
+
+\begin{enumerate}[nosep]
+\item Zuerst binden die \textbf{Negationen}: $\neg X$ und $\neg Y$
+      stehen fest.
+\item Dann die \textbf{Konjunktion}: $\neg Y \wedge Z$ wird zu
+      einem Block.
+\item Dann die \textbf{Implikation}: $Z \to (\neg Y \wedge Z)$.
+\item Zuletzt die \textbf{Biimplikation} (schw\"achste):
+      $\neg X \leftrightarrow (Z \to (\neg Y \wedge Z))$.
+\end{enumerate}
+
+Vollst\"andig geklammert:
 \[
-F \;\equiv\; \neg X \leftrightarrow \bigl(Z \to (\neg Y \wedge Z)\bigr).
+\neg X \leftrightarrow \bigl(Z \to (\neg Y \wedge Z)\bigr).
 \]
 
-Wahrheitstabelle ($2^3 = 8$ Zeilen):
+\textbf{Schritt 2: Wahrheitstabelle aufstellen.}
+3~Variablen $\Rightarrow$ $2^3 = 8$~Zeilen. Man wertet in der
+gleichen Reihenfolge wie beim Klammern aus -- von innen nach au\ss en:
+erst $\neg X$, dann $\neg Y \wedge Z$, dann
+$Z \to (\neg Y \wedge Z)$, dann die Biimplikation.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{ccc|c|c|c|c}
 \toprule
 $X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y \wedge Z$
-      & $Z \to (\neg Y \wedge Z)$ & $F$ \\
+      & $Z \to (\neg Y \wedge Z)$
+      & $\neg X \leftrightarrow (\ldots)$ \\
 \midrule
 0 & 0 & 0 & 1 & 0 & 1 & \textbf{1} \\
 0 & 0 & 1 & 1 & 1 & 1 & \textbf{1} \\
@@ -50,27 +70,45 @@ $X$ & $Y$ & $Z$ & $\neg X$ & $\neg Y \wedge Z$
 \end{center}
 
 \medskip
-\textbf{Wahre Zeilen:}
+\textbf{Schritt 3: DNF ablesen.}
+F\"ur jede Zeile mit Ergebnis~\textbf{1} wird ein \textbf{Minterm}
+gebildet: Variable mit Wert~1 bleibt positiv, Variable mit Wert~0
+wird negiert. Alle Minterme werden mit $\vee$ verbunden.
+
+Wahre Zeilen:
 $(X,Y,Z) \in \{(0,0,0),\,(0,0,1),\,(0,1,0),\,(1,1,1)\}$.
 
-\textbf{Falsche Zeilen:}
-$(X,Y,Z) \in \{(0,1,1),\,(1,0,0),\,(1,0,1),\,(1,1,0)\}$.
+\smallskip
+Beispiel Zeile~$(0,0,0)$: $X\!=\!0 \to \neg X$,
+$Y\!=\!0 \to \neg Y$, $Z\!=\!0 \to \neg Z$
+$\;\Rightarrow\;$ Minterm $(\neg X \wedge \neg Y \wedge \neg Z)$.
 
-\bigskip
-\textbf{DNF} (Minterme der wahren Zeilen):
 \begin{align*}
-\text{DNF}(F) \;\equiv\; &(\neg X \wedge \neg Y \wedge \neg Z) \vee {} \\
-& (\neg X \wedge \neg Y \wedge Z) \vee {} \\
-& (\neg X \wedge Y \wedge \neg Z) \vee {} \\
-& (X \wedge Y \wedge Z).
+\text{DNF} \;\equiv\; &(\neg X \wedge \neg Y \wedge \neg Z) \vee
+(\neg X \wedge \neg Y \wedge Z) \vee {} \\
+& (\neg X \wedge Y \wedge \neg Z) \vee
+(X \wedge Y \wedge Z).
 \end{align*}
 
-\textbf{CNF} (Maxterme der falschen Zeilen, Literale umgekehrt):
+\textbf{Schritt 4: CNF ablesen.}
+F\"ur jede Zeile mit Ergebnis~\textbf{0} wird ein \textbf{Maxterm}
+gebildet: hier werden die Literale \emph{umgedreht} -- Variable mit
+Wert~1 wird negiert, Variable mit Wert~0 bleibt positiv.
+Alle Maxterme werden mit $\wedge$ verbunden.
+
+Falsche Zeilen:
+$(X,Y,Z) \in \{(0,1,1),\,(1,0,0),\,(1,0,1),\,(1,1,0)\}$.
+
+\smallskip
+Beispiel Zeile~$(0,1,1)$: $X\!=\!0 \to X$,
+$Y\!=\!1 \to \neg Y$, $Z\!=\!1 \to \neg Z$
+$\;\Rightarrow\;$ Maxterm $(X \vee \neg Y \vee \neg Z)$.
+
 \begin{align*}
-\text{CNF}(F) \;\equiv\; &(X \vee \neg Y \vee \neg Z) \wedge {} \\
-& (\neg X \vee Y \vee Z) \wedge {} \\
-& (\neg X \vee Y \vee \neg Z) \wedge {} \\
-& (\neg X \vee \neg Y \vee Z).
+\text{CNF} \;\equiv\; &(X \vee \neg Y \vee \neg Z) \wedge
+(\neg X \vee Y \vee Z) \wedge {} \\
+& (\neg X \vee Y \vee \neg Z) \wedge
+(\neg X \vee \neg Y \vee Z).
 \end{align*}
 
 \bigskip
