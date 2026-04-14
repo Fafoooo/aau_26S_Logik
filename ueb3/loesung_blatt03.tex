@@ -179,77 +179,86 @@ Signatur) \"aquivalent zu einer Formel ist, in der nur die Operatoren
 $\vee$ und $\neg$ vorkommen.
 
 \medskip
-\textbf{Behauptung.} Zu jeder aussagenlogischen Formel~$F$ existiert
-eine \"aquivalente Formel~$F'$, die nur die Junktoren $\vee$ und
-$\neg$ verwendet (d.\,h.\ $F \equiv F'$).
+\textbf{Schritt 1: Idee.}
+Eine Formel kann die Operatoren $\neg$, $\wedge$, $\vee$, $\to$,
+$\leftrightarrow$ enthalten. Von diesen sind $\neg$ und $\vee$
+bereits erlaubt. Man muss also nur zeigen, dass man die drei
+``verbotenen'' Operatoren $\wedge$, $\to$ und $\leftrightarrow$
+jeweils durch $\vee$ und $\neg$ ersetzen kann.
 
 \medskip
-Beweis per struktureller Induktion \"uber den Formelaufbau.
+\textbf{Schritt 2: Ersetzungsregeln.}
+F\"ur jeden verbotenen Operator gibt es eine \"aquivalente Formel,
+die nur $\vee$ und $\neg$ verwendet:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|c|l}
+\toprule
+\textbf{Operator} & \textbf{Ersetzung} & \textbf{Warum?} \\
+\midrule
+$G \wedge H$
+  & $\neg(\neg G \vee \neg H)$
+  & De~Morgan: beide wahr $\Leftrightarrow$ keines falsch \\
+$G \to H$
+  & $\neg G \vee H$
+  & Beide nur falsch wenn $G\!=\!1, H\!=\!0$ \\
+$G \leftrightarrow H$
+  & $\neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr)$
+  & $\leftrightarrow$ zerlegen in $\to$ und $\wedge$, \\
+  & & dann obige Regeln anwenden \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Schritt 3: Beweis (strukturelle Induktion).}
+
+Zu zeigen: Zu jeder Formel~$F$ existiert eine \"aquivalente
+Formel~$F'$ \"uber $\{\vee, \neg\}$.
 
 \medskip
-\textbf{Induktionsanfang.} Sei $F = p$ eine Aussagenvariable.
-Dann enth\"alt $F$ keine Junktoren, also ist $F' := p$ bereits
-eine Formel \"uber $\{\vee, \neg\}$ mit $F' \equiv F$.
+\textbf{Induktionsanfang.} $F = p$ (eine Aussagenvariable).
+Enth\"alt keine Operatoren, also ist $F' := p$ schon \"uber
+$\{\vee, \neg\}$. \checkmark
 
 \medskip
-\textbf{Induktionsschritt.} Sei $F$ zusammengesetzt.
-IV: F\"ur alle echten Teilformeln~$G$ von~$F$ existiert ein
-\"aquivalentes~$G'$ \"uber $\{\vee, \neg\}$.
-Fallunterscheidung nach Hauptoperator:
+\textbf{Induktionsschritt.} $F$ ist zusammengesetzt.\\
+Induktionsvoraussetzung (IV): Alle echten Teilformeln $G$, $H$
+von~$F$ lassen sich bereits als $G'$, $H'$ \"uber $\{\vee, \neg\}$
+schreiben.
 
-\medskip
-\textbf{Fall 1: $F = \neg G$.}\\
-Nach IV existiert $G'$ \"uber $\{\vee,\neg\}$ mit $G \equiv G'$.
-Setze $F' := \neg G'$. \checkmark
+Man unterscheidet nach dem \"au\ss ersten Operator von~$F$:
 
-\medskip
-\textbf{Fall 2: $F = G \vee H$.}\\
-Nach IV existieren $G', H'$ \"uber $\{\vee, \neg\}$.
-Setze $F' := G' \vee H'$. \checkmark
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l|l|l}
+\toprule
+\textbf{Form von $F$} & \textbf{Setze $F' :=$}
+  & \textbf{Begr\"undung} \\
+\midrule
+$\neg G$
+  & $\neg G'$
+  & $\neg$ ist erlaubt, $G'$ nach IV \\
+$G \vee H$
+  & $G' \vee H'$
+  & $\vee$ ist erlaubt, $G', H'$ nach IV \\
+$G \wedge H$
+  & $\neg(\neg G' \vee \neg H')$
+  & De~Morgan (Schritt~2) + IV \\
+$G \to H$
+  & $\neg G' \vee H'$
+  & Implikationsregel (Schritt~2) + IV \\
+$G \leftrightarrow H$
+  & $\neg\bigl(\neg(\neg G' \vee H') \vee \neg(\neg H' \vee G')\bigr)$
+  & $\leftrightarrow$-Zerlegung (Schritt~2) + IV \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\medskip
-\textbf{Fall 3: $F = G \wedge H$.}\\
-De~Morgan: $G \wedge H \equiv \neg(\neg G \vee \neg H)$.
-
-$G \wedge H$ ist wahr gdw.\ beide wahr sind, gdw.\ keines falsch ist,
-gdw.\ $\neg G \vee \neg H$ falsch ist, gdw.\ $\neg(\neg G \vee \neg H)$
-wahr ist. Mit IV:
-$F' := \neg(\neg G' \vee \neg H')$. \checkmark
-
-\medskip
-\textbf{Fall 4: $F = G \to H$.}\\
-$G \to H \equiv \neg G \vee H$
-(gleiche Wahrheitstabelle: beide nur falsch wenn $G=1, H=0$).
-Mit IV: $F' := \neg G' \vee H'$. \checkmark
-
-\medskip
-\textbf{Fall 5: $F = G \leftrightarrow H$.}\\
-$G \leftrightarrow H \equiv (G \to H) \wedge (H \to G)$.
-Mit Fall~4 (Implikation) und Fall~3 (De~Morgan):
-\begin{align*}
-G \leftrightarrow H &\;\equiv\; (\neg G \vee H) \wedge (\neg H \vee G) \\
-&\;\equiv\; \neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr).
-\end{align*}
-Mit IV: $F' := \neg\bigl(\neg(\neg G' \vee H') \vee \neg(\neg H' \vee G')\bigr)$. \checkmark
-
-\medskip
-\textbf{Schluss.} Damit ist in jedem Fall eine \"aquivalente Formel
-\"uber $\{\vee, \neg\}$ konstruiert. Da jede Formel einen endlichen
-Syntaxbaum hat, liefert die Induktion die Behauptung. \hfill$\square$
-
-\bigskip
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Merke.} $\{\vee, \neg\}$ ist eine \emph{funktional
-vollst\"andige} Menge von Junktoren -- man kann jede boolesche
-Funktion und damit jede Formel allein mit Disjunktion und Negation
-ausdr\"ucken. Die im Beweis verwendeten Ersetzungen sind:
-\begin{align*}
-G \wedge H &\;\equiv\; \neg(\neg G \vee \neg H) \\
-G \to H &\;\equiv\; \neg G \vee H \\
-G \leftrightarrow H &\;\equiv\;
-   \neg\bigl(\neg(\neg G \vee H) \vee \neg(\neg H \vee G)\bigr)
-\end{align*}
-}}
+In jedem Fall ist $F' \equiv F$ und $F'$ verwendet nur
+$\vee$ und $\neg$. Da jede Formel aus endlich vielen
+Operatoranwendungen aufgebaut ist, liefert die Induktion
+die Behauptung. \hfill$\square$
 
 \newpage
 
