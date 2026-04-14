@@ -310,26 +310,26 @@ Davon sind 9~Zeilen wahr ($f=1$) und 7~Zeilen falsch ($f=0$).
 
 \begin{center}
 \renewcommand{\arraystretch}{1.1}
-\begin{tabular}{r|cccc|c}
+\begin{tabular}{r|cccc|c|l}
 \toprule
-\# & $A$ & $B$ & $C$ & $D$ & $f$ \\
+\# & $A$ & $B$ & $C$ & $D$ & $f$ & \\
 \midrule
- 1 & 0 & 0 & 0 & 0 & 0 \\
- 2 & 0 & 0 & 0 & 1 & \textbf{1} \\
- 3 & 0 & 0 & 1 & 0 & \textbf{1} \\
- 4 & 0 & 0 & 1 & 1 & 0 \\
- 5 & 0 & 1 & 0 & 0 & \textbf{1} \\
- 6 & 0 & 1 & 0 & 1 & \textbf{1} \\
- 7 & 0 & 1 & 1 & 0 & 0 \\
- 8 & 0 & 1 & 1 & 1 & \textbf{1} \\
- 9 & 1 & 0 & 0 & 0 & 0 \\
-10 & 1 & 0 & 0 & 1 & 0 \\
-11 & 1 & 0 & 1 & 0 & \textbf{1} \\
-12 & 1 & 0 & 1 & 1 & 0 \\
-13 & 1 & 1 & 0 & 0 & \textbf{1} \\
-14 & 1 & 1 & 0 & 1 & 0 \\
-15 & 1 & 1 & 1 & 0 & \textbf{1} \\
-16 & 1 & 1 & 1 & 1 & \textbf{1} \\
+ 1 & 0 & 0 & 0 & 0 & 0 & $\to$ CNF \\
+ 2 & 0 & 0 & 0 & 1 & \textbf{1} & $\to$ DNF \\
+ 3 & 0 & 0 & 1 & 0 & \textbf{1} & $\to$ DNF \\
+ 4 & 0 & 0 & 1 & 1 & 0 & $\to$ CNF \\
+ 5 & 0 & 1 & 0 & 0 & \textbf{1} & $\to$ DNF \\
+ 6 & 0 & 1 & 0 & 1 & \textbf{1} & $\to$ DNF \\
+ 7 & 0 & 1 & 1 & 0 & 0 & $\to$ CNF \\
+ 8 & 0 & 1 & 1 & 1 & \textbf{1} & $\to$ DNF \\
+ 9 & 1 & 0 & 0 & 0 & 0 & $\to$ CNF \\
+10 & 1 & 0 & 0 & 1 & 0 & $\to$ CNF \\
+11 & 1 & 0 & 1 & 0 & \textbf{1} & $\to$ DNF \\
+12 & 1 & 0 & 1 & 1 & 0 & $\to$ CNF \\
+13 & 1 & 1 & 0 & 0 & \textbf{1} & $\to$ DNF \\
+14 & 1 & 1 & 0 & 1 & 0 & $\to$ CNF \\
+15 & 1 & 1 & 1 & 0 & \textbf{1} & $\to$ DNF \\
+16 & 1 & 1 & 1 & 1 & \textbf{1} & $\to$ DNF \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -342,27 +342,20 @@ verbinden.
 
 Die ersten drei Zeilen im Detail:
 
-\begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{r|cccc|l}
-\toprule
-\# & $A$ & $B$ & $C$ & $D$ & Konjunktion \\
-\midrule
-2 & 0 & 0 & 0 & 1
-  & $A\!=\!0 \to \neg A$,\; $B\!=\!0 \to \neg B$,\;
-    $C\!=\!0 \to \neg C$,\; $D\!=\!1 \to D$
-    \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge \neg C \wedge D)$ \\
-3 & 0 & 0 & 1 & 0
-  & $A\!=\!0 \to \neg A$,\; $B\!=\!0 \to \neg B$,\;
-    $C\!=\!1 \to C$,\; $D\!=\!0 \to \neg D$
-    \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge C \wedge \neg D)$ \\
-5 & 0 & 1 & 0 & 0
-  & $A\!=\!0 \to \neg A$,\; $B\!=\!1 \to B$,\;
-    $C\!=\!0 \to \neg C$,\; $D\!=\!0 \to \neg D$
-    \;$\Rightarrow$\; $(\neg A \wedge B \wedge \neg C \wedge \neg D)$ \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{itemize}[nosep]
+\item Zeile~2: $(A,B,C,D) = (0,0,0,1)$\\
+      $0 \to \neg A$,\; $0 \to \neg B$,\;
+      $0 \to \neg C$,\; $1 \to D$
+      \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge \neg C \wedge D)$
+\item Zeile~3: $(A,B,C,D) = (0,0,1,0)$\\
+      $0 \to \neg A$,\; $0 \to \neg B$,\;
+      $1 \to C$,\; $0 \to \neg D$
+      \;$\Rightarrow$\; $(\neg A \wedge \neg B \wedge C \wedge \neg D)$
+\item Zeile~5: $(A,B,C,D) = (0,1,0,0)$\\
+      $0 \to \neg A$,\; $1 \to B$,\;
+      $0 \to \neg C$,\; $0 \to \neg D$
+      \;$\Rightarrow$\; $(\neg A \wedge B \wedge \neg C \wedge \neg D)$
+\end{itemize}
 
 Die restlichen 6~Zeilen (Nr.\,6, 8, 11, 13, 15, 16) analog.
 Alle 9~Konjunktionen mit $\vee$ verbinden:
@@ -387,27 +380,20 @@ verbinden.
 
 Die ersten drei Zeilen im Detail:
 
-\begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{r|cccc|l}
-\toprule
-\# & $A$ & $B$ & $C$ & $D$ & Disjunktion \\
-\midrule
-1 & 0 & 0 & 0 & 0
-  & $A\!=\!0 \to A$,\; $B\!=\!0 \to B$,\;
-    $C\!=\!0 \to C$,\; $D\!=\!0 \to D$
-    \;$\Rightarrow$\; $(A \vee B \vee C \vee D)$ \\
-4 & 0 & 0 & 1 & 1
-  & $A\!=\!0 \to A$,\; $B\!=\!0 \to B$,\;
-    $C\!=\!1 \to \neg C$,\; $D\!=\!1 \to \neg D$
-    \;$\Rightarrow$\; $(A \vee B \vee \neg C \vee \neg D)$ \\
-7 & 0 & 1 & 1 & 0
-  & $A\!=\!0 \to A$,\; $B\!=\!1 \to \neg B$,\;
-    $C\!=\!1 \to \neg C$,\; $D\!=\!0 \to D$
-    \;$\Rightarrow$\; $(A \vee \neg B \vee \neg C \vee D)$ \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{itemize}[nosep]
+\item Zeile~1: $(A,B,C,D) = (0,0,0,0)$\\
+      $0 \to A$,\; $0 \to B$,\;
+      $0 \to C$,\; $0 \to D$
+      \;$\Rightarrow$\; $(A \vee B \vee C \vee D)$
+\item Zeile~4: $(A,B,C,D) = (0,0,1,1)$\\
+      $0 \to A$,\; $0 \to B$,\;
+      $1 \to \neg C$,\; $1 \to \neg D$
+      \;$\Rightarrow$\; $(A \vee B \vee \neg C \vee \neg D)$
+\item Zeile~7: $(A,B,C,D) = (0,1,1,0)$\\
+      $0 \to A$,\; $1 \to \neg B$,\;
+      $1 \to \neg C$,\; $0 \to D$
+      \;$\Rightarrow$\; $(A \vee \neg B \vee \neg C \vee D)$
+\end{itemize}
 
 Die restlichen 4~Zeilen (Nr.\,9, 10, 12, 14) analog.
 Alle 7~Disjunktionen mit $\wedge$ verbinden:
