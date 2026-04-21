@@ -100,7 +100,9 @@ Konjunktion.
 R_1 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigl(x_{i,j,1} \vee x_{i,j,2} \vee x_{i,j,3} \vee x_{i,j,4}\bigr).
 \]
-16 Klauseln (eine pro Feld).
+In Worten: F\"ur jedes Feld $(i,j)$ muss mindestens eine der vier
+Ziffern $1, 2, 3, 4$ dort gesetzt sein. $\Rightarrow$ 16~Klauseln
+(eine pro Feld).
 
 \smallskip
 \textbf{(R2) Jedes Feld enth\"alt h\"ochstens eine Ziffer:}
@@ -109,7 +111,9 @@ R_2 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigwedge_{1 \le n < m \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{i,j,m}\bigr).
 \]
-$16 \cdot 6 = 96$ Klauseln.
+In Worten: F\"ur jedes Feld $(i,j)$ und jedes Ziffern-Paar $n \ne m$
+d\"urfen nicht beide gleichzeitig in diesem Feld stehen.
+$\Rightarrow$ $16 \cdot 6 = 96$ Klauseln.
 
 \smallskip
 \textbf{(R3) Keine Ziffer zweimal in derselben Zeile:}
@@ -118,7 +122,10 @@ R_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
 \bigwedge_{1 \le j < k \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{i,k,n}\bigr).
 \]
-$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+In Worten: F\"ur jede Zeile $i$, jede Ziffer $n$ und je zwei
+verschiedene Felder in dieser Zeile (Spalten $j \ne k$) d\"urfen
+nicht beide Felder die Ziffer $n$ enthalten.
+$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
 \textbf{(R4) Keine Ziffer zweimal in derselben Spalte:}
@@ -127,7 +134,10 @@ R_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
 \bigwedge_{1 \le i < k \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{k,j,n}\bigr).
 \]
-$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+In Worten: F\"ur jede Spalte $j$, jede Ziffer $n$ und je zwei
+verschiedene Felder in dieser Spalte (Zeilen $i \ne k$) d\"urfen
+nicht beide Felder die Ziffer $n$ enthalten.
+$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
 \textbf{(R5) Keine Ziffer zweimal in derselben Region:}
@@ -136,7 +146,10 @@ R_5 \;\equiv\; \bigwedge_{r=1}^{4} \bigwedge_{n=1}^{4}
 \bigwedge_{\substack{(i,j),(k,l) \in R_r \\ (i,j) \neq (k,l)}}
 \neg\bigl(x_{i,j,n} \wedge x_{k,l,n}\bigr).
 \]
-$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+In Worten: F\"ur jede Region $R_r$, jede Ziffer $n$ und je zwei
+verschiedene Felder $(i,j), (k,l)$ in dieser Region d\"urfen nicht
+beide Felder die Ziffer $n$ enthalten.
+$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \bigskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
