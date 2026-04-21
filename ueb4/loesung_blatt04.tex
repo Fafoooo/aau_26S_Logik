@@ -95,15 +95,18 @@ F\"unf Bedingungen als Teilformeln; die Gesamtformel ist ihre
 Konjunktion.
 
 \smallskip
-\textit{Notation:} In den folgenden Formeln laufen die Indizes jeweils
-von $1$ bis $4$:
+\textit{Notation:} In den folgenden Formeln laufen alle Indizes von
+$1$ bis $4$:
 \begin{itemize}[nosep]
-\item $i, k$: Zeilen-Indizes
-\item $j, k$: Spalten-Indizes \;(Buchstabe $k$ je nach Kontext Zeile oder Spalte)
+\item $i$: Zeilen-Index
+\item $j$: Spalten-Index
 \item $n, m$: Ziffern aus $\{1,2,3,4\}$
 \item $r$: Regions-Index \;(w\"ahlt eine der 4 Regionen $R_1, \ldots, R_4$)
-\item $(i,j), (k,l)$: Koordinaten zweier Felder im selben Bereich
 \end{itemize}
+F\"ur die Vergleichs-Regeln (R3--R5) werden zwei verschiedene Felder
+gebraucht. Die beiden Felder eines solchen Paars bekommen Indizes
+mit Tiefstellung $_1$ und $_2$, also z.\,B.\ $i_1$ und $i_2$ f\"ur zwei
+verschiedene Zeilen.
 
 \smallskip
 \textbf{(R1) Jedes Feld enth\"alt mindestens eine Ziffer:}
@@ -130,36 +133,36 @@ $\Rightarrow$ $16 \cdot 6 = 96$ Klauseln.
 \textbf{(R3) Keine Ziffer zweimal in derselben Zeile:}
 \[
 R_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
-\bigwedge_{1 \le j < k \le 4}
-\neg\bigl(x_{i,j,n} \wedge x_{i,k,n}\bigr).
+\bigwedge_{1 \le j_1 < j_2 \le 4}
+\neg\bigl(x_{i,j_1,n} \wedge x_{i,j_2,n}\bigr).
 \]
 In Worten: F\"ur jede Zeile $i$, jede Ziffer $n$ und je zwei
-verschiedene Felder in dieser Zeile (Spalten $j \ne k$) d\"urfen
-nicht beide Felder die Ziffer $n$ enthalten.
+verschiedene Spalten $j_1 < j_2$ d\"urfen die Felder $(i, j_1)$ und
+$(i, j_2)$ nicht beide die Ziffer $n$ enthalten.
 $\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
 \textbf{(R4) Keine Ziffer zweimal in derselben Spalte:}
 \[
 R_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
-\bigwedge_{1 \le i < k \le 4}
-\neg\bigl(x_{i,j,n} \wedge x_{k,j,n}\bigr).
+\bigwedge_{1 \le i_1 < i_2 \le 4}
+\neg\bigl(x_{i_1,j,n} \wedge x_{i_2,j,n}\bigr).
 \]
 In Worten: F\"ur jede Spalte $j$, jede Ziffer $n$ und je zwei
-verschiedene Felder in dieser Spalte (Zeilen $i \ne k$) d\"urfen
-nicht beide Felder die Ziffer $n$ enthalten.
+verschiedene Zeilen $i_1 < i_2$ d\"urfen die Felder $(i_1, j)$ und
+$(i_2, j)$ nicht beide die Ziffer $n$ enthalten.
 $\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
 \textbf{(R5) Keine Ziffer zweimal in derselben Region:}
 \[
 R_5 \;\equiv\; \bigwedge_{r=1}^{4} \bigwedge_{n=1}^{4}
-\bigwedge_{\substack{(i,j),(k,l) \in R_r \\ (i,j) \neq (k,l)}}
-\neg\bigl(x_{i,j,n} \wedge x_{k,l,n}\bigr).
+\bigwedge_{\substack{(i_1,j_1),\,(i_2,j_2) \in R_r \\ (i_1,j_1) \neq (i_2,j_2)}}
+\neg\bigl(x_{i_1,j_1,n} \wedge x_{i_2,j_2,n}\bigr).
 \]
 In Worten: F\"ur jede Region $R_r$, jede Ziffer $n$ und je zwei
-verschiedene Felder $(i,j), (k,l)$ in dieser Region d\"urfen nicht
-beide Felder die Ziffer $n$ enthalten.
+verschiedene Felder $(i_1, j_1), (i_2, j_2)$ in dieser Region
+d\"urfen die beiden Felder nicht beide die Ziffer $n$ enthalten.
 $\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \bigskip
