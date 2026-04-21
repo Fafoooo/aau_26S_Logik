@@ -1,0 +1,353 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{basicstyle=\ttfamily\small, keywordstyle=\color{blue!70!black},
+        commentstyle=\color{green!40!black}, stringstyle=\color{orange!80!black},
+        numbers=left, numberstyle=\tiny, frame=single, breaklines=true,
+        showstringspaces=false, language=Python}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 4 -- L\"osungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\subsection*{Aufgabe 1 \textnormal{(4 Punkte)} -- Sudoku-Formel}
+
+\textbf{Angabe.} Entwerfen Sie eine aussagenlogische Formel, die ein
+$4 \times 4$ Sudoku mit $2 \times 2$ Regionen repr\"asentiert (jedes
+Modell = eine L\"osung). Jede Ziffer $1$--$4$ soll in jeder Zeile,
+Spalte und Region h\"ochstens einmal vorkommen.
+
+\medskip
+\textbf{Schritt 1: Variablen einf\"uhren.}
+F\"ur $i,j,n \in \{1,2,3,4\}$ definiere
+\[
+x_{i,j,n} \;:=\; \text{``Feld $(i,j)$ enth\"alt Ziffer $n$''}.
+\]
+Das sind $4 \cdot 4 \cdot 4 = 64$ Variablen.
+
+\medskip
+\textbf{Schritt 2: Regionen definieren.}
+Die vier $2 \times 2$-Regionen:
+\begin{align*}
+R_1 &= \{(1,1),(1,2),(2,1),(2,2)\} \quad \text{(links oben)} \\
+R_2 &= \{(1,3),(1,4),(2,3),(2,4)\} \quad \text{(rechts oben)} \\
+R_3 &= \{(3,1),(3,2),(4,1),(4,2)\} \quad \text{(links unten)} \\
+R_4 &= \{(3,3),(3,4),(4,3),(4,4)\} \quad \text{(rechts unten)}
+\end{align*}
+
+\medskip
+\textbf{Schritt 3: Constraints formulieren.}
+F\"unf Bedingungen als Teilformeln; die Gesamtformel ist ihre
+Konjunktion.
+
+\smallskip
+\textbf{(C1) Jedes Feld enth\"alt mindestens eine Ziffer:}
+\[
+C_1 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+\bigl(x_{i,j,1} \vee x_{i,j,2} \vee x_{i,j,3} \vee x_{i,j,4}\bigr).
+\]
+16 Klauseln (eine pro Feld).
+
+\smallskip
+\textbf{(C2) Jedes Feld enth\"alt h\"ochstens eine Ziffer:}
+\[
+C_2 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+\bigwedge_{1 \le n < m \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{i,j,m}\bigr).
+\]
+$16 \cdot 6 = 96$ Klauseln.
+
+\smallskip
+\textbf{(C3) Keine Ziffer zweimal in derselben Zeile:}
+\[
+C_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
+\bigwedge_{1 \le j < k \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{i,k,n}\bigr).
+\]
+$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\smallskip
+\textbf{(C4) Keine Ziffer zweimal in derselben Spalte:}
+\[
+C_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
+\bigwedge_{1 \le i < k \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{k,j,n}\bigr).
+\]
+$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\smallskip
+\textbf{(C5) Keine Ziffer zweimal in derselben Region:}
+\[
+C_5 \;\equiv\; \bigwedge_{R \in \{R_1, R_2, R_3, R_4\}}
+\bigwedge_{n=1}^{4}
+\bigwedge_{\substack{(i,j),(k,l) \in R \\ (i,j) \neq (k,l)}}
+\neg\bigl(x_{i,j,n} \wedge x_{k,l,n}\bigr).
+\]
+$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\bigskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe~1.}\\[2pt]
+\[
+\Phi \;\equiv\; C_1 \wedge C_2 \wedge C_3 \wedge C_4 \wedge C_5.
+\]
+Insgesamt $16 + 96 + 96 + 96 + 96 = 400$ Klauseln \"uber
+$64$ Variablen. Jedes Modell von $\Phi$ entspricht einer g\"ultigen
+Sudoku-L\"osung.
+}}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\subsection*{Aufgabe 2 \textnormal{(2+2 Punkte)} -- Schaltkreis}
+
+\textbf{Angabe.} Stelle den gegebenen Schaltkreis als aussagen"-logische
+Formel dar, deren Modelle genau die zul\"assigen Konfigurationen der
+Inputs/Outputs $A, B, C, D, E, F$ sind.
+Notation: $[>k]$ gibt $1$ aus, wenn die Input-Summe $> k$ ist;
+$[=k]$ gibt $1$ aus, wenn die Input-Summe $= k$ ist.
+
+\medskip
+\textbf{Schritt 1: Verkabelung ablesen.}
+Aus dem Schaltkreis liest man folgende Struktur ab (mit
+Hilfs-Outputs $o_1, o_2, o_3$ der linken Gates):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l|l|l}
+\toprule
+Gate & Inputs & Bedingung & Output \\
+\midrule
+$[>1]$ (oben links) & $A, B$ & $A+B > 1$ & $o_1$ \\
+$[=1]$ (mitte links) & $A, C$ & $A+C = 1$ & $o_2$ \\
+$[>0]$ (unten links) & $B, C$ & $B+C > 0$ & $o_3$ \\
+$[=0]$ (oben rechts) & $o_1$ & $o_1 = 0$ & $D$ \\
+$[>2]$ (mitte rechts) & $o_1, o_2, o_3$ & Summe $> 2$ & $E$ \\
+$[>1]$ (unten rechts) & $o_2, o_3$ & $o_2 + o_3 > 1$ & $F$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Schritt 2: Gate-Bedingungen als Bool'sche Ausdr\"ucke.}
+F\"ur bin\"are Inputs gilt:
+\begin{align*}
+A + B > 1 &\;\Leftrightarrow\; A \wedge B \\
+A + C = 1 &\;\Leftrightarrow\; (A \wedge \neg C) \vee (\neg A \wedge C) \\
+B + C > 0 &\;\Leftrightarrow\; B \vee C \\
+o_1 = 0 &\;\Leftrightarrow\; \neg o_1 \\
+o_1 + o_2 + o_3 > 2 &\;\Leftrightarrow\; o_1 \wedge o_2 \wedge o_3 \\
+o_2 + o_3 > 1 &\;\Leftrightarrow\; o_2 \wedge o_3
+\end{align*}
+
+\medskip
+\textbf{Schritt 3: Gesamtformel.}
+F\"ur jeden Draht/Output wird eine \"Aquivalenz geschrieben und
+alles mit $\wedge$ verkn\"upft:
+\begin{align*}
+\Phi \;\equiv\; & (o_1 \leftrightarrow (A \wedge B)) \wedge {} \\
+& (o_2 \leftrightarrow ((A \wedge \neg C) \vee (\neg A \wedge C))) \wedge {} \\
+& (o_3 \leftrightarrow (B \vee C)) \wedge {} \\
+& (D \leftrightarrow \neg o_1) \wedge {} \\
+& (E \leftrightarrow (o_1 \wedge o_2 \wedge o_3)) \wedge {} \\
+& (F \leftrightarrow (o_2 \wedge o_3)).
+\end{align*}
+Die Modelle von $\Phi$ (projiziert auf $A,B,C,D,E,F$) sind genau
+die zul\"assigen Konfigurationen.
+
+\medskip
+{\small
+\textbf{Anmerkung.} Da $o_1, o_2, o_3$ Hilfsvariablen sind, lassen
+sie sich auch eliminieren und direkt durch die folgende
+\"aquivalente Formel ersetzen:
+\begin{align*}
+\Phi' \;\equiv\; & (D \leftrightarrow \neg(A \wedge B)) \wedge {} \\
+& (E \leftrightarrow ((A \wedge B) \wedge ((A \wedge \neg C) \vee (\neg A \wedge C)) \wedge (B \vee C))) \wedge {} \\
+& (F \leftrightarrow (((A \wedge \neg C) \vee (\neg A \wedge C)) \wedge (B \vee C))).
+\end{align*}
+Diese Form ist logisch \"aquivalent bez\"uglich der sichtbaren
+Variablen $A,B,C,D,E,F$.
+}
+
+\medskip
+\textbf{Schritt 4: Teilaufgaben (a), (b), (c).}
+Alle drei Fragen lassen sich mit einem Erf\"ullbarkeitstester auf
+$\Phi$ beantworten:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|l|l}
+\toprule
+ & \textbf{Frage} & \textbf{Dem Tester geben} \\
+\midrule
+(a) & Kann $F = 1$ sein?
+    & $\Phi \wedge F$
+    \quad erf\"ullbar $\Rightarrow$ ja \\
+(b) & Kann $E = A$ sein?
+    & $\Phi \wedge (E \leftrightarrow A)$
+    \quad erf\"ullbar $\Rightarrow$ ja \\
+(c) & Gilt $F = 1 \Leftrightarrow D = 0$?
+    & $\Phi \wedge \neg(F \leftrightarrow \neg D)$
+    \quad unerf\"ullbar $\Rightarrow$ ja \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Konkrete Antworten (durch explizite Belegungen):}
+
+\smallskip
+\textbf{(a) Ja, $F = 1$ ist m\"oglich.}\\
+W\"ahle $A = 1, B = 1, C = 0$. Dann:
+$o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) = (1 \wedge 1) \vee (0 \wedge 0) = 1$,
+$o_3 = B \vee C = 1 \vee 0 = 1$,
+$F = o_2 \wedge o_3 = 1 \wedge 1 = 1$. \checkmark
+
+\smallskip
+\textbf{(b) Ja, $E = A$ ist m\"oglich.}\\
+Trivial f\"ur $A = 0$: w\"ahle $A = B = C = 0$, dann
+$E = 0 \wedge \ldots = 0 = A$. \checkmark\\
+Auch f\"ur $A = 1$: w\"ahle $A = 1, B = 1, C = 0$. Dann
+$o_1 = 1$, $o_2 = 1$, $o_3 = 1$, also $E = 1 = A$. \checkmark
+
+\smallskip
+\textbf{(c) Nein, $F = 1 \Leftrightarrow D = 0$ gilt NICHT.}\\
+Gegenbeispiel: $A = B = C = 1$. Dann:
+$o_1 = A \wedge B = 1$, also $D = \neg o_1 = 0$.
+$o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) = 0$,
+$o_3 = B \vee C = 1$, $F = o_2 \wedge o_3 = 0$.
+Hier ist $D = 0$, aber $F = 0 \neq 1$. Also nicht \"aquivalent.
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\subsection*{Aufgabe 3 \textnormal{(4 Punkte)} -- Bishop Independence
+Problem}
+
+\textbf{Angabe.} Schreiben Sie ein Skript, das Formeln produziert,
+die das Bishop Independence Problem l\"osen (analog zu Rook/Queen
+Independence Problem).
+
+\medskip
+\textbf{Schritt 1: Problem verstehen.}
+Auf einem $n \times n$ Schachbrett: Platziere L\"aufer so, dass
+keine zwei einander schlagen k\"onnen. L\"aufer bewegen sich
+diagonal, d.\,h.\ zwei L\"aufer schlagen sich genau dann, wenn sie
+auf derselben Diagonale stehen.
+
+Diagonalen:
+\begin{itemize}[nosep]
+\item Hauptdiagonalen (von links oben nach rechts unten): $i - j$
+      ist konstant, $i - j \in \{-(n-1), \ldots, n-1\}$ --
+      insgesamt $2n - 1$ St\"uck.
+\item Gegendiagonalen (von rechts oben nach links unten): $i + j$
+      ist konstant, $i + j \in \{2, \ldots, 2n\}$ -- ebenfalls
+      $2n - 1$ St\"uck.
+\end{itemize}
+
+\medskip
+\textbf{Schritt 2: Variablen und Constraints.}
+F\"ur jedes Feld $(i,j)$ mit $1 \le i,j \le n$ definiere
+\[
+b_{i,j} \;:=\; \text{``Auf Feld $(i,j)$ steht ein L\"aufer''}.
+\]
+F\"ur jede Diagonale $D$ (mit mindestens zwei Feldern) und jedes
+Paar $(i_1,j_1), (i_2,j_2) \in D$ mit $(i_1,j_1) \neq (i_2,j_2)$:
+\[
+\neg\bigl(b_{i_1,j_1} \wedge b_{i_2,j_2}\bigr).
+\]
+Die Gesamtformel ist die Konjunktion all dieser Klauseln.
+
+\medskip
+\textbf{Schritt 3: Python-Skript.}
+
+\begin{lstlisting}
+def bishop_independence(n):
+    """
+    Erzeugt die aussagenlogische Formel (als Liste von Klauseln)
+    fuer das Bishop Independence Problem auf einem n x n
+    Schachbrett. Jede Klausel hat die Form
+    (not b_{i1,j1} or not b_{i2,j2}) und verbietet zwei Laeufer
+    auf derselben Diagonale.
+    """
+    # Alle Diagonalen sammeln
+    diagonals = {}
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            # Hauptdiagonale: i - j ist konstant
+            diagonals.setdefault(('haupt', i-j), []).append((i, j))
+            # Gegendiagonale: i + j ist konstant
+            diagonals.setdefault(('gegen', i+j), []).append((i, j))
+
+    # Klauseln erzeugen: fuer jede Diagonale mit >= 2 Feldern,
+    # fuer jedes Paar ein at-most-one-Constraint
+    clauses = []
+    for feld_liste in diagonals.values():
+        if len(feld_liste) < 2:
+            continue
+        for p in range(len(feld_liste)):
+            for q in range(p+1, len(feld_liste)):
+                (i1, j1) = feld_liste[p]
+                (i2, j2) = feld_liste[q]
+                klausel = f"(NOT b_{{{i1},{j1}}} OR NOT b_{{{i2},{j2}}})"
+                clauses.append(klausel)
+    return clauses
+
+
+def formel_ausgabe(clauses):
+    """Verbindet alle Klauseln mit AND zur Gesamtformel."""
+    return " AND ".join(clauses)
+
+
+if __name__ == "__main__":
+    n = 4
+    klauseln = bishop_independence(n)
+    print(f"Anzahl Klauseln fuer n={n}: {len(klauseln)}")
+    print(formel_ausgabe(klauseln))
+\end{lstlisting}
+
+\medskip
+\textbf{Schritt 4: Beispiel $n = 4$.}
+F\"ur ein $4 \times 4$-Brett:
+\begin{itemize}[nosep]
+\item Hauptdiagonalen: $7$ (f\"ur $i - j \in \{-3,-2,-1,0,1,2,3\}$).
+      Gr\"o\ss en: $1, 2, 3, 4, 3, 2, 1$.
+\item Gegendiagonalen: $7$ (f\"ur $i + j \in \{2,3,4,5,6,7,8\}$).
+      Gr\"o\ss en: $1, 2, 3, 4, 3, 2, 1$.
+\end{itemize}
+Anzahl der Paare pro Diagonale: $\binom{k}{2}$ f\"ur Gr\"o\ss e~$k$.
+Also $\binom{2}{2} + \binom{3}{2} + \binom{4}{2} + \binom{3}{2}
++ \binom{2}{2} = 1 + 3 + 6 + 3 + 1 = 14$ pro Richtung.
+Insgesamt $14 + 14 = 28$ Klauseln.
+
+\bigskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe~3.}\\[2pt]
+Das Skript produziert f\"ur jedes $n$ eine Formel in CNF, die nur
+die Independence-Constraints enth\"alt. Modelle = g\"ultige
+L\"aufer-Konfigurationen (ohne gegenseitiges Schlagen). Triviale
+Modelle (leeres Brett) sind eingeschlossen; wird eine Mindestanzahl
+an L\"aufern gefordert, muss das als zus\"atzlicher Constraint
+erg\"anzt werden.
+}}
+
+\end{document}

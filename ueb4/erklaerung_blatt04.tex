@@ -1,0 +1,1214 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\tcbuselibrary{breakable}
+
+\newtcolorbox{merkbox}[1][]{
+  colback=blue!5, colframe=blue!40,
+  fonttitle=\bfseries, title={Merke}, breakable, #1
+}
+\newtcolorbox{analogie}[1][]{
+  colback=green!5, colframe=green!40,
+  fonttitle=\bfseries, title={Analogie}, breakable, #1
+}
+
+\lstset{basicstyle=\ttfamily\small, keywordstyle=\color{blue!70!black},
+        commentstyle=\color{green!40!black}, stringstyle=\color{orange!80!black},
+        numbers=left, numberstyle=\tiny, frame=single, breaklines=true,
+        showstringspaces=false, language=Python}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 4 -- Erkl\"arungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+% ============================================================
+% TEIL 0: Grundlagen
+% ============================================================
+
+\section*{Teil 0: Grundlagen -- alles, was wir brauchen}
+
+Bevor wir uns an die Aufgaben setzen, schauen wir uns die Werkzeuge
+an, die wir brauchen. Einige Begriffe kennen wir schon aus den
+vorherigen Bl\"attern -- die frischen wir kurz auf. Andere Konzepte
+sind neu und werden in Ruhe eingef\"uhrt. Am Ende von Teil~0 hast du
+alle Bausteine, um die drei Aufgaben selbst zu l\"osen.
+
+\subsection*{0.1 Aussagenlogische Formel -- kurze Auffrischung}
+
+Eine aussagenlogische Formel ist ein Ausdruck, der aus \textbf{Variablen}
+und \textbf{Operatoren} aufgebaut ist. Jede Variable steht f\"ur eine
+ja/nein-Frage und kann den Wert $0$ (falsch) oder $1$ (wahr) annehmen.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|l|l}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Bedeutung} \\
+\midrule
+$\neg A$ & Negation & "`Nicht $A$"' \\
+$A \wedge B$ & Konjunktion & "`$A$ und $B$"' (beide wahr) \\
+$A \vee B$ & Disjunktion & "`$A$ oder $B$"' (mind.\ eines wahr) \\
+$A \to B$ & Implikation & "`Wenn $A$, dann $B$"' \\
+$A \leftrightarrow B$ & Biimplikation & "`Genau dann $A$, wenn $B$"' \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Als Variablennamen schreibt man oft $p_1, p_2, p_3, \ldots$ (wenn man
+viele braucht) oder einfach $A, B, C, \ldots$ (wenn man nur wenige
+braucht).
+
+\begin{merkbox}
+Ein \textbf{Modell} einer Formel $\Phi$ ist eine Belegung der
+Variablen mit $0$/$1$, die die Formel wahr macht.
+Eine Formel kann $0$, $1$ oder \emph{sehr viele} Modelle haben.
+\end{merkbox}
+
+\begin{analogie}
+Eine Formel ist wie eine T\"urschlie{\ss}anlage mit vielen Schaltern.
+Jedes "`Modell"' ist eine Einstellung der Schalter, bei der die T\"ur
+aufgeht. Manche T\"uren haben nur einen einzigen richtigen Code
+(ein Modell). Andere lassen sich mit vielen verschiedenen Codes
+\"offnen (viele Modelle). Wieder andere k\"onnen gar nicht ge\"offnet
+werden (kein Modell -- die Formel ist unerf\"ullbar).
+\end{analogie}
+
+\subsection*{0.2 Warum Logik f\"ur "`richtige"' Probleme?}
+
+Jetzt kommt der Punkt, der Logik richtig m\"achtig macht:
+
+\begin{merkbox}[title={Die gro{\ss}e Idee}]
+Viele Probleme aus der echten Welt lassen sich als Formel
+\emph{codieren}. Die \textbf{Modelle der Formel entsprechen dann
+genau den L\"osungen des Problems}. Ein Programm, das Modelle findet
+(ein \emph{SAT-Solver}), l\"ost also das Problem.
+\end{merkbox}
+
+\begin{analogie}
+Die Aussagenlogik ist eine Art \textbf{universelle Puzzle-Sprache}.
+Egal ob Sudoku, Stundenplan, Schaltkreis-Verifikation oder
+N-Damen-Problem -- alles kann man in dieselbe Sprache \"ubersetzen.
+Und die Computer, die diese Sprache verstehen, sind heutzutage
+unglaublich schnell (SAT-Solver l\"osen Formeln mit Millionen von
+Variablen).
+\end{analogie}
+
+In diesem Blatt werden wir drei Beispiele f\"ur dieses Prinzip sehen:
+Sudoku (Aufgabe~1), ein Schaltkreis (Aufgabe~2) und das
+Bishop-Problem auf dem Schachbrett (Aufgabe~3).
+
+\subsection*{0.3 Encoding-Muster f\"ur Kombinatorik}
+
+Wie codiert man ein Problem? Es gibt ein wiederkehrendes Rezept:
+
+\begin{merkbox}[title={Strategie: Problem $\to$ Formel}]
+\begin{enumerate}[nosep]
+\item \textbf{Eine Bool'sche Variable pro Entscheidung.} Beispiele:
+      "`Steht Ziffer $n$ in Feld $(i,j)$?"', "`Steht ein L\"aufer auf
+      Feld $(i,j)$?"', "`Hat Draht $o_1$ den Wert $1$?"'.
+\item \textbf{Jede Regel des Problems als Teilformel.} "`Mindestens
+      einer muss"' wird zu einer $\vee$-Verkn\"upfung. "`H\"ochstens
+      einer darf"' wird zu einer UND-Verkn\"upfung von
+      Ausschluss-Paaren.
+\item \textbf{Alle Teilformeln mit $\wedge$ verbinden.} Die
+      Gesamtformel ist die Konjunktion aller Regeln -- alle Regeln
+      m\"ussen gleichzeitig gelten.
+\end{enumerate}
+\end{merkbox}
+
+\begin{analogie}
+Wir \"ubersetzen das Problem wie einen \textbf{Anforderungskatalog}.
+Ein Bauherr h\"atte ihn so geschrieben:
+\begin{itemize}[nosep]
+\item "`In jedem Raum muss mindestens eine Lampe sein."'
+\item "`In jedem Raum darf h\"ochstens eine Hauptlampe sein."'
+\item "`Jeder Schalter geh\"ort zu genau einer Lampe."'
+\end{itemize}
+Das ist schon fast Logik: "`mindestens eine"', "`h\"ochstens eine"',
+"`genau eine"'. Diese drei Muster kehren immer wieder.
+\end{analogie}
+
+\subsection*{0.4 At-most-one (AMO) -- das wichtigste Werkzeug}
+
+Dieses Muster brauchen wir in allen drei Aufgaben. Es ist so wichtig,
+dass es einen eigenen Namen hat.
+
+\begin{merkbox}
+\textbf{At-most-one (AMO).} Von $k$ Variablen $x_1, x_2, \ldots, x_k$
+soll \emph{h\"ochstens eine} wahr sein. Als Formel mit
+paarweiser Enkodierung:
+\[
+\text{AMO}(x_1, \ldots, x_k)
+\;\equiv\;
+\bigwedge_{1 \le i < j \le k} \neg(x_i \wedge x_j).
+\]
+Anzahl Klauseln: $\binom{k}{2} = \frac{k(k-1)}{2}$.
+\end{merkbox}
+
+Warum funktioniert das? Die AMO-Eigenschaft "`h\"ochstens eine wahr"'
+ist gleichbedeutend mit: "`es gibt kein Paar, in dem beide wahr
+sind"'. Die Teilformel $\neg(x_i \wedge x_j)$ verbietet genau dieses
+Paar. Wenn wir \emph{alle} Paare verbieten, kann nirgends ein Paar
+auftauchen -- also sind entweder $0$ oder $1$ Variablen wahr.
+
+\textbf{Beispiel mit $k = 3$.} Bei drei Variablen $x_1, x_2, x_3$
+brauchen wir $\binom{3}{2} = 3$ Klauseln:
+\[
+\neg(x_1 \wedge x_2) \;\wedge\; \neg(x_1 \wedge x_3) \;\wedge\;
+\neg(x_2 \wedge x_3).
+\]
+Probier es aus: Wenn $x_1 = x_2 = 1$, dann ist die erste Klausel
+falsch, also die ganze Formel falsch. Gut, verboten. Wenn nur
+$x_1 = 1$ ist (und die anderen $0$), dann ist jede Klausel der Form
+$\neg(1 \wedge 0) = \neg 0 = 1$, also wahr. Passt, erlaubt.
+
+\begin{analogie}
+Aus dem Alltag: "`Von den drei Kuchenst\"ucken darf h\"ochstens eines
+gegessen werden."' Das hei{\ss}t: nicht Kuchen-A \emph{und} Kuchen-B
+zugleich, nicht Kuchen-A \emph{und} Kuchen-C zugleich, nicht Kuchen-B
+\emph{und} Kuchen-C zugleich. Drei Ausschl\"usse, fertig. Das ist die
+AMO-Enkodierung.
+\end{analogie}
+
+\subsection*{0.5 At-least-one und Exactly-one}
+
+Zwei Geschwister von AMO:
+
+\begin{merkbox}
+\textbf{At-least-one (ALO).} "`Mindestens eine ist wahr"':
+\[
+\text{ALO}(x_1, \ldots, x_k) \;\equiv\; x_1 \vee x_2 \vee \ldots \vee x_k.
+\]
+Das ist eine einzige gro{\ss}e Klausel.
+\medskip
+
+\textbf{Exactly-one (EO).} "`Genau eine ist wahr"':
+\[
+\text{EO}(x_1, \ldots, x_k) \;\equiv\; \text{ALO}(\ldots) \;\wedge\;
+\text{AMO}(\ldots).
+\]
+Also "`mindestens eine"' \emph{und} "`h\"ochstens eine"' zusammen.
+\end{merkbox}
+
+\begin{analogie}
+ALO ist: "`Mindestens ein Fenster im Haus ist offen."' Es reicht
+schon, wenn \emph{irgendeins} offen ist.
+\medskip
+
+EO ist: "`Es ist genau eine Tasche am Haken."' Nicht null, nicht
+zwei, genau eine. Also braucht man zwei Einzelregeln gleichzeitig:
+mindestens eine (ALO) und h\"ochstens eine (AMO).
+\end{analogie}
+
+\subsection*{0.6 Schaltkreise als Formel}
+
+F\"ur Aufgabe~2: Ein Schaltkreis besteht aus \textbf{Gates}
+(Bauteilen), die durch Dr\"ahte verbunden sind. Jedes Gate hat
+Eing\"ange und einen Ausgang. Der Ausgang h\"angt durch eine fest
+vorgegebene Regel von den Eing\"angen ab.
+
+\begin{merkbox}[title={Strategie: Schaltkreis $\to$ Formel}]
+F\"ur \emph{jeden} Draht (insbesondere den Ausgang jedes Gates)
+schreibt man eine \"Aquivalenz
+\[
+\text{(Draht-Variable)} \;\leftrightarrow\; \text{(Funktion der Eingangs-Variablen)}.
+\]
+Die Gesamtformel ist die Konjunktion all dieser \"Aquivalenzen.
+\end{merkbox}
+
+\begin{analogie}
+Jedes Gate ist wie ein kleiner Mitarbeiter, der eine feste Regel
+befolgt. Ein UND-Gate sagt: "`Wenn beide Inputs 1 sind, gebe ich
+1 aus, sonst 0."' Um den ganzen Betrieb zu verstehen, sammeln wir
+die Regel jedes einzelnen Mitarbeiters (jede Gate-Regel) und
+kleben sie alle mit UND zusammen. Nur wenn \emph{jeder} Mitarbeiter
+seine Regel einh\"alt, ist der Betrieb korrekt.
+\end{analogie}
+
+\textbf{Wichtig:} Es gibt sichtbare Variablen (Eingang/Ausgang des
+ganzen Schaltkreises) und \textbf{Hilfsvariablen} f\"ur interne
+Dr\"ahte. Die Hilfsvariablen bekommen zus\"atzliche Namen wie $o_1,
+o_2, \ldots$, damit man jede einzelne Gate-Regel sauber hinschreiben
+kann.
+
+\subsection*{0.7 Erf\"ullbarkeitstester -- der Fragen-Sklave}
+
+Aus dem letzten Blatt: Ein \textbf{Erf\"ullbarkeitstester} (SAT-Solver)
+ist ein Programm, das zu einer gegebenen Formel $\Phi$ entscheidet,
+ob sie ein Modell hat (SAT, erf\"ullbar) oder nicht (UNSAT,
+unerf\"ullbar).
+
+\begin{merkbox}[title={Zwei wichtige Fragen-Muster}]
+\begin{itemize}[nosep]
+\item \textbf{"`Kann $X$ gelten?"'} $\Rightarrow$ Pr\"ufe
+      $\Phi \wedge X$ auf SAT.
+      Erf\"ullbar $\Rightarrow$ Ja, $X$ ist m\"oglich.
+      Unerf\"ullbar $\Rightarrow$ Nein, unter $\Phi$ ist $X$
+      ausgeschlossen.
+\item \textbf{"`Gilt immer $Y$?"'} $\Rightarrow$ Pr\"ufe
+      $\Phi \wedge \neg Y$ auf SAT.
+      Unerf\"ullbar $\Rightarrow$ Ja, $Y$ gilt immer.
+      Erf\"ullbar $\Rightarrow$ Nein, Gegenbeispiel gefunden.
+\end{itemize}
+\end{merkbox}
+
+\begin{analogie}
+Ein Erf\"ullbarkeitstester ist wie ein treuer Diener, der nur eine
+einzige Frage versteht: "`Gibt es f\"ur diese Formel eine Belegung,
+die sie wahr macht?"' Alle anderen Fragen \"uber Logik-Formeln
+lassen sich auf diese eine Frage reduzieren -- man muss die Frage
+nur geschickt umformulieren, wie oben beschrieben.
+\end{analogie}
+
+\textbf{Warum funktioniert "`Gilt immer $Y$?"' \"uber $\neg Y$?}
+"`$Y$ gilt immer (unter $\Phi$)"' bedeutet: In jedem Modell von
+$\Phi$ ist $Y$ wahr. Das Gegenteil w\"are: Es gibt ein Modell von
+$\Phi$, in dem $Y$ falsch ist -- also ein Modell von $\Phi \wedge \neg Y$.
+Findet der Tester \emph{kein} solches Modell (UNSAT), dann gilt
+$Y$ tats\"achlich immer.
+
+\subsection*{0.8 Schach und Diagonalen}
+
+F\"ur Aufgabe~3: Ein Schachbrett hat $n$ Zeilen und $n$ Spalten.
+Die Felder bezeichnen wir mit $(i, j)$, wobei $i$ die Zeilennummer
+und $j$ die Spaltennummer ist, beide von $1$ bis $n$.
+
+\begin{merkbox}[title={Schachfiguren -- Bewegungsmuster}]
+\begin{itemize}[nosep]
+\item \textbf{Rook (Turm):} bewegt sich entlang Zeilen und Spalten
+      (horizontal/vertikal).
+\item \textbf{Bishop (L\"aufer):} bewegt sich entlang Diagonalen
+      (schr\"ag).
+\item \textbf{Queen (Dame):} bewegt sich wie Rook UND Bishop
+      kombiniert.
+\end{itemize}
+\end{merkbox}
+
+F\"ur den L\"aufer (Bishop) brauchen wir eine klare Definition von
+"`Diagonale"':
+
+\begin{merkbox}[title={Diagonalen}]
+\begin{itemize}[nosep]
+\item \textbf{Hauptdiagonale:} Alle Felder $(i,j)$ mit demselben Wert
+      $i - j$. Die f\"uhrt von links oben nach rechts unten.
+      Beispiel: $(1,1), (2,2), (3,3), (4,4)$ haben alle $i-j = 0$.
+\item \textbf{Gegendiagonale:} Alle Felder $(i,j)$ mit demselben Wert
+      $i + j$. Die f\"uhrt von rechts oben nach links unten.
+      Beispiel: $(1,4), (2,3), (3,2), (4,1)$ haben alle $i+j = 5$.
+\end{itemize}
+Auf einem $n \times n$-Brett gibt es jeweils $2n - 1$ Hauptdiagonalen
+und $2n - 1$ Gegendiagonalen.
+\end{merkbox}
+
+\begin{analogie}
+Diagonalen sind wie \textbf{Stra{\ss}en, die quer \"uber das Brett
+f\"uhren}. Jedes Feld liegt an einer Kreuzung von genau zwei
+Stra{\ss}en: einer Hauptdiagonale und einer Gegendiagonale. Der
+L\"aufer "`bewohnt"' also zwei Stra{\ss}en gleichzeitig. Zwei L\"aufer
+k\"onnen sich nur dann schlagen, wenn sie auf derselben Stra{\ss}e
+stehen -- also dieselbe Hauptdiagonale (gleiches $i-j$) oder
+dieselbe Gegendiagonale (gleiches $i+j$) teilen.
+\end{analogie}
+
+\textbf{Klein-Beispiel $n = 4$.} Die Werte von $i - j$ liegen
+zwischen $-(n-1) = -3$ und $n-1 = 3$, also
+$i - j \in \{-3, -2, -1, 0, 1, 2, 3\}$ -- das sind $7 = 2n-1$
+Hauptdiagonalen. Analog $i + j \in \{2, 3, 4, 5, 6, 7, 8\}$ -- auch
+$7$ Gegendiagonalen. Schauen wir uns die Hauptdiagonale $i - j = 0$
+an: Das sind die Felder $(1,1), (2,2), (3,3), (4,4)$, die vom linken
+oberen Eck bis zum rechten unteren Eck verlaufen.
+
+\newpage
+
+% ============================================================
+% AUFGABE 1
+% ============================================================
+
+\section{Aufgabe 1: Sudoku als Formel}
+
+\subsection*{Aufgabe in einfachen Worten}
+
+Wir haben ein $4 \times 4$-Sudoku-Feld. Jede Zelle soll eine Ziffer
+von $1$ bis $4$ enthalten. Zusatzregeln: In jeder Zeile, in jeder
+Spalte und in jeder der vier $2 \times 2$-Regionen darf jede Ziffer
+\emph{h\"ochstens einmal} vorkommen. Gesucht: eine aussagenlogische
+Formel $\Phi$, deren Modelle genau den g\"ultigen Sudoku-L\"osungen
+entsprechen.
+
+\begin{analogie}
+Denk an Sudoku wie an ein \textbf{kleines R\"atsel}, bei dem du mit
+vier Stempeln (mit den Ziffern 1, 2, 3, 4) auf 16 Felder stempeln
+sollst. Die Regeln: In jeder Zeile, Spalte und Region darfst du jeden
+Stempel h\"ochstens einmal benutzen. Unsere Aufgabe ist es, diese
+Regeln so in Logik zu gie{\ss}en, dass jede g\"ultige Stempel-Anordnung
+einer wahren Belegung unserer Formel entspricht.
+\end{analogie}
+
+\subsection*{Schritt 1: Die Variablen einf\"uhren}
+
+Pro Feld gibt es $4$ M\"ogliche Ziffern. Und pro Ziffer gibt es $16$
+Felder, auf denen sie stehen k\"onnte. Wir brauchen eine
+Bool'sche Variable f\"ur jede \emph{Kombination}:
+
+\begin{merkbox}[title={Die Variablen}]
+F\"ur $i, j, n \in \{1, 2, 3, 4\}$ definieren wir
+\[
+x_{i,j,n} \;:=\; \text{``Feld $(i,j)$ enth\"alt die Ziffer $n$''}.
+\]
+Das ergibt $4 \cdot 4 \cdot 4 = 64$ Variablen.
+\end{merkbox}
+
+\begin{analogie}
+Genauso wie in Blatt~2 die Lichtschalter-Analogie: Jede Variable ist
+ein kleiner Schalter, der "`an"' (1) oder "`aus"' (0) steht. Der
+Schalter $x_{1,1,3}$ steht auf "`an"', wenn im Feld in der oberen
+linken Ecke die Ziffer $3$ geschrieben wird. Steht der Schalter auf
+"`aus"', dann steht dort irgendetwas anderes.
+\end{analogie}
+
+\textbf{Kleines Beispiel.} Wenn das Sudoku so aussieht:
+\[
+\begin{array}{|c|c|c|c|}
+\hline
+1 & 2 & 3 & 4 \\ \hline
+3 & 4 & 1 & 2 \\ \hline
+2 & 1 & 4 & 3 \\ \hline
+4 & 3 & 2 & 1 \\ \hline
+\end{array}
+\]
+Dann ist $x_{1,1,1} = 1$ (im Feld oben links steht die 1), $x_{1,1,2}
+= 0, x_{1,1,3} = 0, x_{1,1,4} = 0$ (dort steht keine 2, 3 oder 4).
+Analog $x_{1,2,2} = 1$ (im zweiten Feld der ersten Zeile steht die 2).
+
+\subsection*{Schritt 2: Feld-Layout und Regionen}
+
+Das $4 \times 4$-Brett wird in vier $2 \times 2$-Regionen geteilt
+(wie bei "`gro{\ss}em"' $9 \times 9$-Sudoku mit $3 \times 3$-Regionen).
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|cc|cc|}
+\hline
+$(1,1)$ & $(1,2)$ & $(1,3)$ & $(1,4)$ \\
+$(2,1)$ & $(2,2)$ & $(2,3)$ & $(2,4)$ \\ \hline
+$(3,1)$ & $(3,2)$ & $(3,3)$ & $(3,4)$ \\
+$(4,1)$ & $(4,2)$ & $(4,3)$ & $(4,4)$ \\ \hline
+\end{tabular}
+\end{center}
+
+Die vier Regionen:
+\begin{itemize}[nosep]
+\item $R_1 = \{(1,1), (1,2), (2,1), (2,2)\}$ \quad (links oben)
+\item $R_2 = \{(1,3), (1,4), (2,3), (2,4)\}$ \quad (rechts oben)
+\item $R_3 = \{(3,1), (3,2), (4,1), (4,2)\}$ \quad (links unten)
+\item $R_4 = \{(3,3), (3,4), (4,3), (4,4)\}$ \quad (rechts unten)
+\end{itemize}
+
+\subsection*{Schritt 3: Constraints schrittweise aufbauen}
+
+Jetzt \"ubersetzen wir die Sudoku-Regeln nacheinander in Logik. Wir
+stellen uns vor, dass wir einen Anforderungskatalog abarbeiten --
+eine Regel nach der anderen.
+
+\begin{analogie}
+Wie beim \textbf{Kuchenbacken nach Rezept}: Erst Mehl, dann Zucker,
+dann Eier. Jede einzelne Zutat ist eine kleine Formel. Am Ende
+r\"uhren wir alles zusammen (mit $\wedge$) und erhalten den fertigen
+Teig (die Gesamtformel).
+\end{analogie}
+
+\subsubsection*{(C1) Jedes Feld enth\"alt mindestens eine Ziffer}
+
+Das ist ein \textbf{At-least-one}-Constraint: Die Variablen f\"ur ein
+und dasselbe Feld ($x_{i,j,1}, x_{i,j,2}, x_{i,j,3}, x_{i,j,4}$)
+sollen nicht alle $0$ sein.
+
+\[
+C_1 \;\equiv\;
+\bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+\bigl(x_{i,j,1} \vee x_{i,j,2} \vee x_{i,j,3} \vee x_{i,j,4}\bigr).
+\]
+
+F\"ur jedes der $16$ Felder eine Disjunktion mit $4$ Literalen.
+Insgesamt also $16$ solche Disjunktionen, die alle mit $\wedge$
+verkn\"upft sind.
+
+\textbf{Konkretes Beispiel f\"ur Feld $(1,1)$:}
+\[
+x_{1,1,1} \vee x_{1,1,2} \vee x_{1,1,3} \vee x_{1,1,4}.
+\]
+Das hei{\ss}t: "`Im Feld $(1,1)$ steht mindestens eine der Ziffern
+$1$, $2$, $3$, $4$."' F\"ur jedes andere Feld analog.
+
+\subsubsection*{(C2) Jedes Feld enth\"alt h\"ochstens eine Ziffer}
+
+Hier kommt \textbf{AMO} zum Einsatz: F\"ur ein Feld $(i,j)$ soll nicht
+gleichzeitig "`hier steht Ziffer $n$"' und "`hier steht Ziffer $m$"'
+gelten, wenn $n \ne m$.
+
+\[
+C_2 \;\equiv\;
+\bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+\bigwedge_{1 \le n < m \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{i,j,m}\bigr).
+\]
+
+Pro Feld gibt es $\binom{4}{2} = 6$ Paare $(n,m)$, also $6$ Klauseln.
+Insgesamt $16 \cdot 6 = 96$ Klauseln.
+
+\textbf{Konkretes Beispiel f\"ur Feld $(1,1)$:} Die $6$ Paare sind
+$(1,2), (1,3), (1,4), (2,3), (2,4), (3,4)$.
+\begin{align*}
+& \neg(x_{1,1,1} \wedge x_{1,1,2}) \;\wedge\; \neg(x_{1,1,1} \wedge x_{1,1,3}) \\
+& \wedge\; \neg(x_{1,1,1} \wedge x_{1,1,4}) \;\wedge\; \neg(x_{1,1,2} \wedge x_{1,1,3}) \\
+& \wedge\; \neg(x_{1,1,2} \wedge x_{1,1,4}) \;\wedge\; \neg(x_{1,1,3} \wedge x_{1,1,4}).
+\end{align*}
+
+\begin{merkbox}
+(C1) und (C2) zusammen erzwingen: Jedes Feld enth\"alt \textbf{genau}
+eine Ziffer. Das ist der Exactly-one-Constraint -- aber wir haben ihn
+durch Kombination von ALO und AMO realisiert.
+\end{merkbox}
+
+\subsubsection*{(C3) Jede Ziffer h\"ochstens einmal pro Zeile}
+
+Jetzt wechselt die Perspektive: Wir fixieren eine Zeile $i$ und eine
+Ziffer $n$ und schauen auf die $4$ Variablen $x_{i,1,n}, x_{i,2,n},
+x_{i,3,n}, x_{i,4,n}$. Davon darf h\"ochstens eine $1$ sein -- wieder
+AMO.
+
+\[
+C_3 \;\equiv\;
+\bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
+\bigwedge_{1 \le j < k \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{i,k,n}\bigr).
+\]
+
+Pro (Zeile, Ziffer)-Kombi gibt es $\binom{4}{2} = 6$ Paare. Insgesamt
+$4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\textbf{Konkretes Beispiel f\"ur Zeile $1$ und Ziffer $3$:}
+\begin{align*}
+& \neg(x_{1,1,3} \wedge x_{1,2,3}) \;\wedge\; \neg(x_{1,1,3} \wedge x_{1,3,3}) \\
+& \wedge\; \neg(x_{1,1,3} \wedge x_{1,4,3}) \;\wedge\; \neg(x_{1,2,3} \wedge x_{1,3,3}) \\
+& \wedge\; \neg(x_{1,2,3} \wedge x_{1,4,3}) \;\wedge\; \neg(x_{1,3,3} \wedge x_{1,4,3}).
+\end{align*}
+
+Diese Klauseln sagen: "`In Zeile $1$ gibt es nicht zwei Felder mit
+der Ziffer $3$."'
+
+\subsubsection*{(C4) Jede Ziffer h\"ochstens einmal pro Spalte}
+
+Analog zu (C3), aber mit fixer Spalte $j$ und variierender Zeile.
+
+\[
+C_4 \;\equiv\;
+\bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
+\bigwedge_{1 \le i < k \le 4}
+\neg\bigl(x_{i,j,n} \wedge x_{k,j,n}\bigr).
+\]
+
+Auch hier $4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\subsubsection*{(C5) Jede Ziffer h\"ochstens einmal pro Region}
+
+Und zum Schluss das gleiche Muster f\"ur die vier Regionen:
+
+\[
+C_5 \;\equiv\;
+\bigwedge_{R \in \{R_1, R_2, R_3, R_4\}}
+\bigwedge_{n=1}^{4}
+\bigwedge_{\substack{(i,j), (k,l) \in R \\ (i,j) < (k,l)}}
+\neg\bigl(x_{i,j,n} \wedge x_{k,l,n}\bigr).
+\]
+
+(Das Paar $(i,j) < (k,l)$ meint: wir nehmen jedes ungeordnete Paar nur
+einmal, z.\,B.\ in lexikografischer Ordnung.) Pro (Region,
+Ziffer)-Kombi gibt es $\binom{4}{2} = 6$ Paare, insgesamt wieder
+$4 \cdot 4 \cdot 6 = 96$.
+
+\textbf{Konkretes Beispiel f\"ur Region $R_1 = \{(1,1), (1,2), (2,1),
+(2,2)\}$ und Ziffer $2$:}
+\begin{align*}
+& \neg(x_{1,1,2} \wedge x_{1,2,2}) \;\wedge\; \neg(x_{1,1,2} \wedge x_{2,1,2}) \\
+& \wedge\; \neg(x_{1,1,2} \wedge x_{2,2,2}) \;\wedge\; \neg(x_{1,2,2} \wedge x_{2,1,2}) \\
+& \wedge\; \neg(x_{1,2,2} \wedge x_{2,2,2}) \;\wedge\; \neg(x_{2,1,2} \wedge x_{2,2,2}).
+\end{align*}
+
+\subsection*{Schritt 4: Die Gesamtformel}
+
+Alles zusammen:
+\[
+\boxed{\;\Phi \;\equiv\; C_1 \wedge C_2 \wedge C_3 \wedge C_4 \wedge C_5\;}
+\]
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l|r}
+\toprule
+\textbf{Constraint} & \textbf{Bedeutung} & \textbf{Klauseln} \\
+\midrule
+$C_1$ & Mindestens eine Ziffer pro Feld & $16$ \\
+$C_2$ & H\"ochstens eine Ziffer pro Feld (AMO) & $96$ \\
+$C_3$ & Keine Ziffer zweimal pro Zeile (AMO) & $96$ \\
+$C_4$ & Keine Ziffer zweimal pro Spalte (AMO) & $96$ \\
+$C_5$ & Keine Ziffer zweimal pro Region (AMO) & $96$ \\
+\midrule
+\textbf{Gesamt} & & $\mathbf{400}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die Formel $\Phi$ hat also $400$ Klauseln \"uber $64$ Variablen. Jedes
+Modell dieser Formel entspricht einer g\"ultigen Sudoku-L\"osung.
+
+\begin{merkbox}[title={Warum "`h\"ochstens"' statt "`genau"'?}]
+Die Aufgabenstellung sagt bewusst nur "`h\"ochstens"', nicht
+"`genau"'. Dadurch erlaubt die Formel auch unvollst\"andig gef\"ullte
+Bretter -- zum Beispiel das leere Brett (keine Ziffern \"uberall) ist
+kein Modell, weil (C1) fordert, dass jedes Feld gef\"ullt ist. Aber
+wenn man (C1) weglie{\ss}e, w\"are auch das leere Brett ein Modell.
+Mit (C1)+(C2) ist jedes Feld trotzdem mit genau einer Ziffer belegt,
+und die Einschr\"ankungen (C3)-(C5) sorgen daf\"ur, dass keine Zeile,
+Spalte oder Region doppelte Ziffern hat.
+\end{merkbox}
+
+\begin{merkbox}[title={Goldene Regel des Encodings}]
+Dieses Muster funktioniert f\"ur fast jedes kombinatorische Problem:
+\begin{itemize}[nosep]
+\item N-Damen-Problem: $n^2$ Variablen f\"ur "`Dame auf Feld $(i,j)$"',
+      AMO pro Zeile/Spalte/Diagonale.
+\item Graph-F\"arbung: Variable $c_{v,n}$ f\"ur "`Knoten $v$ hat Farbe
+      $n$"', EO pro Knoten, Ausschluss bei Nachbarknoten.
+\item Aufzugs-Scheduling: Variable pro (Person, Stockwerk, Zeit), EO
+      pro Person zu jedem Zeitpunkt, Kapazit\"ats-Constraints pro
+      Aufzug.
+\end{itemize}
+Immer das gleiche Rezept: \textbf{Variablen pro Entscheidung +
+Constraints pro Gruppe}.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% AUFGABE 2
+% ============================================================
+
+\section{Aufgabe 2: Schaltkreis als Formel}
+
+\subsection*{Aufgabe in einfachen Worten}
+
+Wir haben einen Schaltkreis mit drei Eing\"angen $A, B, C$ und drei
+Ausg\"angen $D, E, F$. Dazwischen gibt es "`Gates"' (Bauteile), die
+aus ihren Eingangssignalen einen Ausgang berechnen. Der Clou bei
+dieser Aufgabe: Die Gates rechnen nicht mit klassischen UND/ODER,
+sondern mit \emph{Summen-Bedingungen} -- zum Beispiel "`Output $= 1$
+genau dann, wenn die Summe der Inputs gr\"o{\ss}er als $1$ ist"'.
+
+Gesucht: eine aussagenlogische Formel, deren Modelle genau den
+zul\"assigen Belegungen $(A, B, C, D, E, F)$ entsprechen. Au{\ss}erdem
+sollen wir drei Fragen zum Schaltkreis beantworten, indem wir die
+Formel einem Erf\"ullbarkeitstester vorlegen.
+
+\subsection*{Schritt 1: Gate-Semantik verstehen}
+
+Die Notation $[> k]$ oder $[= k]$ auf einem Gate bedeutet: Der Output
+ist $1$ genau dann, wenn die \textbf{Summe der Inputs}
+(als Zahlen gelesen, also bin\"ar $0/1$) diese Bedingung erf\"ullt.
+
+\begin{merkbox}[title={Summen-Bedingungen als Bool'sche Ausdr\"ucke}]
+F\"ur bin\"are Inputs (je $0$ oder $1$) gilt:
+\begin{itemize}[nosep]
+\item $[>1](A, B)$: $A + B > 1$ $\Leftrightarrow$ beide sind $1$
+      $\Leftrightarrow$ $A \wedge B$.
+\item $[=1](A, C)$: $A + C = 1$ $\Leftrightarrow$ genau einer ist $1$
+      $\Leftrightarrow$ $(A \wedge \neg C) \vee (\neg A \wedge C)$.
+      Das ist \emph{XOR}.
+\item $[>0](B, C)$: $B + C > 0$ $\Leftrightarrow$ mindestens einer ist
+      $1$ $\Leftrightarrow$ $B \vee C$.
+\item $[=0](x)$: $x = 0$ $\Leftrightarrow$ $\neg x$.
+\item $[>2](o_1, o_2, o_3)$: Summe von drei bin\"aren Werten gr\"o{\ss}er
+      als $2$ $\Leftrightarrow$ alle drei sind $1$ $\Leftrightarrow$
+      $o_1 \wedge o_2 \wedge o_3$.
+\item $[>1](o_2, o_3)$: $o_2 + o_3 > 1$ $\Leftrightarrow$ beide sind
+      $1$ $\Leftrightarrow$ $o_2 \wedge o_3$.
+\end{itemize}
+\end{merkbox}
+
+\begin{analogie}
+Ein Summen-Gate ist wie eine \textbf{Abstimmung}. $[>1]$ bedeutet
+"`mehr als ein Ja-Stimmer"', $[=0]$ bedeutet "`kein Ja-Stimmer"',
+$[>2]$ bei drei Stimmern bedeutet "`alle stimmen ja"' usw. Der Output
+ist $1$, wenn das Abstimmungsergebnis die Vorgabe erf\"ullt.
+\end{analogie}
+
+\textbf{Warum ist bei zwei bin\"aren Inputs $[>1]$ dasselbe wie
+$\wedge$?} Die m\"oglichen Summen sind $0$, $1$ oder $2$. "`$> 1$"'
+hei{\ss}t also $= 2$, also beide $= 1$. Das ist die UND-Verkn\"upfung.
+
+\textbf{Warum ist $[=1]$ bei zwei Inputs XOR?} Die Summe ist $0$
+(beide $0$), $1$ (genau einer $1$) oder $2$ (beide $1$). "`$=1$"'
+trifft nur den mittleren Fall zu. Das ist per Definition das
+Exclusive-Or.
+
+\subsection*{Schritt 2: Verkabelung ablesen}
+
+Schauen wir uns den Schaltkreis genau an. Der Input $A$ geht in das
+Gate oben links, zugleich in das mittlere Gate. $B$ geht in das
+Gate oben links und in das untere Gate. $C$ geht in das mittlere und
+in das untere Gate.
+
+Die drei linken Gates produzieren Hilfsoutputs, die wir $o_1, o_2,
+o_3$ nennen. Diese Outputs gabeln sich und gehen zum Gate "`oben
+rechts"' (berechnet $D$), zum Gate "`in der Mitte"' (berechnet $E$)
+und zum Gate "`unten rechts"' (berechnet $F$).
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l|l|l}
+\toprule
+\textbf{Gate} & \textbf{Inputs} & \textbf{Bedingung} & \textbf{Output} \\
+\midrule
+$[>1]$ (oben links) & $A, B$ & $A + B > 1$ & $o_1$ \\
+$[=1]$ (mitte links) & $A, C$ & $A + C = 1$ & $o_2$ \\
+$[>0]$ (unten links) & $B, C$ & $B + C > 0$ & $o_3$ \\
+$[=0]$ (oben rechts) & $o_1$ & $o_1 = 0$ & $D$ \\
+$[>2]$ (mitte rechts) & $o_1, o_2, o_3$ & Summe $> 2$ & $E$ \\
+$[>1]$ (unten rechts) & $o_2, o_3$ & $o_2 + o_3 > 1$ & $F$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{merkbox}
+Die drei Hilfsvariablen $o_1, o_2, o_3$ sind interne Dr\"ahte -- sie
+treten an den "`Au{\ss}enklemmen"' des Schaltkreises nicht auf, aber
+wir brauchen sie, um die Formel sauber aufzuschreiben. Die
+"`sichtbaren"' Variablen sind $A, B, C, D, E, F$.
+\end{merkbox}
+
+\subsection*{Schritt 3: Die Formel zusammenbauen}
+
+F\"ur jeden Draht eine \"Aquivalenz. Das ergibt sechs Teilformeln,
+die alle mit $\wedge$ verkn\"upft werden:
+
+\begin{align*}
+\Phi \;\equiv\; & \bigl(o_1 \leftrightarrow (A \wedge B)\bigr) \\
+& \wedge\; \bigl(o_2 \leftrightarrow ((A \wedge \neg C) \vee (\neg A \wedge C))\bigr) \\
+& \wedge\; \bigl(o_3 \leftrightarrow (B \vee C)\bigr) \\
+& \wedge\; \bigl(D \leftrightarrow \neg o_1\bigr) \\
+& \wedge\; \bigl(E \leftrightarrow (o_1 \wedge o_2 \wedge o_3)\bigr) \\
+& \wedge\; \bigl(F \leftrightarrow (o_2 \wedge o_3)\bigr).
+\end{align*}
+
+\begin{analogie}
+Jede Zeile der Formel ist wie ein \textbf{Vertragsparagraph}. "`Der
+Draht $o_1$ f\"uhrt genau dann Strom, wenn sowohl $A$ als auch $B$
+Strom f\"uhren."' Jeder Paragraph muss gleichzeitig gelten (das
+$\wedge$ zwischen den Zeilen). Nur wenn alle Paragraphen erf\"ullt
+sind, ist die Gesamtkonfiguration des Schaltkreises zul\"assig.
+\end{analogie}
+
+\subsection*{Schritt 4: Die drei Fragen beantworten}
+
+Alle drei Fragen sind Fragen der Art "`Kann \ldots gelten?"' oder
+"`Gilt immer \ldots?"'. Wir l\"osen sie mit dem Erf\"ullbarkeitstester
+(siehe Teil~0.7).
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|l|l}
+\toprule
+& \textbf{Frage} & \textbf{Dem Tester geben} \\
+\midrule
+(a) & Kann $F = 1$ sein? & $\Phi \wedge F$ auf SAT testen \\
+(b) & Kann $E = A$ sein? & $\Phi \wedge (E \leftrightarrow A)$ auf SAT testen \\
+(c) & Gilt $F = 1 \Leftrightarrow D = 0$? & $\Phi \wedge \neg(F \leftrightarrow \neg D)$ auf UNSAT testen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Statt einen Solver laufen zu lassen, k\"onnen wir es auch direkt mit
+konkreten Belegungen nachpr\"ufen -- das ist \"ubersichtlicher:
+
+\subsubsection*{(a) Kann $F = 1$ sein?}
+
+\textbf{Methode.} Wir suchen eine Belegung $(A, B, C)$, f\"ur die
+sich $F = 1$ ergibt.
+
+\textbf{Versuch: $A = 1, B = 1, C = 0$.} Dann:
+\begin{itemize}[nosep]
+\item $o_1 = A \wedge B = 1 \wedge 1 = 1$.
+\item $o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) =
+      (1 \wedge 1) \vee (0 \wedge 0) = 1 \vee 0 = 1$.
+\item $o_3 = B \vee C = 1 \vee 0 = 1$.
+\item $F = o_2 \wedge o_3 = 1 \wedge 1 = 1$. \checkmark
+\end{itemize}
+
+\textbf{Antwort:} \fbox{Ja, $F = 1$ ist m\"oglich.}
+
+\subsubsection*{(b) Kann $E = A$ sein?}
+
+\textbf{Methode.} Wir suchen eine Belegung, in der $E$ und $A$
+denselben Wert haben.
+
+\textbf{Trivial-Versuch: $A = 0, B = 0, C = 0$.} Dann:
+\begin{itemize}[nosep]
+\item $o_1 = 0 \wedge 0 = 0$, $o_2 = (0 \wedge 1) \vee (1 \wedge 0) = 0$,
+      $o_3 = 0 \vee 0 = 0$.
+\item $E = o_1 \wedge o_2 \wedge o_3 = 0 = A$. \checkmark
+\end{itemize}
+
+Das ist aber ein billiger Sieg. Spannender: gibt es auch eine
+Belegung mit $A = 1$ und $E = 1$?
+
+\textbf{Versuch: $A = 1, B = 1, C = 0$.} (Dieselbe wie bei (a).)
+\begin{itemize}[nosep]
+\item $o_1 = 1, o_2 = 1, o_3 = 1$.
+\item $E = o_1 \wedge o_2 \wedge o_3 = 1 = A$. \checkmark
+\end{itemize}
+
+\textbf{Antwort:} \fbox{Ja, $E = A$ ist m\"oglich -- sogar auf zwei verschiedene Arten.}
+
+\subsubsection*{(c) Gilt $F = 1 \Leftrightarrow D = 0$?}
+
+Das ist eine \emph{immer}-Frage. Wir fragen: Stimmt es, dass in
+\emph{jedem} zul\"assigen Zustand $F$ und $\neg D$ \"ubereinstimmen?
+
+\textbf{Methode.} Wenn die \"Aquivalenz immer gilt, dann ist ihr
+Gegenteil nie erf\"ullbar, also $\Phi \wedge \neg(F \leftrightarrow
+\neg D)$ unerf\"ullbar. Findet man ein \textbf{Gegenbeispiel}, dann
+gilt die \"Aquivalenz nicht.
+
+\textbf{Suche nach Gegenbeispiel: $A = 1, B = 1, C = 1$.}
+\begin{itemize}[nosep]
+\item $o_1 = A \wedge B = 1 \wedge 1 = 1$. Also $D = \neg o_1 = 0$.
+\item $o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) =
+      (1 \wedge 0) \vee (0 \wedge 1) = 0$.
+\item $o_3 = B \vee C = 1 \vee 1 = 1$.
+\item $F = o_2 \wedge o_3 = 0 \wedge 1 = 0$.
+\end{itemize}
+In diesem Zustand gilt $D = 0$, aber $F = 0$. Die rechte Seite
+$D = 0$ ist wahr, die linke Seite $F = 1$ ist falsch. Damit ist die
+Biimplikation $F = 1 \Leftrightarrow D = 0$ verletzt.
+
+\textbf{Antwort:} \fbox{Nein, die \"Aquivalenz gilt NICHT generell.}
+Gegenbeispiel: $(A, B, C) = (1, 1, 1)$, hier ist $D = 0$, aber
+$F = 0$.
+
+\begin{merkbox}[title={Intuition zum Gegenbeispiel}]
+$D = 0$ hei{\ss}t, dass oben links beide Inputs $1$ sind ($A = B = 1$).
+$F = 1$ dagegen braucht, dass beide Outputs $o_2$ und $o_3$ gleich $1$
+sind -- und $o_2$ ist ein XOR-Gate \"uber $A$ und $C$, das wird $0$,
+sobald $A = C$. Also: sobald $A = B = C$, widerspricht sich $D = 0$
+und $F = 1$. Ein klares Gegenbeispiel.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% AUFGABE 3
+% ============================================================
+
+\section{Aufgabe 3: Bishop Independence Problem}
+
+\subsection*{Aufgabe in einfachen Worten}
+
+Wir haben ein $n \times n$-Schachbrett. Gesucht sind alle
+Konfigurationen, in denen L\"aufer (Bishops) so platziert sind, dass
+\emph{keine zwei einander schlagen k\"onnen}. Zur Erinnerung: Der
+L\"aufer zieht diagonal. Zwei L\"aufer schlagen sich also genau dann,
+wenn sie auf derselben Diagonale stehen.
+
+Der Auftrag: Schreibe ein Skript, das f\"ur gegebenes $n$ eine
+aussagenlogische Formel produziert. Die Modelle der Formel sollen
+genau die g\"ultigen Konfigurationen sein.
+
+\subsection*{Schritt 1: Vergleich mit Rook und Queen}
+
+In der Vorlesung wurden verwandte Probleme besprochen:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l}
+\toprule
+\textbf{Figur} & \textbf{Schl\"agt auf} \\
+\midrule
+Rook (Turm) & Zeile, Spalte \\
+Bishop (L\"aufer) & Diagonalen (haupt + gegen) \\
+Queen (Dame) & Zeile, Spalte, Diagonalen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Die Encoding-Strategie ist bei allen drei gleich. Was sich \"andert,
+sind die \textbf{Gruppen}, in denen der AMO-Constraint gilt:
+\begin{itemize}[nosep]
+\item Rook: AMO pro Zeile + AMO pro Spalte.
+\item Bishop: AMO pro Hauptdiagonale + AMO pro Gegendiagonale.
+\item Queen: AMO pro Zeile + Spalte + beide Diagonalen-Arten.
+\end{itemize}
+
+\begin{analogie}
+Der L\"aufer ist ein \textbf{"`Diagonal-Turm"'}: Statt sich rechts,
+links, oben oder unten zu bewegen, wandert er schr\"ag. Alles, was wir
+f\"ur den Turm wussten (AMO pro Zeile/Spalte), \"ubertragen wir jetzt
+auf die Diagonalen.
+\end{analogie}
+
+\subsection*{Schritt 2: Variablen und Diagonalen}
+
+\begin{merkbox}[title={Die Variablen}]
+F\"ur jedes Feld $(i, j)$ mit $1 \le i, j \le n$ definiere
+\[
+b_{i,j} \;:=\; \text{``Auf Feld $(i,j)$ steht ein L\"aufer''}.
+\]
+\end{merkbox}
+
+Zur Erinnerung aus Teil~0.8: Jedes Feld $(i,j)$ liegt auf zwei
+Diagonalen:
+\begin{itemize}[nosep]
+\item der Hauptdiagonale mit Index $i - j$,
+\item der Gegendiagonale mit Index $i + j$.
+\end{itemize}
+
+\textbf{Beispielbrett $n = 4$ mit den Hauptdiagonalen eingezeichnet
+(Zahl = Index $i-j$):}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$0$ & $-1$ & $-2$ & $-3$ \\ \hline
+$1$ & $0$ & $-1$ & $-2$ \\ \hline
+$2$ & $1$ & $0$ & $-1$ \\ \hline
+$3$ & $2$ & $1$ & $0$ \\ \hline
+\end{tabular}
+\end{center}
+
+Felder mit dem gleichen Wert liegen auf derselben Hauptdiagonale --
+z.\,B.\ die vier Felder mit $0$ bilden die Hauptdiagonale $(1,1),
+(2,2), (3,3), (4,4)$.
+
+\textbf{Dasselbe Brett mit Gegendiagonalen (Zahl = Index $i+j$):}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$2$ & $3$ & $4$ & $5$ \\ \hline
+$3$ & $4$ & $5$ & $6$ \\ \hline
+$4$ & $5$ & $6$ & $7$ \\ \hline
+$5$ & $6$ & $7$ & $8$ \\ \hline
+\end{tabular}
+\end{center}
+
+Hier bilden z.\,B.\ die Felder mit $5$ die Gegendiagonale $(1,4),
+(2,3), (3,2), (4,1)$.
+
+\subsection*{Schritt 3: Die Constraints formulieren}
+
+\begin{merkbox}[title={Bishop-Constraint}]
+F\"ur jede Diagonale $D$ (egal ob Haupt oder Gegen) mit mindestens
+zwei Feldern gilt: \textbf{h\"ochstens ein L\"aufer auf $D$}. In
+paarweiser Enkodierung (AMO):
+\[
+\bigwedge_{\substack{(i_1,j_1), (i_2,j_2) \in D \\ (i_1,j_1) \neq (i_2,j_2)}}
+\neg\bigl(b_{i_1,j_1} \wedge b_{i_2,j_2}\bigr).
+\]
+\end{merkbox}
+
+Die Gesamtformel ist die Konjunktion aller dieser Klauseln, \"uber
+alle Diagonalen hinweg.
+
+\textbf{Warum keine Bedingung "`mindestens ein L\"aufer"'?} Die
+Aufgabe fragt nur nach \emph{Unabh\"angigkeit}, nicht nach einer
+Mindestanzahl. Das leere Brett ist eine triviale L\"osung (keine zwei
+L\"aufer schlagen sich, wenn es gar keine gibt). Wenn wir zus\"atzlich
+verlangen wollten, dass mindestens $k$ L\"aufer stehen, m\"ussten wir
+daf\"ur extra Constraints hinzuf\"ugen.
+
+\subsection*{Schritt 4: Das Python-Skript}
+
+Das Skript geht in zwei Phasen vor: erst alle Diagonalen sammeln,
+dann pro Diagonale die AMO-Klauseln erzeugen.
+
+\begin{lstlisting}
+def bishop_independence(n):
+    """
+    Erzeugt die aussagenlogische Formel (als Liste von Klauseln) fuer
+    das Bishop Independence Problem auf einem n x n Schachbrett.
+
+    Variablen: b_{i,j} (1 <= i,j <= n) steht fuer
+    "Laeufer auf Feld (i,j)".
+    Constraint: Fuer jede Diagonale hoechstens ein Laeufer
+    (paarweise Klauseln, AMO-Enkodierung).
+    """
+    # Schritt 1: Alle Diagonalen sammeln.
+    # Schluessel: (typ, index) -> Liste der Felder auf dieser Diagonale.
+    diagonals = {}
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            # Hauptdiagonale: i - j ist konstant.
+            diagonals.setdefault(('haupt', i-j), []).append((i, j))
+            # Gegendiagonale: i + j ist konstant.
+            diagonals.setdefault(('gegen', i+j), []).append((i, j))
+
+    # Schritt 2: Paarweise AMO-Klauseln erzeugen.
+    clauses = []
+    for feld_liste in diagonals.values():
+        if len(feld_liste) < 2:
+            continue  # einelementige Diagonalen brauchen keinen Constraint
+        for p in range(len(feld_liste)):
+            for q in range(p+1, len(feld_liste)):
+                (i1, j1) = feld_liste[p]
+                (i2, j2) = feld_liste[q]
+                klausel = f"(NOT b_{{{i1},{j1}}} OR NOT b_{{{i2},{j2}}})"
+                clauses.append(klausel)
+    return clauses
+
+
+def formel_ausgabe(clauses):
+    """Verbindet alle Klauseln mit AND zur Gesamtformel."""
+    return " AND ".join(clauses)
+
+
+if __name__ == "__main__":
+    n = 4
+    klauseln = bishop_independence(n)
+    print(f"Anzahl Klauseln fuer n={n}: {len(klauseln)}")
+    for k in klauseln[:5]:
+        print(k)
+    print("...")
+\end{lstlisting}
+
+\subsection*{Schritt 5: Das Skript Zeile f\"ur Zeile}
+
+\textbf{Das Dictionary \texttt{diagonals}.}
+\begin{itemize}[nosep]
+\item Wir benutzen ein Python-Dictionary (ein "`Nachschlagewerk"'), in
+      dem der Schl\"ussel eine Diagonale identifiziert und der Wert
+      eine Liste der Felder dieser Diagonale ist.
+\item Der Schl\"ussel ist ein Tupel $(\text{typ}, \text{index})$,
+      z.\,B.\ \texttt{('haupt', 0)} f\"ur die Hauptdiagonale mit
+      $i - j = 0$.
+\item \texttt{setdefault(key, [])} liefert die Liste zum Schl\"ussel
+      zur\"uck -- und erzeugt sie, falls der Schl\"ussel noch nicht
+      existiert, mit dem Vorgabewert \texttt{[]} (leere Liste). Danach
+      h\"angen wir mit \texttt{.append((i,j))} das aktuelle Feld an.
+\end{itemize}
+
+\begin{analogie}
+\texttt{diagonals.setdefault(key, []).append(...)} ist eine klassische
+Python-Technik zum \textbf{Gruppieren}. Stell dir vor, du w\"urfst
+Briefumschl\"age in Schubladen mit Etikett. F\"ur jeden Brief (Feld)
+schaut man, ob die Schublade mit dem passenden Etikett
+(\texttt{('haupt', 0)}) schon existiert. Wenn ja, rein damit. Wenn
+nein, neue Schublade anlegen und reinlegen.
+\end{analogie}
+
+\textbf{Die doppelte Schleife \"uber $i$ und $j$.} Wir gehen jedes
+Feld $(i,j)$ genau einmal durch. Pro Feld tragen wir es in zwei
+Schubladen ein: einmal in die passende Hauptdiagonale, einmal in die
+Gegendiagonale. Am Ende der Schleife hat jede Diagonale ihre Liste
+von Feldern.
+
+\textbf{Die Klauselerzeugung.} F\"ur jede Schublade (also jede
+Diagonale):
+\begin{itemize}[nosep]
+\item Wenn die Schublade nur ein Feld enth\"alt (z.\,B.\ die Ecke
+      $(1,4)$ ist auf der Hauptdiagonale $i-j = -3$ allein), gibt es
+      nichts auszuschlie{\ss}en. Wir \"uberspringen sie mit
+      \texttt{continue}.
+\item Sonst generieren wir alle Paare $(p, q)$ mit $p < q$ (das ist
+      eine Standardkonstruktion "`paarweise ohne Doppel"'). Jedes Paar
+      gibt eine Klausel der Form
+      \texttt{(NOT b\_\{i1,j1\} OR NOT b\_\{i2,j2\})}.
+\end{itemize}
+
+\textbf{Warum \texttt{NOT ... OR NOT ...}?} Die \"Ubersetzung: $\neg
+(b_{i_1,j_1} \wedge b_{i_2,j_2})$ ist nach De Morgan dasselbe wie
+$\neg b_{i_1,j_1} \vee \neg b_{i_2,j_2}$. Beide Schreibweisen sind
+\"aquivalent, aber die zweite liegt bereits in CNF vor.
+
+\subsection*{Schritt 6: Konkretes Beispiel $n = 4$}
+
+F\"ur $n = 4$ gibt es jeweils $2n - 1 = 7$ Hauptdiagonalen und $7$
+Gegendiagonalen. Ihre Gr\"o{\ss}en sind $1, 2, 3, 4, 3, 2, 1$ in beide
+Richtungen (die mittelste Diagonale hat $n = 4$ Felder, dann wird sie
+zu den Ecken hin kleiner).
+
+\textbf{Anzahl Klauseln pro Diagonale:} $\binom{k}{2}$ f\"ur
+Gr\"o{\ss}e $k$.
+\begin{itemize}[nosep]
+\item Gr\"o{\ss}e $1$: $\binom{1}{2} = 0$ Klauseln (wird \"ubersprungen).
+\item Gr\"o{\ss}e $2$: $\binom{2}{2} = 1$ Klausel.
+\item Gr\"o{\ss}e $3$: $\binom{3}{2} = 3$ Klauseln.
+\item Gr\"o{\ss}e $4$: $\binom{4}{2} = 6$ Klauseln.
+\end{itemize}
+
+Summe pro Richtung: $0 + 1 + 3 + 6 + 3 + 1 + 0 = 14$. Beide Richtungen
+zusammen: $14 + 14 = \mathbf{28}$ Klauseln.
+
+\textbf{Beispiel-Klausel.} F\"ur die Hauptdiagonale $i - j = 0$,
+zu der die Felder $(1,1), (2,2), (3,3), (4,4)$ geh\"oren, erzeugt das
+Skript die $6$ Klauseln
+\begin{align*}
+& \neg(b_{1,1} \wedge b_{2,2}) \;\wedge\; \neg(b_{1,1} \wedge b_{3,3}) \;\wedge\; \neg(b_{1,1} \wedge b_{4,4}) \\
+& \wedge\; \neg(b_{2,2} \wedge b_{3,3}) \;\wedge\; \neg(b_{2,2} \wedge b_{4,4}) \;\wedge\; \neg(b_{3,3} \wedge b_{4,4}).
+\end{align*}
+Lesart: "`Es stehen nicht gleichzeitig L\"aufer auf $(1,1)$ und
+$(2,2)$"', "`nicht gleichzeitig auf $(1,1)$ und $(3,3)$"' usw.
+
+\subsection*{Schritt 7: Was hei{\ss}t "`Modell der Formel"'?}
+
+Ein Modell ist eine Belegung aller $b_{i,j}$ mit $0$ oder $1$. Eine
+$1$ steht f\"ur "`hier steht ein L\"aufer"', eine $0$ f\"ur "`hier
+steht kein L\"aufer"'.
+
+\textbf{Triviales Modell:} alle $b_{i,j} = 0$. Dann ist jede Klausel
+der Form $\neg(0 \wedge 0) = \neg 0 = 1$, also alle Klauseln wahr
+-- das leere Brett ist erlaubt.
+
+\textbf{Nicht-triviales Modell f\"ur $n = 4$:} Platziere L\"aufer auf
+$(1,1), (1,3), (4,2), (4,4)$. Pr\"ufe:
+\begin{itemize}[nosep]
+\item $(1,1)$: Hauptdiagonale $i-j = 0$, Gegendiagonale $i+j = 2$.
+\item $(1,3)$: Hauptdiagonale $i-j = -2$, Gegendiagonale $i+j = 4$.
+\item $(4,2)$: Hauptdiagonale $i-j = 2$, Gegendiagonale $i+j = 6$.
+\item $(4,4)$: Hauptdiagonale $i-j = 0$ -- \textbf{Kollision mit
+      $(1,1)$!}
+\end{itemize}
+Diese Konfiguration ist also \emph{kein} Modell, weil $(1,1)$ und
+$(4,4)$ auf derselben Hauptdiagonale liegen. Die Formel verbietet
+das durch $\neg(b_{1,1} \wedge b_{4,4})$.
+
+\textbf{Eine g\"ultige Konfiguration:} L\"aufer auf $(1,1), (1,4),
+(4,1), (4,4)$.
+\begin{itemize}[nosep]
+\item Hauptdiagonalen: $1-1=0, 1-4=-3, 4-1=3, 4-4=0$.
+      \textbf{Kollision: $(1,1)$ und $(4,4)$ auf $0$.}
+\end{itemize}
+Auch nicht erlaubt. L\"aufer auf den Ecken teilen sich n\"amlich die
+beiden Hauptdiagonalen und Gegendiagonalen paarweise. Es ist
+gar nicht so leicht, viele L\"aufer gleichzeitig unterzubringen!
+
+\begin{merkbox}[title={Maximale L\"aufer-Anzahl}]
+Auf einem $n \times n$-Brett kann man maximal $2n - 2$ unabh\"angige
+L\"aufer platzieren (f\"ur $n \ge 2$). Unsere Formel hat aber auch
+Modelle mit weniger L\"aufern, bis hin zum leeren Brett. Sie
+beschreibt nur die \emph{Vertr\"aglichkeit}, nicht die Maximalit\"at.
+\end{merkbox}
+
+\begin{merkbox}[title={Pattern zum Mitnehmen}]
+Das Python-Idiom
+\begin{center}
+\texttt{dict.setdefault(key, []).append(value)}
+\end{center}
+ist Standard zum \textbf{Gruppieren von Objekten nach Schl\"ussel}.
+Es ersetzt umst\"andliches \texttt{if key not in dict: dict[key] = [];
+dict[key].append(value)} durch einen einzigen Einzeiler.
+\end{merkbox}
+
+\newpage
+
+% ============================================================
+% ZUSAMMENFASSUNG
+% ============================================================
+
+\section*{Zusammenfassung und goldene Regeln}
+
+\subsection*{Kurz\"ubersicht der Ergebnisse}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c|l|l}
+\toprule
+\textbf{Aufgabe} & \textbf{Inhalt} & \textbf{Wichtigstes Ergebnis} \\
+\midrule
+1 & Sudoku als Formel & $64$ Variablen, $400$ Klauseln, $5$ Constraint-Arten \\
+2 & Schaltkreis als Formel & Hilfsvariablen $o_1, o_2, o_3$; 6 \"Aquivalenzen \\
+2a & $F = 1$ m\"oglich? & Ja, z.\,B.\ $(A,B,C) = (1,1,0)$ \\
+2b & $E = A$ m\"oglich? & Ja, z.\,B.\ $(A,B,C) = (1,1,0)$ oder $(0,0,0)$ \\
+2c & $F = 1 \Leftrightarrow D = 0$? & Nein, Gegenbeispiel $(1,1,1)$ \\
+3 & Bishop Independence & Skript erzeugt AMO-Klauseln pro Diagonale \\
+3 ($n=4$) & Anzahl Klauseln & $28$ (je $14$ Haupt-/Gegendiagonalen) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Goldene Regeln}
+
+\begin{merkbox}[title={Goldene Regeln zum Mitnehmen}]
+\begin{enumerate}
+\item \textbf{Encoding-Rezept.} Eine Bool'sche Variable pro
+      Entscheidung. Constraints als Konjunktion von
+      \textbf{AMO-}, \textbf{ALO-} und \textbf{EO}-Teilformeln.
+      Gesamtformel = Konjunktion aller Regeln.
+
+\item \textbf{AMO paarweise.} F\"ur "`h\"ochstens eine von $k$
+      Variablen wahr"' schreibt man
+      $\bigwedge_{i<j} \neg(x_i \wedge x_j)$. Anzahl: $\binom{k}{2}$
+      Klauseln. Funktioniert immer, wenn $k$ nicht zu gro{\ss} wird.
+
+\item \textbf{EO = ALO $\wedge$ AMO.} "`Genau eine"' zerf\"allt in
+      "`mindestens eine"' (eine gro{\ss}e Disjunktion) und "`h\"ochstens
+      eine"' (viele Paar-Ausschl\"usse).
+
+\item \textbf{Schaltkreise.} Pro Gate-Output eine \"Aquivalenz, alle
+      mit $\wedge$ verbunden. F\"ur interne Dr\"ahte Hilfsvariablen
+      einf\"uhren. Summen-Bedingungen wie $[>k], [=k]$ mit
+      Fallunterscheidung in Bool'sche Ausdr\"ucke \"ubersetzen.
+
+\item \textbf{Fragen an den Erf\"ullbarkeitstester.}
+      \begin{itemize}[nosep]
+      \item "`Kann $X$ passieren?"' $\Rightarrow$ SAT-Test auf
+            $\Phi \wedge X$.
+      \item "`Gilt immer $Y$?"' $\Rightarrow$ UNSAT-Test auf
+            $\Phi \wedge \neg Y$.
+      \end{itemize}
+
+\item \textbf{Schach-Diagonalen.} Hauptdiagonale: $i - j$ konstant
+      (links oben $\to$ rechts unten). Gegendiagonale: $i + j$
+      konstant (rechts oben $\to$ links unten). Je $2n - 1$ St\"uck
+      auf einem $n \times n$-Brett.
+
+\item \textbf{Sanity-Check.} Anzahl der Klauseln und Variablen
+      mitz\"ahlen. Falls die Zahlen nicht passen, irgendwo fehlt eine
+      Bedingung oder es gibt Doppelz\"ahlungen.
+\end{enumerate}
+\end{merkbox}
+
+\begin{analogie}[title={Leitmotiv}]
+Aussagenlogik ist eine \textbf{universelle Puzzle-Sprache}. Jedes
+Problem aus Kombinatorik, Schach oder Schaltkreisbau l\"asst sich in
+diese Sprache \"ubersetzen. Einmal \"ubersetzt, steht ein ganzer
+Baukasten an Werkzeugen bereit: SAT-Solver, \"Aquivalenzumformungen,
+Normalformen. Das ist der Grund, warum Logik so viel mehr ist als
+nur eine mathematische Spielerei -- sie ist die Grundlage, auf der
+Computer Probleme "`verstehen"' und l\"osen k\"onnen.
+\end{analogie}
+
+\bigskip
+\bigskip
+
+Damit sind alle drei Aufgaben des Blattes durchgearbeitet. Wer die
+drei Schritte \emph{Variablen einf\"uhren}, \emph{Regeln als
+Teilformeln}, \emph{alles mit $\wedge$ verbinden} verinnerlicht hat,
+kann damit weit \"uber Sudoku, Schach und Schaltkreise hinaus gehen.
+Viel Spa{\ss} beim Weiter-Encodieren!
+
+\end{document}
