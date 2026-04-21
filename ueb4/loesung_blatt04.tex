@@ -115,8 +115,10 @@ R_1 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigl(x_{i,j,1} \vee x_{i,j,2} \vee x_{i,j,3} \vee x_{i,j,4}\bigr).
 \]
 In Worten: F\"ur jedes Feld $(i,j)$ muss mindestens eine der vier
-Ziffern $1, 2, 3, 4$ dort gesetzt sein. $\Rightarrow$ 16~Klauseln
-(eine pro Feld).
+Ziffern $1, 2, 3, 4$ dort gesetzt sein.
+
+\textit{Klauselzahl:} 4~Zeilen $\times$ 4~Spalten $= 16$~Felder,
+eine Klausel pro Feld $\Rightarrow$ \textbf{16~Klauseln}.
 
 \smallskip
 \textbf{(R2) Jedes Feld enth\"alt h\"ochstens eine Ziffer:}
@@ -125,9 +127,11 @@ R_2 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigwedge_{1 \le n < m \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{i,j,m}\bigr).
 \]
-In Worten: F\"ur jedes Feld $(i,j)$ und jedes Ziffern-Paar $n \ne m$
+In Worten: F\"ur jedes Feld $(i,j)$ und jedes Ziffern-Paar $n < m$
 d\"urfen nicht beide gleichzeitig in diesem Feld stehen.
-$\Rightarrow$ $16 \cdot 6 = 96$ Klauseln.
+
+\textit{Klauselzahl:} 16~Felder $\times$ $\binom{4}{2} = 6$~Ziffern-Paare
+pro Feld $\Rightarrow$ \textbf{96~Klauseln}.
 
 \smallskip
 \textbf{(R3) Keine Ziffer zweimal in derselben Zeile:}
@@ -139,7 +143,10 @@ R_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
 In Worten: F\"ur jede Zeile $i$, jede Ziffer $n$ und je zwei
 verschiedene Spalten $j_1 < j_2$ d\"urfen die Felder $(i, j_1)$ und
 $(i, j_2)$ nicht beide die Ziffer $n$ enthalten.
-$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\textit{Klauselzahl:} 4~Zeilen $\times$ 4~Ziffern $\times$
+$\binom{4}{2} = 6$~Spalten-Paare pro Zeile
+$\Rightarrow$ \textbf{$4 \cdot 4 \cdot 6 = 96$~Klauseln}.
 
 \smallskip
 \textbf{(R4) Keine Ziffer zweimal in derselben Spalte:}
@@ -151,7 +158,10 @@ R_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
 In Worten: F\"ur jede Spalte $j$, jede Ziffer $n$ und je zwei
 verschiedene Zeilen $i_1 < i_2$ d\"urfen die Felder $(i_1, j)$ und
 $(i_2, j)$ nicht beide die Ziffer $n$ enthalten.
-$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\textit{Klauselzahl:} 4~Spalten $\times$ 4~Ziffern $\times$
+$\binom{4}{2} = 6$~Zeilen-Paare pro Spalte
+$\Rightarrow$ \textbf{$4 \cdot 4 \cdot 6 = 96$~Klauseln}.
 
 \smallskip
 \textbf{(R5) Keine Ziffer zweimal in derselben Region:}
@@ -163,7 +173,10 @@ R_5 \;\equiv\; \bigwedge_{r=1}^{4} \bigwedge_{n=1}^{4}
 In Worten: F\"ur jede Region $R_r$, jede Ziffer $n$ und je zwei
 verschiedene Felder $(i_1, j_1), (i_2, j_2)$ in dieser Region
 d\"urfen die beiden Felder nicht beide die Ziffer $n$ enthalten.
-$\Rightarrow$ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
+
+\textit{Klauselzahl:} 4~Regionen $\times$ 4~Ziffern $\times$
+$\binom{4}{2} = 6$~Feld-Paare pro Region
+$\Rightarrow$ \textbf{$4 \cdot 4 \cdot 6 = 96$~Klauseln}.
 
 \bigskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
