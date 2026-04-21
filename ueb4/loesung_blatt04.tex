@@ -199,8 +199,30 @@ Sudoku-L\"osung.
 \textbf{Angabe.} Stelle den gegebenen Schaltkreis als aussagen"-logische
 Formel dar, deren Modelle genau die zul\"assigen Konfigurationen der
 Inputs/Outputs $A, B, C, D, E, F$ sind.
-Notation: $[>k]$ gibt $1$ aus, wenn die Input-Summe $> k$ ist;
-$[=k]$ gibt $1$ aus, wenn die Input-Summe $= k$ ist.
+
+\medskip
+\textbf{Notation des Schaltkreises.}
+\begin{itemize}[nosep]
+\item Jede Komponente (Gate) hat \textbf{Inputs links} und \textbf{einen Output rechts}.
+\item $[>k](x_1, \ldots, x_n)$: Output $= 1$, wenn die Summe
+      $x_1 + \cdots + x_n$ \emph{strikt gr\"o\ss er} als $k$ ist,
+      sonst $0$.
+\item $[=k](x_1, \ldots, x_n)$: Output $= 1$, wenn die Summe
+      \emph{genau gleich} $k$ ist, sonst $0$.
+\item Gabelungen von Leitungen sind mit einem \textbf{Punkt}
+      markiert; Kreuzungen \emph{ohne} Punkt bedeuten, dass die
+      Leitungen \textbf{nicht verbunden} sind.
+\item Alle Signale sind bin\"ar: $A, B, C, D, E, F \in \{0, 1\}$.
+\end{itemize}
+
+\medskip
+\textbf{Variablen-Legende.}
+\begin{itemize}[nosep]
+\item $A, B, C$: die drei \textbf{Eing\"ange} des ganzen Schaltkreises.
+\item $D, E, F$: die drei \textbf{Ausg\"ange} des ganzen Schaltkreises.
+\item $o_1, o_2, o_3$: \textbf{Hilfsvariablen} f\"ur die Outputs der
+      drei linken Gates, damit man die Formel nicht zu lang wird.
+\end{itemize}
 
 \medskip
 \textbf{Schritt 1: Verkabelung ablesen.}
@@ -225,30 +247,62 @@ $[>1]$ (unten rechts) & $o_2, o_3$ & $o_2 + o_3 > 1$ & $F$ \\
 
 \medskip
 \textbf{Schritt 2: Gate-Bedingungen als Bool'sche Ausdr\"ucke.}
-F\"ur bin\"are Inputs gilt:
-\begin{align*}
-A + B > 1 &\;\Leftrightarrow\; A \wedge B \\
-A + C = 1 &\;\Leftrightarrow\; (A \wedge \neg C) \vee (\neg A \wedge C) \\
-B + C > 0 &\;\Leftrightarrow\; B \vee C \\
-o_1 = 0 &\;\Leftrightarrow\; \neg o_1 \\
-o_1 + o_2 + o_3 > 2 &\;\Leftrightarrow\; o_1 \wedge o_2 \wedge o_3 \\
-o_2 + o_3 > 1 &\;\Leftrightarrow\; o_2 \wedge o_3
-\end{align*}
+F\"ur bin\"are Inputs ($0$ oder $1$) wird jede Summen-Bedingung in
+einen logischen Ausdruck \"ubersetzt:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l|l|l}
+\toprule
+\textbf{Bedingung} & \textbf{\"Aquivalenter Ausdruck} & \textbf{Begr\"undung} \\
+\midrule
+$A + B > 1$
+  & $A \wedge B$
+  & Summe $> 1$ mit 2~Inputs $\Leftrightarrow$ beide sind $1$ \\
+$A + C = 1$
+  & $(A \wedge \neg C) \vee (\neg A \wedge C)$
+  & Summe $= 1$ $\Leftrightarrow$ genau einer ist $1$ (XOR) \\
+$B + C > 0$
+  & $B \vee C$
+  & Summe $> 0$ $\Leftrightarrow$ mindestens einer ist $1$ \\
+$o_1 = 0$
+  & $\neg o_1$
+  & $o_1 = 0$ $\Leftrightarrow$ $o_1$ ist falsch \\
+$o_1 + o_2 + o_3 > 2$
+  & $o_1 \wedge o_2 \wedge o_3$
+  & Summe $> 2$ mit 3~Inputs $\Leftrightarrow$ alle drei sind $1$ \\
+$o_2 + o_3 > 1$
+  & $o_2 \wedge o_3$
+  & Summe $> 1$ mit 2~Inputs $\Leftrightarrow$ beide sind $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \medskip
 \textbf{Schritt 3: Gesamtformel.}
-F\"ur jeden Draht/Output wird eine \"Aquivalenz geschrieben und
-alles mit $\wedge$ verkn\"upft:
+F\"ur jeden Output wird eine \"Aquivalenz zwischen der
+Output-Variable und dem Ausdruck aus Schritt~2 geschrieben. Alle
+sechs \"Aquivalenzen werden mit $\wedge$ verkn\"upft:
+
 \begin{align*}
-\Phi \;\equiv\; & (o_1 \leftrightarrow (A \wedge B)) \wedge {} \\
-& (o_2 \leftrightarrow ((A \wedge \neg C) \vee (\neg A \wedge C))) \wedge {} \\
-& (o_3 \leftrightarrow (B \vee C)) \wedge {} \\
-& (D \leftrightarrow \neg o_1) \wedge {} \\
-& (E \leftrightarrow (o_1 \wedge o_2 \wedge o_3)) \wedge {} \\
-& (F \leftrightarrow (o_2 \wedge o_3)).
+\Phi \;\equiv\; & (o_1 \leftrightarrow (A \wedge B))
+  && \text{(Gate $[>1]$ oben links)} \\
+& \wedge\; (o_2 \leftrightarrow ((A \wedge \neg C) \vee (\neg A \wedge C)))
+  && \text{(Gate $[=1]$ mitte links)} \\
+& \wedge\; (o_3 \leftrightarrow (B \vee C))
+  && \text{(Gate $[>0]$ unten links)} \\
+& \wedge\; (D \leftrightarrow \neg o_1)
+  && \text{(Gate $[=0]$, Output $D$)} \\
+& \wedge\; (E \leftrightarrow (o_1 \wedge o_2 \wedge o_3))
+  && \text{(Gate $[>2]$, Output $E$)} \\
+& \wedge\; (F \leftrightarrow (o_2 \wedge o_3))
+  && \text{(Gate $[>1]$, Output $F$)}
 \end{align*}
-Die Modelle von $\Phi$ (projiziert auf $A,B,C,D,E,F$) sind genau
-die zul\"assigen Konfigurationen.
+
+In Worten: ``$o_1$ ist genau dann $1$, wenn $A$ und $B$ beide $1$
+sind'' usw.\ -- jede Zeile codiert die Funktionsweise eines Gates.
+Ein Modell von $\Phi$ (projiziert auf $A, B, C, D, E, F$) entspricht
+genau einer zul\"assigen Schaltkreis-Konfiguration.
 
 \medskip
 {\small
@@ -267,23 +321,33 @@ Variablen $A,B,C,D,E,F$.
 \medskip
 \textbf{Schritt 4: Teilaufgaben (a), (b), (c).}
 Alle drei Fragen lassen sich mit einem Erf\"ullbarkeitstester auf
-$\Phi$ beantworten:
+$\Phi$ beantworten. Die Grundidee:
 
+\begin{itemize}[nosep]
+\item ``Kann Bedingung $X$ im Schaltkreis vorkommen?'' $\Rightarrow$
+      Pr\"ufe $\Phi \wedge X$ auf Erf\"ullbarkeit.
+      \emph{Erf\"ullbar} = ja, es gibt eine Belegung.
+\item ``Gilt Bedingung $Y$ in jeder Konfiguration?'' $\Rightarrow$
+      Pr\"ufe $\Phi \wedge \neg Y$ auf Erf\"ullbarkeit.
+      \emph{Unerf\"ullbar} = ja, $Y$ gilt immer.
+\end{itemize}
+
+\smallskip
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{c|l|l}
+\begin{tabular}{c|l|l|l}
 \toprule
- & \textbf{Frage} & \textbf{Dem Tester geben} \\
+ & \textbf{Frage} & \textbf{Dem Tester geben} & \textbf{Antwort, wenn \ldots} \\
 \midrule
 (a) & Kann $F = 1$ sein?
     & $\Phi \wedge F$
-    \quad erf\"ullbar $\Rightarrow$ ja \\
+    & erf\"ullbar $\Rightarrow$ ja \\
 (b) & Kann $E = A$ sein?
     & $\Phi \wedge (E \leftrightarrow A)$
-    \quad erf\"ullbar $\Rightarrow$ ja \\
+    & erf\"ullbar $\Rightarrow$ ja \\
 (c) & Gilt $F = 1 \Leftrightarrow D = 0$?
     & $\Phi \wedge \neg(F \leftrightarrow \neg D)$
-    \quad unerf\"ullbar $\Rightarrow$ ja \\
+    & unerf\"ullbar $\Rightarrow$ ja \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -293,20 +357,28 @@ $\Phi$ beantworten:
 
 \smallskip
 \textbf{(a) Ja, $F = 1$ ist m\"oglich.}\\
-W\"ahle $A = 1, B = 1, C = 0$. Dann:
-$o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) = (1 \wedge 1) \vee (0 \wedge 0) = 1$,
-$o_3 = B \vee C = 1 \vee 0 = 1$,
-$F = o_2 \wedge o_3 = 1 \wedge 1 = 1$. \checkmark
+W\"ahle $A = 1, B = 1, C = 0$. Einsetzen in die Gate-Formeln:
+\begin{align*}
+o_2 &= (A \wedge \neg C) \vee (\neg A \wedge C)
+     = (1 \wedge 1) \vee (0 \wedge 0) = 1 \\
+o_3 &= B \vee C = 1 \vee 0 = 1 \\
+F   &= o_2 \wedge o_3 = 1 \wedge 1 = 1 \;\checkmark
+\end{align*}
+Damit ist $\Phi \wedge F$ erf\"ullbar.
 
 \smallskip
 \textbf{(b) Ja, $E = A$ ist m\"oglich.}\\
-Trivial f\"ur $A = 0$: w\"ahle $A = B = C = 0$, dann
-$E = 0 \wedge \ldots = 0 = A$. \checkmark\\
-Auch f\"ur $A = 1$: w\"ahle $A = 1, B = 1, C = 0$. Dann
-$o_1 = 1$, $o_2 = 1$, $o_3 = 1$, also $E = 1 = A$. \checkmark
+Einfachster Fall $A = 0$: w\"ahle $A = B = C = 0$.
+Dann $o_1 = 0$, also $E = o_1 \wedge o_2 \wedge o_3 = 0 = A$. \checkmark\\
+Auch f\"ur $A = 1$ gibt es eine Belegung:
+$A = 1, B = 1, C = 0 \Rightarrow o_1 = 1, o_2 = 1, o_3 = 1$,
+also $E = 1 = A$. \checkmark\\
+Damit ist $\Phi \wedge (E \leftrightarrow A)$ erf\"ullbar.
 
 \smallskip
 \textbf{(c) Nein, $F = 1 \Leftrightarrow D = 0$ gilt NICHT.}\\
+Gesucht ist ein Gegenbeispiel (eine Belegung, die $\Phi$ erf\"ullt,
+aber $F \leftrightarrow \neg D$ verletzt).
 Gegenbeispiel: $A = B = C = 1$. Dann:
 $o_1 = A \wedge B = 1$, also $D = \neg o_1 = 0$.
 $o_2 = (A \wedge \neg C) \vee (\neg A \wedge C) = 0$,
