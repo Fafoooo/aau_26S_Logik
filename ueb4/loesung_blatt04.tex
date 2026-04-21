@@ -8,6 +8,7 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{tikz}
 \lstset{basicstyle=\ttfamily\small, keywordstyle=\color{blue!70!black},
         commentstyle=\color{green!40!black}, stringstyle=\color{orange!80!black},
         numbers=left, numberstyle=\tiny, frame=single, breaklines=true,
@@ -49,6 +50,26 @@ Spalte und Region h\"ochstens einmal vorkommen.
 \end{itemize}
 Da es 4~Ziffern und 4~Felder pro Zeile/Spalte/Region gibt, bedeutet
 ``h\"ochstens einmal'' hier sogar ``genau einmal''.
+
+\medskip
+\textbf{Beispiel eines Sudokus:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+  \draw[thin] (0,0) grid (4,4);
+  \draw[ultra thick] (0,0) rectangle (4,4);
+  \draw[ultra thick] (2,0) -- (2,4);
+  \draw[ultra thick] (0,2) -- (4,2);
+  \node at (3.5,3.5) {\large 4};
+  \node at (0.5,1.5) {\large 2};
+  \node at (3.5,1.5) {\large 3};
+  \node at (0.5,0.5) {\large 4};
+  \node at (2.5,0.5) {\large 1};
+  \node at (3.5,0.5) {\large 2};
+\end{tikzpicture}
+\end{center}
+Die leeren Felder sollen so bef\"ullt werden, dass alle Regeln
+erf\"ullt sind.
 
 \medskip
 \textbf{Schritt 1: Variablen einf\"uhren.}
