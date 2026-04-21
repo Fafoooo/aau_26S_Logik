@@ -90,51 +90,50 @@ R_4 &= \{(3,3),(3,4),(4,3),(4,4)\} \quad \text{(rechts unten)}
 \end{align*}
 
 \medskip
-\textbf{Schritt 3: Constraints formulieren.}
+\textbf{Schritt 3: Regeln formulieren.}
 F\"unf Bedingungen als Teilformeln; die Gesamtformel ist ihre
 Konjunktion.
 
 \smallskip
-\textbf{(C1) Jedes Feld enth\"alt mindestens eine Ziffer:}
+\textbf{(R1) Jedes Feld enth\"alt mindestens eine Ziffer:}
 \[
-C_1 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+R_1 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigl(x_{i,j,1} \vee x_{i,j,2} \vee x_{i,j,3} \vee x_{i,j,4}\bigr).
 \]
 16 Klauseln (eine pro Feld).
 
 \smallskip
-\textbf{(C2) Jedes Feld enth\"alt h\"ochstens eine Ziffer:}
+\textbf{(R2) Jedes Feld enth\"alt h\"ochstens eine Ziffer:}
 \[
-C_2 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
+R_2 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{j=1}^{4}
 \bigwedge_{1 \le n < m \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{i,j,m}\bigr).
 \]
 $16 \cdot 6 = 96$ Klauseln.
 
 \smallskip
-\textbf{(C3) Keine Ziffer zweimal in derselben Zeile:}
+\textbf{(R3) Keine Ziffer zweimal in derselben Zeile:}
 \[
-C_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
+R_3 \;\equiv\; \bigwedge_{i=1}^{4} \bigwedge_{n=1}^{4}
 \bigwedge_{1 \le j < k \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{i,k,n}\bigr).
 \]
 $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
-\textbf{(C4) Keine Ziffer zweimal in derselben Spalte:}
+\textbf{(R4) Keine Ziffer zweimal in derselben Spalte:}
 \[
-C_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
+R_4 \;\equiv\; \bigwedge_{j=1}^{4} \bigwedge_{n=1}^{4}
 \bigwedge_{1 \le i < k \le 4}
 \neg\bigl(x_{i,j,n} \wedge x_{k,j,n}\bigr).
 \]
 $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 
 \smallskip
-\textbf{(C5) Keine Ziffer zweimal in derselben Region:}
+\textbf{(R5) Keine Ziffer zweimal in derselben Region:}
 \[
-C_5 \;\equiv\; \bigwedge_{R \in \{R_1, R_2, R_3, R_4\}}
-\bigwedge_{n=1}^{4}
-\bigwedge_{\substack{(i,j),(k,l) \in R \\ (i,j) \neq (k,l)}}
+R_5 \;\equiv\; \bigwedge_{r=1}^{4} \bigwedge_{n=1}^{4}
+\bigwedge_{\substack{(i,j),(k,l) \in R_r \\ (i,j) \neq (k,l)}}
 \neg\bigl(x_{i,j,n} \wedge x_{k,l,n}\bigr).
 \]
 $4 \cdot 4 \cdot 6 = 96$ Klauseln.
@@ -143,7 +142,7 @@ $4 \cdot 4 \cdot 6 = 96$ Klauseln.
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 \textbf{Ergebnis Aufgabe~1.}\\[2pt]
 \[
-\Phi \;\equiv\; C_1 \wedge C_2 \wedge C_3 \wedge C_4 \wedge C_5.
+\Phi \;\equiv\; R_1 \wedge R_2 \wedge R_3 \wedge R_4 \wedge R_5.
 \]
 Insgesamt $16 + 96 + 96 + 96 + 96 = 400$ Klauseln \"uber
 $64$ Variablen. Jedes Modell von $\Phi$ entspricht einer g\"ultigen
