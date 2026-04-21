@@ -33,6 +33,24 @@ Modell = eine L\"osung). Jede Ziffer $1$--$4$ soll in jeder Zeile,
 Spalte und Region h\"ochstens einmal vorkommen.
 
 \medskip
+\textbf{Spielregeln.}
+\begin{itemize}[nosep]
+\item Das Spielfeld ist ein $4 \times 4$-Gitter mit 16~Feldern.
+\item Es ist in vier $2 \times 2$-Regionen unterteilt
+      (links oben, rechts oben, links unten, rechts unten).
+\item Jedes Feld muss mit genau einer Ziffer aus $\{1,2,3,4\}$
+      bef\"ullt werden.
+\item In jeder \textbf{Zeile} darf jede Ziffer h\"ochstens einmal
+      vorkommen.
+\item In jeder \textbf{Spalte} darf jede Ziffer h\"ochstens einmal
+      vorkommen.
+\item In jeder \textbf{Region} darf jede Ziffer h\"ochstens einmal
+      vorkommen.
+\end{itemize}
+Da es 4~Ziffern und 4~Felder pro Zeile/Spalte/Region gibt, bedeutet
+``h\"ochstens einmal'' hier sogar ``genau einmal''.
+
+\medskip
 \textbf{Schritt 1: Variablen einf\"uhren.}
 F\"ur $i,j,n \in \{1,2,3,4\}$ definiere
 \[
