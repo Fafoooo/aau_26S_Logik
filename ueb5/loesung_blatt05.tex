@@ -174,64 +174,110 @@ Gegeben ist
 \[
 F \equiv \neg X \vee \neg Y \to \neg(\neg Y \vee X).
 \]
-Wegen der Operator-Priorit\"at liest man das als
+Zuerst muss klar sein, wo die Klammern sitzen. Die Implikation $\to$
+bindet schw\"acher als $\vee$. Daher wird die Formel so gelesen:
 \[
 F \equiv (\neg X \vee \neg Y) \to \neg(\neg Y \vee X).
 \]
+Links von $\to$ steht also der Block $(\neg X \vee \neg Y)$,
+rechts von $\to$ steht der Block $\neg(\neg Y \vee X)$.
 
 \medskip
 \textbf{Schritt 1: In CNF bringen.}
-Zuerst wird $P \to Q \equiv \neg P \vee Q$ benutzt:
+F\"ur DPLL braucht man eine CNF. Deshalb wird die Formel zuerst so
+umgeformt, dass sie aus Klauseln besteht. Die erste Regel ist:
+\[
+P \to Q \equiv \neg P \vee Q.
+\]
+Hier ist
+\[
+P=(\neg X \vee \neg Y)
+\qquad\text{und}\qquad
+Q=\neg(\neg Y \vee X).
+\]
+Also wird aus $P \to Q$:
 \begin{align*}
 F
 &\equiv \neg(\neg X \vee \neg Y) \vee \neg(\neg Y \vee X).
 \end{align*}
-Jetzt werden beide Negationen mit De Morgan nach innen gezogen:
+
+\smallskip
+Jetzt stehen vor zwei Klammern Negationen. Diese werden mit De Morgan
+nach innen gezogen. Die Regel lautet:
+\[
+\neg(A \vee B) \equiv \neg A \wedge \neg B.
+\]
+F\"ur den ersten Teil bedeutet das:
 \begin{align*}
-\neg(\neg X \vee \neg Y) &\equiv X \wedge Y,\\
-\neg(\neg Y \vee X) &\equiv Y \wedge \neg X.
+\neg(\neg X \vee \neg Y)
+&\equiv \neg(\neg X) \wedge \neg(\neg Y)\\
+&\equiv X \wedge Y.
 \end{align*}
-Damit:
+F\"ur den zweiten Teil:
+\begin{align*}
+\neg(\neg Y \vee X)
+&\equiv \neg(\neg Y) \wedge \neg X\\
+&\equiv Y \wedge \neg X.
+\end{align*}
+Damit wird die ganze Formel:
 \begin{align*}
 F
 &\equiv (X \wedge Y) \vee (Y \wedge \neg X).
 \end{align*}
-In beiden Teilen kommt $Y$ vor. Also kann man $Y$ ausklammern:
+
+\smallskip
+Jetzt sieht man in beiden Teilen ein $Y$:
+\[
+(X \wedge Y)
+\qquad\text{und}\qquad
+(Y \wedge \neg X).
+\]
+Also kann $Y$ ausgeklammert werden. Das ist dieselbe Idee wie bei
+Zahlen: $3a + 3b = 3(a+b)$. Nur wird hier mit $\wedge$ und $\vee$
+gerechnet:
 \begin{align*}
 (X \wedge Y) \vee (Y \wedge \neg X)
 &\equiv Y \wedge (X \vee \neg X).
 \end{align*}
-Da $X \vee \neg X$ immer wahr ist, bleibt nur:
+Der Teil $(X \vee \neg X)$ ist immer wahr: Entweder ist $X$ wahr oder
+$\neg X$ ist wahr. Deshalb bleibt im Grunde nur $Y$:
 \[
 F \equiv Y.
 \]
-Die CNF besteht also nur aus einer Klausel:
+Das hei\ss t: Die ganze urspr\"ungliche Formel verh\"alt sich genau wie
+die einfache Formel $Y$. Die CNF besteht deshalb nur aus einer Klausel:
 \[
 \mathcal{K} = \bigl\{\{Y\}\bigr\}.
 \]
 
 \medskip
 \textbf{Schritt 2: DPLL anwenden.}
+Jetzt ist der DPLL-Teil sehr kurz. Es gibt nur noch die Klausel $\{Y\}$.
+Das ist eine Unit-Klausel, weil nur ein Literal darin steht.
 
 \begin{center}
+\small
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.22\textwidth}p{0.3\textwidth}p{0.36\textwidth}}
+\begin{tabular}{p{0.18\textwidth}p{0.22\textwidth}p{0.50\textwidth}}
 \toprule
 Schritt & Belegung & Was passiert \\
 \midrule
 Start
 & noch keine Werte
-& Es gibt direkt die Unit-Klausel $\{Y\}$. \\
+& Die einzige Klausel ist $\{Y\}$. Damit diese Klausel wahr wird,
+  muss $Y$ wahr sein. \\
 \midrule
-Unit Propagation
+Unit Prop.
 & $Y=1$
-& Die einzige Klausel ist erf\"ullt. Es bleibt keine offene Klausel mehr. \\
+& $\{Y\}$ ist erf\"ullt und wird gestrichen. Danach bleibt keine
+  offene Klausel mehr \"ubrig. DPLL hat also ein Modell gefunden. \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-F\"ur $X$ muss DPLL nichts mehr entscheiden. $X$ kommt in der vereinfachten
-Formel nicht mehr vor und ist daher frei.
+F\"ur $X$ muss DPLL nichts mehr entscheiden. Der Grund ist: Nach der
+Umformung steht $X$ gar nicht mehr in der Formel. Also ist $X$ frei.
+Solange $Y=1$ ist, funktioniert sowohl $X=0$ als auch $X=1$.
 
 \medskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
