@@ -66,11 +66,15 @@ F \equiv (X \vee Y) \wedge (X \vee \neg Y)
 \wedge (\neg X \vee Y) \wedge (\neg X \vee \neg Y).
 \]
 Die Formel ist schon in konjunktiver Normalform. Die vier Klauseln
-werden so nummeriert:
+werden so nummeriert. Rechts steht jeweils noch die Mengen-Schreibweise
+f\"ur DPLL; der Beistrich in der Menge bedeutet hier also ODER innerhalb
+der Klausel:
 \[
-\begin{array}{rclcrcl}
-C_1 &=& \{X,Y\},       && C_2 &=& \{X,\neg Y\},\\
-C_3 &=& \{\neg X,Y\}, && C_4 &=& \{\neg X,\neg Y\}.
+\begin{array}{rclcl}
+C_1 &\equiv& (X \vee Y)        &=& \{X,Y\},\\
+C_2 &\equiv& (X \vee \neg Y)   &=& \{X,\neg Y\},\\
+C_3 &\equiv& (\neg X \vee Y)   &=& \{\neg X,Y\},\\
+C_4 &\equiv& (\neg X \vee \neg Y) &=& \{\neg X,\neg Y\}.
 \end{array}
 \]
 
