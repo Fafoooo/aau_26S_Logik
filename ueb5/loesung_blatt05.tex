@@ -19,7 +19,7 @@
 
 \noindent
 \textbf{Kurze DPLL-Erinnerung.}
-Ich schreibe Klauseln als Mengen von Literalen:
+Klauseln werden hier als Mengen von Literalen geschrieben:
 $\{X,\neg Y\}$ steht also f\"ur $(X \vee \neg Y)$.
 DPLL macht dann immer wieder dieselben Schritte:
 \begin{itemize}[nosep]
@@ -42,8 +42,8 @@ Gegeben ist
 F \equiv (X \vee Y) \wedge (X \vee \neg Y)
 \wedge (\neg X \vee Y) \wedge (\neg X \vee \neg Y).
 \]
-Die Formel ist schon in konjunktiver Normalform. Ich nummeriere die
-vier Klauseln:
+Die Formel ist schon in konjunktiver Normalform. Die vier Klauseln
+werden so nummeriert:
 \[
 \begin{array}{rclcrcl}
 C_1 &=& \{X,Y\},       && C_2 &=& \{X,\neg Y\},\\
@@ -54,7 +54,8 @@ C_3 &=& \{\neg X,Y\}, && C_4 &=& \{\neg X,\neg Y\}.
 \medskip
 \textbf{Start.}
 Es gibt am Anfang keine Unit-Klausel und auch kein reines Literal.
-Also muss DPLL eine Variable verzweigen. Ich nehme zuerst $X$.
+Also muss DPLL eine Variable verzweigen. Als erste Variable wird $X$
+gew\"ahlt.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
@@ -135,7 +136,7 @@ F \equiv (\neg X \vee \neg Y) \to \neg(\neg Y \vee X).
 
 \medskip
 \textbf{Schritt 1: In CNF bringen.}
-Ich benutze zuerst $P \to Q \equiv \neg P \vee Q$:
+Zuerst wird $P \to Q \equiv \neg P \vee Q$ benutzt:
 \begin{align*}
 F
 &\equiv \neg(\neg X \vee \neg Y) \vee \neg(\neg Y \vee X).
@@ -233,7 +234,7 @@ Hier ist $G = C \wedge B$. Also:
 \[
 \neg(C \wedge B) \equiv \neg C \vee \neg B.
 \]
-Wir m\"ussen daher mit DPLL testen, ob folgende CNF erf\"ullbar ist:
+Daher wird mit DPLL getestet, ob folgende CNF erf\"ullbar ist:
 \[
 \Phi \equiv \mathrm{KB}_1 \wedge (\neg C \vee \neg B).
 \]
@@ -271,7 +272,8 @@ Nach $A=0$ bleibt also:
 \[
 \{\{B,\neg C\},\;\{C,\neg B\},\;\{D,\neg C\},\;\{\neg C,\neg B\}\}.
 \]
-Jetzt gibt es keine Unit-Klausel. Ich w\"ahle als n\"achstes $C$.
+Jetzt gibt es keine Unit-Klausel. Als n\"achste Verzweigung wird $C$
+gew\"ahlt.
 
 \medskip
 \textbf{Zweig 1: $C=1$.}
@@ -324,7 +326,8 @@ Unit Propagation
 \end{tabular}
 \end{center}
 
-Wir haben also ein Modell f\"ur $\Phi = \mathrm{KB}_1 \wedge \neg(C\wedge B)$:
+Damit liegt ein Modell f\"ur
+$\Phi = \mathrm{KB}_1 \wedge \neg(C\wedge B)$ vor:
 \[
 A=0,\qquad B=0,\qquad C=0,\qquad D=0
 \]
