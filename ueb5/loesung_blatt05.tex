@@ -85,8 +85,9 @@ Also muss DPLL eine Variable verzweigen. Als erste Variable wird $X$
 gew\"ahlt.
 
 \begin{center}
+\small
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.2\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\begin{tabular}{p{0.17\textwidth}p{0.22\textwidth}p{0.51\textwidth}}
 \toprule
 Schritt & Belegung & Was mit den Klauseln passiert \\
 \midrule
@@ -96,14 +97,25 @@ Start
 \midrule
 Wahl $X=1$
 & $X=1$
-& $C_1$ und $C_2$ sind wahr, weil sie $X$ enthalten.
-  In $C_3$ und $C_4$ ist $\neg X$ falsch, also bleibt
-  $\{Y\}$ und $\{\neg Y\}$. \\
+& $C_1=(X\vee Y)$ wird wahr, weil $X=1$ ist. Also wird $C_1$
+  gestrichen.\\
+&& $C_2=(X\vee\neg Y)$ wird aus demselben Grund wahr. Also wird auch
+  $C_2$ gestrichen.\\
+&& In $C_3=(\neg X\vee Y)$ ist $\neg X$ falsch, weil $X=1$ ist.
+  Der falsche Teil $\neg X$ wird entfernt; es bleibt nur $\{Y\}$.\\
+&& In $C_4=(\neg X\vee\neg Y)$ wird ebenfalls $\neg X$ entfernt;
+  es bleibt $\{\neg Y\}$.\\
+&& Rest nach diesem Schritt: $\{Y\}$ und $\{\neg Y\}$. \\
 \midrule
-Unit Propagation
+Unit Prop.
 & $X=1,\;Y=1$
-& Aus $\{Y\}$ folgt $Y=1$. Dann wird aber $\{\neg Y\}$ falsch,
-  also entsteht $\emptyset$. Dieser Zweig scheitert. \\
+& $\{Y\}$ ist eine Unit-Klausel. Damit diese Klausel wahr wird, muss
+  $Y=1$ gesetzt werden.\\
+&& Dann ist aber $\neg Y$ falsch. In der Klausel $\{\neg Y\}$ wird
+  also das einzige Literal entfernt. Dadurch bleibt die leere Klausel
+  $\emptyset$.\\
+&& Eine leere Klausel bedeutet: Diese Klausel kann nicht mehr wahr
+  gemacht werden. Der Zweig $X=1$ scheitert. \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -112,22 +124,28 @@ Der Zweig $X=1$ funktioniert also nicht. DPLL geht zur\"uck und probiert
 den anderen Wert:
 
 \begin{center}
+\small
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.2\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\begin{tabular}{p{0.17\textwidth}p{0.22\textwidth}p{0.51\textwidth}}
 \toprule
 Schritt & Belegung & Was mit den Klauseln passiert \\
 \midrule
 Wahl $X=0$
 & $X=0$
-& $C_3$ und $C_4$ sind wahr, weil sie $\neg X$ enthalten.
-  In $C_1$ und $C_2$ ist $X$ falsch, also bleibt
-  $\{Y\}$ und $\{\neg Y\}$. \\
+& Jetzt ist $\neg X=1$. Deshalb werden $C_3=(\neg X\vee Y)$ und
+  $C_4=(\neg X\vee\neg Y)$ wahr und gestrichen.\\
+&& In $C_1=(X\vee Y)$ ist $X$ falsch, also wird $X$ entfernt;
+  es bleibt $\{Y\}$.\\
+&& In $C_2=(X\vee\neg Y)$ wird ebenfalls $X$ entfernt;
+  es bleibt $\{\neg Y\}$.\\
+&& Rest nach diesem Schritt: wieder $\{Y\}$ und $\{\neg Y\}$. \\
 \midrule
-Unit Propagation
+Unit Prop.
 & $X=0,\;Y=1$
-& Wieder erzwingt $\{Y\}$ den Wert $Y=1$.
-  Dann ist $\{\neg Y\}$ falsch und es entsteht wieder
-  $\emptyset$. Auch dieser Zweig scheitert. \\
+& Aus $\{Y\}$ folgt wieder $Y=1$.\\
+&& Dann ist $\neg Y$ wieder falsch. Die Klausel $\{\neg Y\}$ verliert
+  ihr einziges Literal und wird zu $\emptyset$.\\
+&& Also scheitert auch der Zweig $X=0$. \\
 \bottomrule
 \end{tabular}
 \end{center}
