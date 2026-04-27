@@ -1,0 +1,365 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\setlength{\emergencystretch}{2em}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 5 -- L\"osungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+\noindent
+\textbf{Kurze DPLL-Erinnerung.}
+Ich schreibe Klauseln als Mengen von Literalen:
+$\{X,\neg Y\}$ steht also f\"ur $(X \vee \neg Y)$.
+DPLL macht dann immer wieder dieselben Schritte:
+\begin{itemize}[nosep]
+\item Eine erf\"ullte Klausel wird gestrichen.
+\item Aus einer Klausel, deren Literal falsch ist, wird dieses Literal entfernt.
+\item Eine Unit-Klausel, also z.\,B. $\{Y\}$, erzwingt sofort $Y=1$.
+\item Entsteht die leere Klausel $\emptyset$, ist dieser Zweig widerspr\"uchlich.
+\item Wenn nichts erzwungen wird, w\"ahlt man eine Variable und probiert einen Wert.
+\end{itemize}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- DPLL f\"ur eine CNF}
+
+Gegeben ist
+\[
+F \equiv (X \vee Y) \wedge (X \vee \neg Y)
+\wedge (\neg X \vee Y) \wedge (\neg X \vee \neg Y).
+\]
+Die Formel ist schon in konjunktiver Normalform. Ich nummeriere die
+vier Klauseln:
+\[
+\begin{array}{rclcrcl}
+C_1 &=& \{X,Y\},       && C_2 &=& \{X,\neg Y\},\\
+C_3 &=& \{\neg X,Y\}, && C_4 &=& \{\neg X,\neg Y\}.
+\end{array}
+\]
+
+\medskip
+\textbf{Start.}
+Es gibt am Anfang keine Unit-Klausel und auch kein reines Literal.
+Also muss DPLL eine Variable verzweigen. Ich nehme zuerst $X$.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.2\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\toprule
+Schritt & Belegung & Was mit den Klauseln passiert \\
+\midrule
+Start
+& noch keine Werte
+& $C_1,C_2,C_3,C_4$ bleiben alle offen. \\
+\midrule
+Wahl $X=1$
+& $X=1$
+& $C_1$ und $C_2$ sind wahr, weil sie $X$ enthalten.
+  In $C_3$ und $C_4$ ist $\neg X$ falsch, also bleibt
+  $\{Y\}$ und $\{\neg Y\}$. \\
+\midrule
+Unit Propagation
+& $X=1,\;Y=1$
+& Aus $\{Y\}$ folgt $Y=1$. Dann wird aber $\{\neg Y\}$ falsch,
+  also entsteht $\emptyset$. Dieser Zweig scheitert. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Der Zweig $X=1$ funktioniert also nicht. DPLL geht zur\"uck und probiert
+den anderen Wert:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.2\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\toprule
+Schritt & Belegung & Was mit den Klauseln passiert \\
+\midrule
+Wahl $X=0$
+& $X=0$
+& $C_3$ und $C_4$ sind wahr, weil sie $\neg X$ enthalten.
+  In $C_1$ und $C_2$ ist $X$ falsch, also bleibt
+  $\{Y\}$ und $\{\neg Y\}$. \\
+\midrule
+Unit Propagation
+& $X=0,\;Y=1$
+& Wieder erzwingt $\{Y\}$ den Wert $Y=1$.
+  Dann ist $\{\neg Y\}$ falsch und es entsteht wieder
+  $\emptyset$. Auch dieser Zweig scheitert. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe~1.}\\[2pt]
+Beide m\"oglichen Zweige f\"ur $X$ enden in einem Widerspruch.
+Also ist
+\[
+(X \vee Y) \wedge (X \vee \neg Y)
+\wedge (\neg X \vee Y) \wedge (\neg X \vee \neg Y)
+\]
+\textbf{unerf\"ullbar}. Es gibt keine Belegung f\"ur $X,Y$, die alle
+vier Klauseln gleichzeitig wahr macht.
+}}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\subsection*{Aufgabe 2 \textnormal{(2 Punkte)} -- Erst CNF, dann DPLL}
+
+Gegeben ist
+\[
+F \equiv \neg X \vee \neg Y \to \neg(\neg Y \vee X).
+\]
+Wegen der Operator-Priorit\"at liest man das als
+\[
+F \equiv (\neg X \vee \neg Y) \to \neg(\neg Y \vee X).
+\]
+
+\medskip
+\textbf{Schritt 1: In CNF bringen.}
+Ich benutze zuerst $P \to Q \equiv \neg P \vee Q$:
+\begin{align*}
+F
+&\equiv \neg(\neg X \vee \neg Y) \vee \neg(\neg Y \vee X).
+\end{align*}
+Jetzt werden beide Negationen mit De Morgan nach innen gezogen:
+\begin{align*}
+\neg(\neg X \vee \neg Y) &\equiv X \wedge Y,\\
+\neg(\neg Y \vee X) &\equiv Y \wedge \neg X.
+\end{align*}
+Damit:
+\begin{align*}
+F
+&\equiv (X \wedge Y) \vee (Y \wedge \neg X).
+\end{align*}
+In beiden Teilen kommt $Y$ vor. Also kann man $Y$ ausklammern:
+\begin{align*}
+(X \wedge Y) \vee (Y \wedge \neg X)
+&\equiv Y \wedge (X \vee \neg X).
+\end{align*}
+Da $X \vee \neg X$ immer wahr ist, bleibt nur:
+\[
+F \equiv Y.
+\]
+Die CNF besteht also nur aus einer Klausel:
+\[
+\mathcal{K} = \bigl\{\{Y\}\bigr\}.
+\]
+
+\medskip
+\textbf{Schritt 2: DPLL anwenden.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.22\textwidth}p{0.3\textwidth}p{0.36\textwidth}}
+\toprule
+Schritt & Belegung & Was passiert \\
+\midrule
+Start
+& noch keine Werte
+& Es gibt direkt die Unit-Klausel $\{Y\}$. \\
+\midrule
+Unit Propagation
+& $Y=1$
+& Die einzige Klausel ist erf\"ullt. Es bleibt keine offene Klausel mehr. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+F\"ur $X$ muss DPLL nichts mehr entscheiden. $X$ kommt in der vereinfachten
+Formel nicht mehr vor und ist daher frei.
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe~2.}\\[2pt]
+Die Formel ist \"aquivalent zu $Y$ und damit \textbf{erf\"ullbar}.
+Eine passende Belegung ist zum Beispiel
+\[
+Y=1,\qquad X=0.
+\]
+Genauso w\"urde auch $Y=1,\;X=1$ funktionieren, weil $X$ am Ende keine
+Rolle mehr spielt.
+}}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\subsection*{Aufgabe 3 \textnormal{(2 Punkte)} -- Logische Konsequenz mit DPLL}
+
+Gegeben ist
+\begin{align*}
+\mathrm{KB}_1 \equiv {}&
+(A \vee B \vee \neg C)
+\wedge (\neg A \vee B)
+\wedge (A \vee C \vee \neg B) \\
+&\wedge (D \vee \neg C)
+\wedge \neg A.
+\end{align*}
+Gefragt ist, ob
+\[
+\mathrm{KB}_1 \models (C \wedge B)
+\]
+gilt.
+
+\medskip
+\textbf{Schritt 1: Die Frage f\"ur DPLL umformen.}
+Eine logische Konsequenz pr\"uft man \"uber ein Gegenbeispiel:
+\[
+\mathrm{KB}_1 \models G
+\quad\Longleftrightarrow\quad
+\mathrm{KB}_1 \wedge \neg G \text{ ist unerf\"ullbar}.
+\]
+Hier ist $G = C \wedge B$. Also:
+\[
+\neg(C \wedge B) \equiv \neg C \vee \neg B.
+\]
+Wir m\"ussen daher mit DPLL testen, ob folgende CNF erf\"ullbar ist:
+\[
+\Phi \equiv \mathrm{KB}_1 \wedge (\neg C \vee \neg B).
+\]
+Als Klauselmenge:
+\[
+\begin{array}{rclcrcl}
+C_1 &=& \{A,B,\neg C\},       && C_2 &=& \{\neg A,B\},\\
+C_3 &=& \{A,C,\neg B\},       && C_4 &=& \{D,\neg C\},\\
+C_5 &=& \{\neg A\},           && C_6 &=& \{\neg C,\neg B\}.
+\end{array}
+\]
+
+\medskip
+\textbf{Schritt 2: DPLL starten.}
+Es gibt sofort die Unit-Klausel $C_5=\{\neg A\}$.
+Also muss $A=0$ gelten.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.2\textwidth}p{0.3\textwidth}p{0.38\textwidth}}
+\toprule
+Schritt & Belegung & Rest nach Vereinfachung \\
+\midrule
+Unit $C_5$
+& $A=0$
+& $C_2$ und $C_5$ sind wahr.
+  Aus $C_1$ wird $\{B,\neg C\}$.
+  Aus $C_3$ wird $\{C,\neg B\}$.
+  $C_4=\{D,\neg C\}$ und $C_6=\{\neg C,\neg B\}$ bleiben. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Nach $A=0$ bleibt also:
+\[
+\{\{B,\neg C\},\;\{C,\neg B\},\;\{D,\neg C\},\;\{\neg C,\neg B\}\}.
+\]
+Jetzt gibt es keine Unit-Klausel. Ich w\"ahle als n\"achstes $C$.
+
+\medskip
+\textbf{Zweig 1: $C=1$.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.2\textwidth}p{0.3\textwidth}p{0.38\textwidth}}
+\toprule
+Schritt & Belegung & Rest nach Vereinfachung \\
+\midrule
+Wahl $C=1$
+& $A=0,\;C=1$
+& $\{C,\neg B\}$ ist wahr.
+  Aus $\{B,\neg C\}$ wird $\{B\}$.
+  Aus $\{\neg C,\neg B\}$ wird $\{\neg B\}$.
+  Aus $\{D,\neg C\}$ wird $\{D\}$. \\
+\midrule
+Unit Propagation
+& $A=0,\;C=1,\;B=1$
+& $\{B\}$ erzwingt $B=1$.
+  Dann wird aber $\{\neg B\}$ falsch, also entsteht
+  $\emptyset$. Dieser Zweig scheitert. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Der Wert $C=1$ passt also nicht. DPLL geht zur\"uck und probiert $C=0$.
+
+\medskip
+\textbf{Zweig 2: $C=0$.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.2\textwidth}p{0.3\textwidth}p{0.38\textwidth}}
+\toprule
+Schritt & Belegung & Rest nach Vereinfachung \\
+\midrule
+Wahl $C=0$
+& $A=0,\;C=0$
+& $\{B,\neg C\}$, $\{D,\neg C\}$ und $\{\neg C,\neg B\}$
+  sind wahr, weil $\neg C$ wahr ist.
+  Aus $\{C,\neg B\}$ bleibt $\{\neg B\}$. \\
+\midrule
+Unit Propagation
+& $A=0,\;C=0,\;B=0$
+& $\{\neg B\}$ erzwingt $B=0$.
+  Danach sind alle Klauseln erf\"ullt. F\"ur $D$ ist kein Wert mehr
+  erzwungen. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Wir haben also ein Modell f\"ur $\Phi = \mathrm{KB}_1 \wedge \neg(C\wedge B)$:
+\[
+A=0,\qquad B=0,\qquad C=0,\qquad D=0
+\]
+(auch $D=1$ w\"are m\"oglich).
+
+\medskip
+\textbf{Kurzer Check des Gegenbeispiels.}
+Mit $A=0,B=0,C=0,D=0$ gilt:
+\[
+\begin{array}{rcl}
+A \vee B \vee \neg C &=& 0 \vee 0 \vee 1 = 1,\\
+\neg A \vee B &=& 1 \vee 0 = 1,\\
+A \vee C \vee \neg B &=& 0 \vee 0 \vee 1 = 1,\\
+D \vee \neg C &=& 0 \vee 1 = 1,\\
+\neg A &=& 1.
+\end{array}
+\]
+Also ist $\mathrm{KB}_1$ wahr. Aber
+\[
+C \wedge B = 0 \wedge 0 = 0.
+\]
+Das ist genau ein Gegenbeispiel gegen die behauptete Folgerung.
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe~3.}\\[2pt]
+\[
+\mathrm{KB}_1 \not\models (C \wedge B).
+\]
+Der Grund ist: DPLL findet f\"ur
+$\mathrm{KB}_1 \wedge \neg(C \wedge B)$ ein Modell, n\"amlich z.\,B.\
+\[
+A=0,\quad B=0,\quad C=0,\quad D=0.
+\]
+Damit ist die Wissensbasis wahr, aber $C \wedge B$ falsch.
+}}
+
+\end{document}
