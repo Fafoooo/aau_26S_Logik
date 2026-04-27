@@ -17,26 +17,49 @@
 
 \bigskip
 
-\noindent
-\textbf{Kurze DPLL-Erinnerung.}
-Klauseln werden hier als Mengen von Literalen geschrieben:
-$\{X,\neg Y\}$ steht also f\"ur $(X \vee \neg Y)$.
-DPLL macht dann immer wieder dieselben Schritte:
-\begin{itemize}[nosep]
-\item Eine erf\"ullte Klausel wird gestrichen.
-\item Aus einer Klausel, deren Literal falsch ist, wird dieses Literal entfernt.
-\item Eine Unit-Klausel, also z.\,B. $\{Y\}$, erzwingt sofort $Y=1$.
-\item Entsteht die leere Klausel $\emptyset$, ist dieser Zweig widerspr\"uchlich.
-\item Wenn nichts erzwungen wird, w\"ahlt man eine Variable und probiert einen Wert.
-\end{itemize}
-
-\bigskip
-
 %% ============================================================
 %% AUFGABE 1
 %% ============================================================
 \subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- DPLL f\"ur eine CNF}
 
+\textbf{Was ist eine CNF?}
+CNF hei\ss t \emph{konjunktive Normalform}. Das bedeutet: Die ganze Formel
+ist ein gro\ss es UND von mehreren Klammern. Jede Klammer ist eine ODER-Verkn\"upfung.
+So eine einzelne Klammer nennt man \textbf{Klausel}. Ein einzelner Baustein
+in einer Klausel hei\ss t \textbf{Literal}, also z.\,B. $X$ oder $\neg X$.
+
+\[
+(X \vee Y) \wedge (\neg X \vee Y)
+\]
+ist also in CNF, weil zwei Klauseln mit $\wedge$ verbunden sind:
+\[
+\{X,Y\}
+\qquad\text{und}\qquad
+\{\neg X,Y\}.
+\]
+Damit eine CNF wahr ist, muss jede Klausel wahr sein. Und eine Klausel ist
+schon wahr, sobald mindestens ein Literal darin wahr ist.
+
+\medskip
+\textbf{Was ist DPLL?}
+DPLL ist ein Verfahren, mit dem gepr\"uft wird, ob eine CNF erf\"ullbar ist.
+``Erf\"ullbar'' bedeutet: Es gibt mindestens eine Belegung der Variablen,
+bei der alle Klauseln gleichzeitig wahr werden.
+
+Die Idee ist einfach: DPLL setzt Schritt f\"ur Schritt Werte f\"ur Variablen
+ein und vereinfacht danach die Klauseln.
+\begin{itemize}[nosep]
+\item Wird eine Klausel wahr, ist sie erledigt und kann gestrichen werden.
+\item Wird ein Literal falsch, wird nur dieses Literal aus seiner Klausel entfernt.
+\item Bleibt in einer Klausel nur ein Literal \"ubrig, muss dieses Literal wahr werden.
+      Das nennt man \textbf{Unit Propagation}.
+\item Wird eine Klausel ganz leer, ist dieser Zweig unm\"oglich. Dann muss
+      DPLL zur\"uckgehen und einen anderen Wert probieren.
+\end{itemize}
+Wenn keine Unit-Klausel vorhanden ist, wird eine Variable ausgew\"ahlt und
+ein Wert probiert. Genau das passiert hier gleich mit $X$.
+
+\medskip
 Gegeben ist
 \[
 F \equiv (X \vee Y) \wedge (X \vee \neg Y)
