@@ -1,0 +1,370 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tikz}
+\setlength{\emergencystretch}{2em}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries \"Ubungsblatt 7 -- L\"osungen}\\[0.5em]
+{\large VC Logik}
+\end{center}
+
+\bigskip
+
+%% ============================================================
+%% AUFGABE 1
+%% ============================================================
+\subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- Vorw\"artsverkettung f\"ur $KB_1$}
+
+\textbf{Was ist ein Literal?}
+Ein Literal ist eine Variable oder die Negation einer Variable. $X$
+hei\ss t \emph{positives} Literal, $\neg X$ hei\ss t \emph{negatives}
+Literal. In der Klausel $\{X, \neg Y, \neg Z\}$ steht z.\,B.\ ein
+positives Literal ($X$) und zwei negative ($\neg Y, \neg Z$).
+
+\medskip
+\textbf{Was bedeutet $\bot$?}
+Das Symbol $\bot$ (gelesen ``Bottom'', das umgedrehte T) steht f\"ur die
+Konstante \emph{falsch}. Eine Implikation $\dots \to \bot$ bedeutet:
+sobald die Pr\"amisse wahr wird, w\"urde Falsch folgen -- die Pr\"amisse
+darf also nie wahr werden. Wird $\bot$ aus einer Formel ableitbar, ist
+die Formel \textbf{unerf\"ullbar}.
+
+\medskip
+\textbf{Was ist eine Horn-Klausel?}
+Eine Klausel mit \emph{h\"ochstens einem positiven} Literal. Die Anzahl
+positiver Literale entscheidet \"uber den Typ:
+\begin{itemize}[nosep,leftmargin=2em]
+\item \textbf{Fakt} (1 positives, 0 negative): $\{A\}$ entspricht der
+      Aussage ``$A$ gilt''.
+\item \textbf{Implikation} (1 positives, $\geq 1$ negative):
+      $\{\neg A_1, \dots, \neg A_n, B\}$ entspricht
+      $A_1 \wedge \dots \wedge A_n \to B$. Das positive Literal ist die
+      Konklusion, die negierten werden zur Pr\"amisse.
+\item \textbf{Constraint} (0 positive, nur negative -- auch
+      ``Goal-Klausel''): $\{\neg A_1, \dots, \neg A_n\}$ entspricht
+      $A_1 \wedge \dots \wedge A_n \to \bot$. Eine Constraint ist also
+      ein \emph{Verbot}: die Pr\"amissen d\"urfen nie gleichzeitig wahr
+      werden, sonst entsteht $\bot$.
+\end{itemize}
+Eine \emph{Horn-Formel} ist eine Konjunktion von Horn-Klauseln. Sobald
+\emph{eine} Klausel zwei oder mehr positive Literale hat, ist die ganze
+Formel keine Horn-Formel mehr.
+
+\medskip
+\textbf{Was ist Vorw\"artsverkettung?}
+Verfahren f\"ur Horn-Formeln. Start mit den Fakten. Sobald alle Pr\"amissen
+einer Implikation in der Faktenmenge sind, wird die Konklusion erg\"anzt.
+F\"ur die \emph{Erf\"ullbarkeitspr\"ufung}: feuert eine Constraint-Klausel
+$A_1 \wedge \dots \wedge A_n \to \bot$, wird $\bot$ abgeleitet -- damit ist
+die Formel \textbf{unerf\"ullbar}. Wird kein Widerspruch erreicht, ist sie
+erf\"ullbar.
+
+\medskip
+\textbf{Aufgabenstellung.}
+\[
+KB_1: \quad (P \vee S) \wedge (\neg P \vee \neg S) \wedge (\neg S \vee A) \wedge (\neg A \vee P) \wedge P \wedge S.
+\]
+$KB_1$ ist keine Horn-Formel; daher muss zuerst eine Horn-Variante
+gefunden werden.
+
+\bigskip
+\textbf{Schritt 1: Klauseln klassifizieren.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{llcl}
+\toprule
+Klausel               & Positive Literale & Horn?                       & Bedeutung \\
+\midrule
+$\{P, S\}$            & $P$, $S$ \;(2)    & \textbf{nein} -- mehr als 1 & Disjunktion $P \vee S$ \\
+$\{\neg P, \neg S\}$  & -- \;(0)          & ja                          & Constraint: $P \wedge S \to \bot$ \\
+$\{\neg S, A\}$       & $A$ \;(1)         & ja                          & Implikation: $S \to A$ \\
+$\{\neg A, P\}$       & $P$ \;(1)         & ja                          & Implikation: $A \to P$ \\
+$\{P\}$               & $P$ \;(1)         & ja                          & Fakt: $P$ \\
+$\{S\}$               & $S$ \;(1)         & ja                          & Fakt: $S$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Warum $\{P, S\}$ st\"ort.}
+Diese Klausel hat \emph{zwei} positive Literale ($P$ und $S$), eine
+Horn-Klausel darf aber h\"ochstens \emph{eins} haben. Damit ist $KB_1$
+keine Horn-Formel und Vorw\"artsverkettung kann nicht direkt angewendet
+werden.
+
+\bigskip
+\textbf{Schritt 2: Horn-Variante finden.}
+
+$\{P, S\}$ kann einfach \emph{weggelassen} werden, ohne dass sich an der
+Erf\"ullbarkeit etwas \"andert. Die Begr\"undung in drei kleinen Schritten:
+\begin{enumerate}[nosep,leftmargin=2em]
+\item $\{P\}$ ist als eigene Klausel in $KB_1$ enthalten. In jedem Modell
+      von $KB_1$ muss $P$ also wahr sein.
+\item Wenn $P$ wahr ist, ist auch $P \vee S$ automatisch wahr (ein ODER
+      wird wahr, sobald \emph{irgendein} Teil wahr ist -- $S$ spielt
+      dann keine Rolle mehr).
+\item Damit ist die Klausel $\{P, S\}$ \emph{redundant}: jede Belegung,
+      die die anderen Klauseln erf\"ullt, macht ohnehin schon $P$ wahr
+      und erf\"ullt damit auch $\{P, S\}$ ``gratis''.
+\end{enumerate}
+Eine redundante Klausel bringt keine zus\"atzliche Information und darf
+gestrichen werden. \"Ubrig bleibt eine Formel, in der jede Klausel Horn
+ist -- die gesuchte \textbf{Horn-Variante} $KB_1'$ (die untere Klammer
+zeigt jeweils die Implikationsschreibweise der Klausel):
+\[
+KB_1' \;:\quad \underbrace{(\neg P \vee \neg S)}_{P \wedge S \to \bot}
+\;\wedge\; \underbrace{(\neg S \vee A)}_{S \to A}
+\;\wedge\; \underbrace{(\neg A \vee P)}_{A \to P}
+\;\wedge\; P \;\wedge\; S.
+\]
+$KB_1$ ist genau dann erf\"ullbar, wenn $KB_1'$ erf\"ullbar ist -- die
+Frage f\"ur $KB_1$ wird also durch die Antwort f\"ur $KB_1'$ vollst\"andig
+beantwortet.
+
+\bigskip
+\textbf{Schritt 3: Vorw\"artsverkettung.}
+
+Vorgehen kurz:
+\begin{itemize}[nosep,leftmargin=2em]
+\item \textbf{Schritt 0}: Fakten in die Faktenmenge schreiben.
+\item \textbf{Weitere Schritte}: jede Regel, deren Pr\"amissen \emph{alle}
+      schon Fakten sind, ``feuert'' -- ihre Konklusion wird neuer Fakt.
+\item Feuert eine \textbf{Constraint} ($\dots \to \bot$), ist die Formel
+      \textbf{unerf\"ullbar}.
+\end{itemize}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.18\textwidth}p{0.30\textwidth}p{0.42\textwidth}}
+\toprule
+Schritt & Was passiert & Faktenmenge danach \\
+\midrule
+0: Start
+& $\{P\}$ und $\{S\}$ direkt \"ubernehmen.
+& $\{P, S\}$ \\
+\midrule
+1: $S \to A$
+& Pr\"amisse $S$ erf\"ullt $\Rightarrow$ $A$ wird neuer Fakt.
+& $\{P, S, A\}$ \\
+\midrule
+2: $A \to P$
+& Pr\"amisse $A$ erf\"ullt $\Rightarrow$ $P$ w\"are neuer Fakt, ist aber schon dabei.
+& $\{P, S, A\}$ \\
+\midrule
+3: $P \wedge S \to \bot$
+& Pr\"amissen $P, S$ erf\"ullt $\Rightarrow$ $\bot$ wird abgeleitet.
+& \textbf{Widerspruch}. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In Schritt~3 feuert die Constraint und liefert $\bot$. Damit ist $KB_1'$
+(und somit $KB_1$) \textbf{unerf\"ullbar}.
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe 1.}\\[2pt]
+$(P \vee S)$ ist redundant (folgt aus dem Fakt $P$) und kann weggelassen
+werden -- das ergibt die Horn-Variante. Vorw\"artsverkettung leitet aus
+den Fakten $P, S$ \"uber $S \to A$ und $A \to P$ nichts Neues ab, danach
+feuert aber $P \wedge S \to \bot$. Damit ist $KB_1$ \textbf{unerf\"ullbar}.%
+}}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 2
+%% ============================================================
+\subsection*{Aufgabe 2 \textnormal{(2 Punkte)} -- Folgt $H$ aus $KB_2$?}
+
+\textbf{Folgerung mittels Vorw\"artsverkettung.}
+F\"ur Horn-Formeln gilt: $KB \models q$ genau dann, wenn $q$ durch
+Vorw\"artsverkettung aus $KB$ ableitbar ist. Konkret: man h\"angt
+neue Fakten an, bis $q$ erscheint (dann folgt $q$) oder keine neuen
+Fakten mehr entstehen (dann folgt $q$ nicht).
+
+\emph{In einfachen Worten:} Mit den gegebenen Fakten als Startpunkt so
+viele neue Fakten wie m\"oglich ableiten. Taucht $H$ irgendwann in der
+Faktenmenge auf, folgt $H$ aus $KB_2$. Wenn nichts Neues mehr abgeleitet
+werden kann und $H$ nicht dabei ist, folgt $H$ nicht.
+
+\medskip
+\textbf{Aufgabenstellung.} $KB_2$:
+\[
+\begin{array}{ll}
+R_1: A \wedge B \to K        & R_2: A \wedge B \wedge C \to M \\
+R_3: C \wedge M \to D        & R_4: F \wedge M \to H \\
+R_5: K \wedge D \wedge L \to E & R_6: L \wedge G \to F \\
+R_7: A \wedge B \to L        & R_8: L \wedge M \to G \\
+\multicolumn{2}{l}{\text{Fakt: } A \wedge B \wedge C}
+\end{array}
+\]
+Folgt $H$?
+
+\bigskip
+\textbf{Vorw\"artsverkettung.}
+Start: $\{A, B, C\}$. In jedem Schritt wird eine Implikation aktiviert,
+deren Pr\"amissen vollst\"andig in der Faktenmenge sind.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.08\textwidth}p{0.30\textwidth}p{0.10\textwidth}p{0.40\textwidth}}
+\toprule
+Schritt & Aktivierte Regel & Neuer Fakt & Faktenmenge danach \\
+\midrule
+0 & -- (Start)                  & --   & $\{A, B, C\}$ \\
+\midrule
+1 & $R_1:\; A \wedge B \to K$   & $K$  & $\{A, B, C, K\}$ \\
+\midrule
+2 & $R_7:\; A \wedge B \to L$   & $L$  & $\{A, B, C, K, L\}$ \\
+\midrule
+3 & $R_2:\; A \wedge B \wedge C \to M$ & $M$ & $\{A, B, C, K, L, M\}$ \\
+\midrule
+4 & $R_3:\; C \wedge M \to D$   & $D$  & $\{A, B, C, K, L, M, D\}$ \\
+\midrule
+5 & $R_8:\; L \wedge M \to G$   & $G$  & $\{A, B, C, K, L, M, D, G\}$ \\
+\midrule
+6 & $R_6:\; L \wedge G \to F$   & $F$  & $\{A, B, C, K, L, M, D, G, F\}$ \\
+\midrule
+7 & $R_4:\; F \wedge M \to H$   & $\mathbf{H}$ & $\{A, B, C, K, L, M, D, G, F, \mathbf{H}\}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$H$ erscheint in Schritt~7 in der Faktenmenge. (Zur Vollst\"andigkeit:
+$R_5$ k\"onnte als 8.\ Schritt noch $E$ ableiten, das ist f\"ur die
+Frage aber nicht n\"otig.)
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe 2.}\\[2pt]
+Vorw\"artsverkettung leitet aus dem Fakt $A \wedge B \wedge C$ \"uber die
+Kette
+\[
+K,\; L,\; M,\; D,\; G,\; F \;\longrightarrow\; H
+\]
+das Atom $H$ ab. Damit gilt $KB_2 \models H$, also $H$ \textbf{folgt} aus
+$KB_2$.%
+}}
+
+\newpage
+
+%% ============================================================
+%% AUFGABE 3
+%% ============================================================
+\subsection*{Aufgabe 3 \textnormal{(3 Punkte)} -- R\"uckw\"artsverkettung f\"ur $H$ aus $KB_3$}
+
+\textbf{Vorgehen.} Erst $KB_3$ in Horn-Form bringen (jede Klausel mit
+h\"ochstens einem positiven Literal als Implikation schreiben), dann
+R\"uckw\"artsverkettung: Ziel $H$ rekursiv auf Teilziele zur\"uckf\"uhren,
+bis nur Fakten \"ubrig sind.
+
+\medskip
+\textbf{Aufgabenstellung.} $KB_3$:
+\[
+\begin{array}{ll}
+(H \wedge C) \vee (F \wedge A) \to M & A \wedge B \wedge C \\
+B \wedge M \to J                     & \neg J \to \neg L \\
+\neg B \vee \neg Y \vee L            & L \wedge G \to F \\
+\neg(B \wedge C \wedge \neg G)       & \neg G \vee N \\
+A \wedge J \to H                     & N \wedge F \to H \\
+C \wedge N \to M
+\end{array}
+\]
+Folgt $H$?
+
+\bigskip
+\textbf{Schritt 1: Horn-Form.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ll}
+\toprule
+Original                                   & Horn-Form \\
+\midrule
+$(H \wedge C) \vee (F \wedge A) \to M$     & $H \wedge C \to M$ \;\textbf{und}\; $F \wedge A \to M$ \\
+$\neg J \to \neg L$                        & $L \to J$ \;(Kontrapositiv) \\
+$\neg B \vee \neg Y \vee L$                & $B \wedge Y \to L$ \\
+$\neg(B \wedge C \wedge \neg G)$           & $\neg B \vee \neg C \vee G$ \;$\Rightarrow$\; $B \wedge C \to G$ \\
+$\neg G \vee N$                            & $G \to N$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Damit ergibt sich die Horn-Regelmenge (Fakten: $A, B, C$):
+\[
+\begin{array}{rl@{\qquad}rl}
+R_1: & H \wedge C \to M        & R_2: & F \wedge A \to M \\
+R_3: & B \wedge M \to J        & R_4: & L \to J \\
+R_5: & B \wedge Y \to L        & R_6: & L \wedge G \to F \\
+R_7: & B \wedge C \to G        & R_8: & G \to N \\
+R_9: & A \wedge J \to H        & R_{10}: & N \wedge F \to H \\
+R_{11}: & C \wedge N \to M     & &
+\end{array}
+\]
+
+\bigskip
+\textbf{Schritt 2: R\"uckw\"artsverkettungs-Beweisbaum.}
+
+\begin{center}
+\begin{tikzpicture}[
+  grow=down,
+  level distance=1.2cm,
+  level 1/.style={sibling distance=42mm},
+  level 2/.style={sibling distance=42mm},
+  level 3/.style={sibling distance=28mm},
+  level 4/.style={sibling distance=22mm},
+  level 5/.style={sibling distance=18mm},
+  every node/.style={draw, rounded corners, inner sep=4pt, font=\small},
+  edge from parent/.style={draw, -latex}
+]
+\node {$H$ \;via $R_9: A \wedge J \to H$}
+  child {node {$A$ \checkmark\,Fakt}}
+  child {node {$J$ \;via $R_3: B \wedge M \to J$}
+    child {node {$B$ \checkmark\,Fakt}}
+    child {node {$M$ \;via $R_{11}: C \wedge N \to M$}
+      child {node {$C$ \checkmark\,Fakt}}
+      child {node {$N$ \;via $R_8: G \to N$}
+        child {node {$G$ \;via $R_7: B \wedge C \to G$}
+          child {node {$B$ \checkmark\,Fakt}}
+          child {node {$C$ \checkmark\,Fakt}}
+        }
+      }
+    }
+  };
+\end{tikzpicture}
+\end{center}
+
+\medskip
+\textbf{Sackgassen, die unterwegs aufgegeben werden.}
+\begin{itemize}[leftmargin=2em,nosep]
+\item Bei $M$ scheidet $R_1$ ($H \wedge C \to M$) aus, weil $H$ gerade
+      das offene Hauptziel ist (Schleife).
+\item Bei $M$ scheidet auch $R_2$ ($F \wedge A \to M$) aus: $F$ ginge
+      nur \"uber $R_6: L \wedge G \to F$, und $L$ ginge nur \"uber
+      $R_5: B \wedge Y \to L$ -- aber $Y$ ist weder Fakt noch
+      ableitbar.
+\end{itemize}
+Daher der Weg \"uber $R_{11}: C \wedge N \to M$.
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Ergebnis Aufgabe 3.}\\[2pt]
+R\"uckw\"artsverkettung findet den Beweisbaum
+\[
+H \;\leftarrow\; A,\, J \;\leftarrow\; B,\, M \;\leftarrow\; C,\, N \;\leftarrow\; G \;\leftarrow\; B,\, C,
+\]
+alle Bl\"atter sind Fakten. Damit \textbf{folgt} $H$ aus $KB_3$.%
+}}
+
+\end{document}
