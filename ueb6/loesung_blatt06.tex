@@ -18,108 +18,144 @@
 \bigskip
 
 %% ============================================================
-%% Begriffe vorab
-%% ============================================================
-\subsection*{Begriffe vorab}
-
-\textbf{Klausel.} Eine Klausel ist eine Oder-Verkn\"upfung von Literalen,
-z.\,B.\ $X \vee \neg Y$. In Mengenschreibweise wird sie als
-$\{X, \neg Y\}$ geschrieben; das Komma bedeutet hier $\vee$. Die
-\textbf{leere Klausel} $\emptyset$ ist immer falsch.
-
-\textbf{CNF (konjunktive Normalform).} Eine Formel ist in CNF, wenn sie
-ein UND von Klauseln ist, also eine Menge $\{C_1, C_2, \dots, C_n\}$.
-Wahr ist die Formel genau dann, wenn jede einzelne Klausel wahr ist.
-
-\textbf{Resolution.} Aus zwei Klauseln $D_1$ und $D_2$, die ein
-komplement\"ares Literalpaar enthalten ($\ell \in D_1$, $\neg\ell \in D_2$),
-ist der \emph{Resolvent}
-\[
-(D_1 \setminus \{\ell\}) \;\cup\; (D_2 \setminus \{\neg\ell\}).
-\]
-Die Resolution ist korrekt: aus $D_1 \wedge D_2$ folgt der Resolvent
-logisch. Eine CNF ist genau dann unerf\"ullbar, wenn sich aus ihr durch
-wiederholte Resolution die leere Klausel $\emptyset$ ableiten l\"asst.
-
-\textbf{DPLL.} Verfahren zum Entscheiden, ob eine CNF erf\"ullbar ist.
-Variablen werden Schritt f\"ur Schritt belegt, danach werden die
-Klauseln vereinfacht:
-\begin{itemize}[nosep]
-\item Wird eine Klausel wahr, f\"allt sie weg.
-\item Wird ein Literal falsch, wird es nur aus seiner Klausel entfernt.
-\item \emph{Unit Propagation}: Steht in einer Klausel nur noch ein
-      einziges Literal, muss dieses wahr werden.
-\item Entsteht die leere Klausel $\emptyset$, scheitert der Zweig. DPLL
-      geht zur\"uck (Backtracking) und probiert den anderen Wert.
-\end{itemize}
-Findet DPLL eine Belegung, unter der jede Klausel wahr ist, ist die
-Formel erf\"ullbar; scheitert jeder Zweig, ist sie unerf\"ullbar.
-
-\textbf{Logische Folgerung.} $A \models B$ bedeutet: jede Belegung, die
-$A$ wahr macht, macht auch $B$ wahr. Eine Inferenzregel hei\ss t
-\emph{korrekt}, wenn aus den Pr\"amissen die Konklusion logisch folgt.
-
-\bigskip
-
-%% ============================================================
 %% AUFGABE 1
 %% ============================================================
 \subsection*{Aufgabe 1 \textnormal{(2 Punkte)} -- Doppelte Resolution ist inkorrekt}
 
-\textbf{Aufgabenstellung.}
-Gegeben Klauseln $C_1$ und $C_2$ mit $\{a,b\} \subseteq C_1$ und
-$\{c,d\} \subseteq C_2$ sowie $a \equiv \neg c$ und $b \equiv \neg d$
-(also z.\,B.\ $\{X, \neg Y\} \subseteq C_1$ und
-$\{\neg X, Y\} \subseteq C_2$). Der \emph{Doppelresolvent} ist
-\[
-(C_1 \setminus \{a,b\}) \;\cup\; (C_2 \setminus \{c,d\}).
-\]
-Zu zeigen: Diese Regel ist inkorrekt, der Doppelresolvent folgt also
-nicht logisch aus $C_1, C_2$.
+\textbf{Was ist eine Klausel?}
+Eine Klausel ist eine Oder-Verkn\"upfung von Literalen, also z.\,B.\
+$X \vee \neg Y$. In Mengenschreibweise wird sie als $\{X, \neg Y\}$ notiert;
+das Komma zwischen den Literalen bedeutet hier $\vee$. Die \textbf{leere
+Klausel} $\emptyset$ ist eine Klausel ohne Literale -- sie ist immer falsch,
+weil ein ODER ohne Bestandteile nichts hat, was sie wahr machen k\"onnte.
 
 \medskip
-\textbf{Gegenbeispiel.}
-W\"ahle die kleinstm\"oglichen Klauseln, in denen die Voraussetzung
-greift:
+\textbf{Was ist die normale Resolutionsregel?}
+Aus zwei Klauseln $D_1$ und $D_2$, in denen ein Literal $\ell$ einmal
+positiv und einmal negativ vorkommt ($\ell \in D_1$, $\neg\ell \in D_2$),
+darf eine neue Klausel gebildet werden:
+\[
+\text{Resolvent} \;=\; (D_1 \setminus \{\ell\}) \cup (D_2 \setminus \{\neg\ell\}).
+\]
+Aus $D_1 = \{X, A\}$ und $D_2 = \{\neg X, B\}$ wird also $\{A, B\}$.
+Diese Regel ist korrekt, denn:
+\begin{itemize}[nosep]
+\item Ist $X = 1$, muss in $D_2$ schon $B = 1$ sein, damit $D_2$ wahr ist.
+\item Ist $X = 0$, muss in $D_1$ schon $A = 1$ sein, damit $D_1$ wahr ist.
+\end{itemize}
+In jedem Fall ist also $A \vee B$ wahr -- der Resolvent stimmt immer, wenn
+die Pr\"amissen stimmen.
+
+\medskip
+\textbf{Was ist die ``doppelte'' Resolutionsregel?}
+Die in der Aufgabe beschriebene Regel will gleich \emph{zwei} Literale
+auf einmal eliminieren. Voraussetzung: in $C_1$ stehen zwei Literale $a, b$
+und in $C_2$ zwei Literale $c, d$, sodass $a \equiv \neg c$ und
+$b \equiv \neg d$ (also beide Paare komplement\"ar). Dann liefert die
+Regel:
+\[
+\text{Doppelresolvent} \;=\; (C_1 \setminus \{a, b\}) \cup (C_2 \setminus \{c, d\}).
+\]
+
+\medskip
+\textbf{Was hei\ss t ``inkorrekt''?}
+Eine Inferenzregel ist \emph{korrekt}, wenn aus den Pr\"amissen die
+Konklusion logisch folgt -- also: jede Belegung, die die Pr\"amissen wahr
+macht, macht auch die Konklusion wahr. \emph{Inkorrekt} hei\ss t, dass es
+mindestens \emph{eine} Belegung gibt, unter der die Pr\"amissen wahr sind,
+die Konklusion aber falsch. Genau ein solches Gegenbeispiel reicht aus.
+
+\medskip
+\textbf{Aufgabenstellung.}
+Gegeben Klauseln $C_1$ und $C_2$ mit $\{a,b\} \subseteq C_1$,
+$\{c,d\} \subseteq C_2$, $a \equiv \neg c$ und $b \equiv \neg d$
+(also z.\,B.\ $\{X, \neg Y\} \subseteq C_1$ und $\{\neg X, Y\} \subseteq C_2$).
+Der Doppelresolvent ist
+$(C_1 \setminus \{a,b\}) \cup (C_2 \setminus \{c,d\})$.
+Zu zeigen ist, dass diese Regel inkorrekt ist.
+
+\medskip
+\textbf{Wahl des Gegenbeispiels.}
+Es ist sinnvoll, die kleinstm\"oglichen Klauseln zu w\"ahlen, die die
+Voraussetzung erf\"ullen. Das sind genau die Klauseln, die nichts au\ss er
+den vier Literalen $a, b, c, d$ enthalten:
 \[
 C_1 = \{X,\, \neg Y\}, \qquad C_2 = \{\neg X,\, Y\}.
 \]
-Mit $a = X$, $b = \neg Y$, $c = \neg X$, $d = Y$ ist die Bedingung
-erf\"ullt:
-$a \equiv \neg c$, denn $X \equiv \neg(\neg X)$, und
-$b \equiv \neg d$, denn $\neg Y \equiv \neg Y$.
-
-Damit lautet der Doppelresolvent
-\[
-(C_1 \setminus \{X, \neg Y\}) \;\cup\; (C_2 \setminus \{\neg X, Y\})
-\;=\; \emptyset \cup \emptyset \;=\; \emptyset.
-\]
-Die leere Klausel $\emptyset$ ist unerf\"ullbar (immer falsch).
+Mit der Zuordnung $a = X$, $b = \neg Y$, $c = \neg X$, $d = Y$ wird
+gepr\"uft, ob die Voraussetzungen passen:
+\begin{itemize}[nosep]
+\item $a \equiv \neg c$: $X \equiv \neg(\neg X) \equiv X$. \checkmark
+\item $b \equiv \neg d$: $\neg Y \equiv \neg Y$. \checkmark
+\end{itemize}
+Die Voraussetzungen sind also erf\"ullt.
 
 \medskip
-\textbf{Pr\"ufen, ob $\emptyset$ aus $C_1 \wedge C_2$ logisch folgt.}
-W\"are die Regel korrekt, m\"usste aus $C_1 \wedge C_2$ logisch
-$\emptyset$ folgen, also $C_1 \wedge C_2$ unerf\"ullbar sein. Eine
-einzige erf\"ullende Belegung von $C_1 \wedge C_2$ widerlegt das.
-
-Mit $X = 1$, $Y = 1$ gilt:
+\textbf{Schritt 1: Doppelresolventen ausrechnen.}
+Da $\{a, b\}$ ganz $C_1$ ist und $\{c, d\}$ ganz $C_2$ ist, wird in beiden
+Klauseln alles entfernt:
 \[
-\begin{array}{rcl}
-C_1 &=& X \vee \neg Y \;=\; 1 \vee 0 \;=\; 1, \\[2pt]
-C_2 &=& \neg X \vee Y \;=\; 0 \vee 1 \;=\; 1.
-\end{array}
+\underbrace{(C_1 \setminus \{X, \neg Y\})}_{=\;\emptyset}
+\;\cup\;
+\underbrace{(C_2 \setminus \{\neg X, Y\})}_{=\;\emptyset}
+\;=\; \emptyset.
 \]
-Die Belegung erf\"ullt also $C_1 \wedge C_2$, der Doppelresolvent
-$\emptyset$ ist unter derselben Belegung aber falsch. Damit folgt
-$\emptyset$ nicht logisch aus $C_1 \wedge C_2$.
+Der Doppelresolvent ist also die leere Klausel $\emptyset$. Diese ist
+unter \emph{jeder} Belegung falsch.
+
+\medskip
+\textbf{Schritt 2: Erf\"ullbarkeit von $C_1 \wedge C_2$ pr\"ufen.}
+W\"are die Regel korrekt, m\"usste aus $C_1 \wedge C_2$ logisch $\emptyset$
+folgen. Da $\emptyset$ aber immer falsch ist, w\"urde das nur funktionieren,
+wenn $C_1 \wedge C_2$ \emph{nie} wahr wird -- also unerf\"ullbar ist. Eine
+Wahrheitstabelle zeigt das Gegenteil:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{cc|cc|c|c}
+\toprule
+$X$ & $Y$ & $C_1 = X \vee \neg Y$ & $C_2 = \neg X \vee Y$ & $C_1 \wedge C_2$ & Doppelres. $\emptyset$ \\
+\midrule
+0 & 0 & $0 \vee 1 = 1$ & $1 \vee 0 = 1$ & $1$ & $0$ \\
+0 & 1 & $0 \vee 0 = 0$ & $1 \vee 1 = 1$ & $0$ & $0$ \\
+1 & 0 & $1 \vee 1 = 1$ & $0 \vee 0 = 0$ & $0$ & $0$ \\
+1 & 1 & $1 \vee 0 = 1$ & $0 \vee 1 = 1$ & $1$ & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In den Zeilen $X = Y = 0$ und $X = Y = 1$ ist $C_1 \wedge C_2$ wahr. Der
+Doppelresolvent ist aber in jeder Zeile falsch (weil $\emptyset$ konstant
+falsch ist). Es gibt also Belegungen, unter denen die Pr\"amissen wahr,
+die Konklusion aber falsch ist.
+
+\medskip
+\textbf{Schluss.}
+Damit folgt $\emptyset$ \emph{nicht} logisch aus $C_1 \wedge C_2$. Die
+doppelte Resolutionsregel w\"urde aber genau das behaupten -- sie ist also
+inkorrekt.
+
+\medskip
+\textbf{Was geht hier eigentlich schief?}
+Die normale Resolution liefert f\"ur dieselben beiden Klauseln nur
+Tautologien:
+\begin{itemize}[nosep]
+\item \"Uber $X$: $\{\neg Y\} \cup \{Y\} = \{\neg Y, Y\}$ -- Tautologie.
+\item \"Uber $Y$: $\{X\} \cup \{\neg X\} = \{X, \neg X\}$ -- Tautologie.
+\end{itemize}
+Die normale Resolution erkennt also korrekt, dass aus $C_1, C_2$ nichts
+Neues folgt. Die doppelte Resolution \"uberspringt diesen Schritt und
+schmei\ss t einfach beide komplement\"aren Paare gleichzeitig raus -- und
+landet so bei $\emptyset$, einer viel st\"arkeren (und hier falschen)
+Behauptung.
 
 \medskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 \textbf{Ergebnis Aufgabe 1.}\\[2pt]
-F\"ur $C_1 = \{X, \neg Y\}$ und $C_2 = \{\neg X, Y\}$ liefert die
-doppelte Resolutionsregel die leere Klausel $\emptyset$. Die Belegung
-$X = 1,\, Y = 1$ erf\"ullt jedoch $C_1 \wedge C_2$. Der Doppelresolvent
-folgt also nicht logisch aus den Pr\"amissen, die Regel ist
+F\"ur $C_1 = \{X, \neg Y\}$ und $C_2 = \{\neg X, Y\}$ liefert die doppelte
+Resolutionsregel die leere Klausel $\emptyset$. Die Belegung $X = 1, Y = 1$
+(und auch $X = 0, Y = 0$) erf\"ullt jedoch $C_1 \wedge C_2$. Damit folgt
+der Doppelresolvent nicht logisch aus den Pr\"amissen, die Regel ist
 \textbf{inkorrekt}. \hfill$\square$%
 }}
 
@@ -130,8 +166,38 @@ folgt also nicht logisch aus den Pr\"amissen, die Regel ist
 %% ============================================================
 \subsection*{Aufgabe 2 \textnormal{(3 Punkte)} -- Resolution \& DPLL f\"ur $F$}
 
+\textbf{Was ist eine CNF?}
+CNF hei\ss t \emph{konjunktive Normalform}: eine Formel, die ein gro\ss es
+UND von Klammern ist, wobei jede Klammer eine Oder-Verkn\"upfung
+(eine Klausel) ist. Eine CNF ist genau dann wahr, wenn jede einzelne
+Klausel wahr ist. F\"ur DPLL und f\"ur Resolution muss die Formel zuerst in
+CNF gebracht werden.
+
+\medskip
+\textbf{Resolution als Beweisverfahren.}
+Die Idee: Aus der Klauselmenge werden so lange neue Klauseln durch
+Resolution abgeleitet, bis entweder die leere Klausel $\emptyset$
+auftaucht (dann ist die Formel unerf\"ullbar) oder keine neue Klausel
+mehr entsteht (dann ist sie erf\"ullbar). Ziel ist hier also, einen
+Ableitungsweg von den Ausgangsklauseln bis zu $\emptyset$ zu finden.
+
+\medskip
+\textbf{DPLL kurz.}
+DPLL setzt Variablen Schritt f\"ur Schritt auf $0$ oder $1$ und
+vereinfacht danach die Klauseln:
+\begin{itemize}[nosep]
+\item Eine Klausel, die wahr wird, f\"allt weg.
+\item Ein Literal, das falsch wird, wird nur aus seiner Klausel entfernt.
+\item \emph{Unit Propagation}: Bleibt in einer Klausel nur ein Literal
+      \"ubrig (eine Unit-Klausel), muss dieses Literal wahr werden.
+\item Entsteht eine leere Klausel $\emptyset$, scheitert der Zweig. DPLL
+      geht zum letzten Verzweigungspunkt zur\"uck und probiert den
+      anderen Wert.
+\end{itemize}
+
+\medskip
 \textbf{Aufgabenstellung.}
-Entscheide mittels Resolution, ob
+Entscheide mittels Resolution, ob die Formel
 \[
 F \;\equiv\; \neg(X \to \neg Y)
 \;\wedge\; \neg(X \wedge Y \wedge \neg A)
@@ -141,35 +207,67 @@ F \;\equiv\; \neg(X \to \neg Y)
 erf\"ullbar ist. Zus\"atzlich sind die Schritte anzugeben, die DPLL
 machen w\"urde.
 
-\medskip
+\bigskip
 \textbf{Schritt 1: CNF bestimmen.}
-Jedes Konjunkt einzeln umformen.
 
-Erstes Konjunkt mit $P \to Q \equiv \neg P \vee Q$ und De Morgan
-($\neg(A \vee B) \equiv \neg A \wedge \neg B$):
+Bei der Umformung werden zwei Regeln immer wieder gebraucht:
+\begin{itemize}[nosep]
+\item Implikation aufl\"osen: $P \to Q \;\equiv\; \neg P \vee Q$.
+\item De Morgan: $\neg(A \vee B) \equiv \neg A \wedge \neg B$ und
+      $\neg(A \wedge B) \equiv \neg A \vee \neg B$.
+\end{itemize}
+Doppelte Negation $\neg\neg A \equiv A$ wird stillschweigend mit verwendet.
+Die vier Konjunkte werden einzeln umgeformt.
+
+\medskip
+\emph{Erstes Konjunkt: $\neg(X \to \neg Y)$.}
+Erst die Implikation aufl\"osen:
+\begin{align*}
+X \to \neg Y &\equiv \neg X \vee \neg Y.
+\end{align*}
+Damit:
 \begin{align*}
 \neg(X \to \neg Y)
-&\equiv \neg(\neg X \vee \neg Y) \\
+&\equiv \neg(\neg X \vee \neg Y)
+&& \text{(Implikation eingesetzt)} \\
+&\equiv \neg(\neg X) \wedge \neg(\neg Y)
+&& \text{(De Morgan)} \\
 &\equiv X \wedge Y.
+&& \text{(doppelte Negation)}
 \end{align*}
-Das liefert die zwei Unit-Klauseln $\{X\}$ und $\{Y\}$.
+Das ergibt zwei Unit-Klauseln $\{X\}$ und $\{Y\}$.
 
-Zweites Konjunkt mit De Morgan:
-\[
+\medskip
+\emph{Zweites Konjunkt: $\neg(X \wedge Y \wedge \neg A)$.}
+De Morgan f\"ur eine Drei-Konjunktion:
+\begin{align*}
 \neg(X \wedge Y \wedge \neg A)
-\;\equiv\; \neg X \vee \neg Y \vee A.
-\]
+&\equiv \neg X \vee \neg Y \vee \neg(\neg A)
+&& \text{(De Morgan)} \\
+&\equiv \neg X \vee \neg Y \vee A.
+&& \text{(doppelte Negation)}
+\end{align*}
+Klausel: $\{\neg X, \neg Y, A\}$.
 
-Drittes Konjunkt mit Implikation und De Morgan:
-\[
+\medskip
+\emph{Drittes Konjunkt: $X \wedge A \to B$.}
+Implikation aufl\"osen, dann De Morgan auf $\neg(X \wedge A)$:
+\begin{align*}
 X \wedge A \to B
-\;\equiv\; \neg(X \wedge A) \vee B
-\;\equiv\; \neg X \vee \neg A \vee B.
-\]
+&\equiv \neg(X \wedge A) \vee B
+&& \text{(Implikation aufgel\"ost)} \\
+&\equiv (\neg X \vee \neg A) \vee B
+&& \text{(De Morgan)} \\
+&\equiv \neg X \vee \neg A \vee B.
+\end{align*}
+Klausel: $\{\neg X, \neg A, B\}$.
 
-Viertes Konjunkt: $\neg B$, also Klausel $\{\neg B\}$.
+\medskip
+\emph{Viertes Konjunkt: $\neg B$.}
+Bereits eine Klausel: $\{\neg B\}$.
 
-Die CNF und die zugeh\"orige Klauselmenge:
+\medskip
+\textbf{Klauselmenge.}
 \[
 \begin{array}{rclcl}
 C_1 &\equiv& X                          &=& \{X\},\\
@@ -180,73 +278,113 @@ C_5 &\equiv& \neg B                     &=& \{\neg B\}.
 \end{array}
 \]
 
-\medskip
+\bigskip
 \textbf{Schritt 2: Resolution.}
-Ableitung der leeren Klausel:
-\begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{lll}
-\toprule
-Resolvent & aus & \"uber Literal \\
-\midrule
-$C_6 = \{\neg Y, A\}$       & $C_1, C_3$ & $X$ \\
-$C_7 = \{A\}$               & $C_2, C_6$ & $Y$ \\
-$C_8 = \{\neg X, \neg A\}$  & $C_4, C_5$ & $B$ \\
-$C_9 = \{\neg A\}$          & $C_1, C_8$ & $X$ \\
-$\emptyset$                 & $C_7, C_9$ & $A$ \\
-\bottomrule
-\end{tabular}
-\end{center}
 
-Die leere Klausel ist abgeleitet, $F$ ist also \textbf{unerf\"ullbar}.
-
-\medskip
-\textbf{Schritt 3: DPLL.}
-Start mit der Klauselmenge $\{C_1, C_2, C_3, C_4, C_5\}$. Es gibt
-mehrere Unit-Klauseln, also l\"auft DPLL ausschlie\ss lich \"uber Unit
-Propagation -- es muss nicht verzweigt werden.
+Es gibt drei Unit-Klauseln ($C_1, C_2, C_5$), die jeweils ein einzelnes
+Literal erzwingen. Die Strategie ist daher, diese Unit-Klauseln nach und
+nach mit den l\"angeren Klauseln $C_3$ und $C_4$ zu resolvieren und so die
+l\"angeren Klauseln zu k\"urzen, bis am Ende zwei widerspr\"uchliche
+Unit-Klauseln \"ubrig sind, deren Resolvent $\emptyset$ ist.
 
 \begin{center}
 \small
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.22\textwidth}p{0.22\textwidth}p{0.46\textwidth}}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.08\textwidth}p{0.27\textwidth}p{0.57\textwidth}}
 \toprule
-Schritt & Belegung & Klauselmenge nach Vereinfachung \\
+Schritt & Resolvent & Wie der Resolvent entsteht \\
 \midrule
-Unit $\{X\}$
-& $X = 1$
-& $\{X\}$ ist erf\"ullt und f\"allt weg. $\neg X$ wird aus $C_3$ und
-  $C_4$ entfernt.
-  Rest: $\{Y\},\;\{\neg Y, A\},\;\{\neg A, B\},\;\{\neg B\}$. \\
+(a)
+& $C_6 = \{\neg Y, A\}$
+& Resolution von $C_1 = \{X\}$ und $C_3 = \{\neg X, \neg Y, A\}$ \"uber $X$.\\
+&& Aus $C_1$ verschwindet $X$, aus $C_3$ verschwindet $\neg X$.\\
+&& Resolvent: $\emptyset \cup \{\neg Y, A\} = \{\neg Y, A\}$. \\
 \midrule
-Unit $\{Y\}$
-& $X = 1,\; Y = 1$
-& $\{Y\}$ erf\"ullt. $\neg Y$ wird aus $\{\neg Y, A\}$ entfernt.
-  Rest: $\{A\},\;\{\neg A, B\},\;\{\neg B\}$. \\
+(b)
+& $C_7 = \{A\}$
+& Resolution von $C_2 = \{Y\}$ und $C_6 = \{\neg Y, A\}$ \"uber $Y$.\\
+&& Aus $C_2$ verschwindet $Y$, aus $C_6$ verschwindet $\neg Y$.\\
+&& Resolvent: $\emptyset \cup \{A\} = \{A\}$. \\
 \midrule
-Unit $\{A\}$
-& $X = 1,\; Y = 1,\; A = 1$
-& $\{A\}$ erf\"ullt. $\neg A$ wird aus $\{\neg A, B\}$ entfernt.
-  Rest: $\{B\},\;\{\neg B\}$. \\
+(c)
+& $C_8 = \{\neg X, \neg A\}$
+& Resolution von $C_4 = \{\neg X, \neg A, B\}$ und $C_5 = \{\neg B\}$ \"uber $B$.\\
+&& Aus $C_4$ verschwindet $B$, aus $C_5$ verschwindet $\neg B$.\\
+&& Resolvent: $\{\neg X, \neg A\} \cup \emptyset = \{\neg X, \neg A\}$. \\
 \midrule
-Unit $\{B\}$
-& $X = 1,\; Y = 1,\; A = 1,\; B = 1$
-& $\{B\}$ erf\"ullt. $\neg B$ wird aus $\{\neg B\}$ entfernt -- es
-  bleibt die leere Klausel $\emptyset$. Konflikt. \\
+(d)
+& $C_9 = \{\neg A\}$
+& Resolution von $C_1 = \{X\}$ und $C_8 = \{\neg X, \neg A\}$ \"uber $X$.\\
+&& Aus $C_1$ verschwindet $X$, aus $C_8$ verschwindet $\neg X$.\\
+&& Resolvent: $\emptyset \cup \{\neg A\} = \{\neg A\}$. \\
+\midrule
+(e)
+& $\emptyset$
+& Resolution von $C_7 = \{A\}$ und $C_9 = \{\neg A\}$ \"uber $A$.\\
+&& Aus $C_7$ verschwindet $A$, aus $C_9$ verschwindet $\neg A$.\\
+&& Resolvent: $\emptyset \cup \emptyset = \emptyset$ -- die leere Klausel.\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Da alle Belegungen durch Unit Propagation erzwungen waren, gibt es
-keinen offenen Verzweigungspunkt, an dem DPLL zur\"uckgehen k\"onnte.
-DPLL meldet \emph{unerf\"ullbar}.
+Die leere Klausel ist erreicht, also ist $F$ \textbf{unerf\"ullbar}.
+
+\bigskip
+\textbf{Schritt 3: DPLL.}
+
+Es gibt am Anfang gleich drei Unit-Klauseln: $\{X\}$, $\{Y\}$, $\{\neg B\}$.
+Die werden nacheinander durch Unit Propagation abgearbeitet, ohne dass
+verzweigt werden muss.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.18\textwidth}p{0.22\textwidth}p{0.52\textwidth}}
+\toprule
+Schritt & Belegung & Was mit den Klauseln passiert \\
+\midrule
+Start
+& noch keine Werte
+& Klauselmenge: $\{X\},\;\{Y\},\;\{\neg X, \neg Y, A\},\;\{\neg X, \neg A, B\},\;\{\neg B\}$. \\
+\midrule
+Unit $\{X\}$
+& $X = 1$
+& $\{X\}$ wird wahr und f\"allt weg.\\
+&& In $\{\neg X, \neg Y, A\}$ ist $\neg X$ falsch und wird entfernt -- es bleibt $\{\neg Y, A\}$.\\
+&& In $\{\neg X, \neg A, B\}$ ist $\neg X$ falsch und wird entfernt -- es bleibt $\{\neg A, B\}$.\\
+&& Rest: $\{Y\},\;\{\neg Y, A\},\;\{\neg A, B\},\;\{\neg B\}$. \\
+\midrule
+Unit $\{Y\}$
+& $X = 1,\; Y = 1$
+& $\{Y\}$ wird wahr und f\"allt weg.\\
+&& In $\{\neg Y, A\}$ ist $\neg Y$ falsch und wird entfernt -- es bleibt $\{A\}$.\\
+&& Rest: $\{A\},\;\{\neg A, B\},\;\{\neg B\}$. \\
+\midrule
+Unit $\{A\}$
+& $X = 1,\; Y = 1,\; A = 1$
+& $\{A\}$ wird wahr und f\"allt weg.\\
+&& In $\{\neg A, B\}$ ist $\neg A$ falsch und wird entfernt -- es bleibt $\{B\}$.\\
+&& Rest: $\{B\},\;\{\neg B\}$. \\
+\midrule
+Unit $\{B\}$
+& $X = 1,\; Y = 1,\; A = 1,\; B = 1$
+& $\{B\}$ wird wahr und f\"allt weg.\\
+&& In $\{\neg B\}$ wird $\neg B$ falsch und entfernt -- es bleibt die leere Klausel $\emptyset$. Konflikt. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Da alle Belegungen durch Unit Propagation \emph{erzwungen} waren, gibt es
+keinen Verzweigungspunkt, an dem DPLL einen anderen Wert probieren
+k\"onnte. Das Backtracking l\"auft ins Leere -- DPLL meldet
+\emph{unerf\"ullbar}.
 
 \medskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 \textbf{Ergebnis Aufgabe 2.}\\[2pt]
 Resolution leitet die leere Klausel $\emptyset$ ab; DPLL l\"auft durch
-reine Unit Propagation in einen Konflikt. Beide Verfahren liefern
-dasselbe: Die Formel
+reine Unit Propagation in einen Konflikt, ohne dass verzweigt werden
+muss. Beide Verfahren liefern dasselbe Resultat: die Formel
 \[
 F \;\equiv\; \neg(X \to \neg Y)
 \wedge \neg(X \wedge Y \wedge \neg A)
@@ -263,6 +401,10 @@ ist \textbf{unerf\"ullbar}.%
 %% ============================================================
 \subsection*{Aufgabe 3 \textnormal{(3 Punkte)} -- Resolution \& DPLL f\"ur $G$}
 
+\textbf{Vorgehen.} Wie in Aufgabe 2: CNF, dann Resolution + DPLL. Pointe:
+in der Klauselmenge kommt $\neg B$ nirgends vor.
+
+\medskip
 \textbf{Aufgabenstellung.}
 Entscheide mittels Resolution, ob
 \[
@@ -271,130 +413,79 @@ G \;\equiv\; (X \vee Y)
 \;\wedge\; (X \wedge A \to B)
 \;\wedge\; (A \vee B)
 \]
-erf\"ullbar ist. Zus\"atzlich sind die Schritte anzugeben, die DPLL
-machen w\"urde.
+erf\"ullbar ist. Zus\"atzlich die Schritte angeben, die DPLL machen w\"urde.
 
-\medskip
-\textbf{Schritt 1: CNF bestimmen.}
+\bigskip
+\textbf{Schritt 1: CNF.}
+Jeder Konjunkt wird mit den bekannten Regeln (De Morgan, $P \to Q \equiv \neg P \vee Q$)
+direkt zu seiner Klausel:
 
-Erstes Konjunkt: $X \vee Y$ ist bereits eine Klausel.
-
-Zweites Konjunkt mit De Morgan:
 \[
-\neg(X \wedge Y \wedge \neg A) \;\equiv\; \neg X \vee \neg Y \vee A.
+G \;\equiv\;
+\underbrace{(X \vee Y)}_{\textstyle C_1 = \{X,\,Y\}}
+\,\wedge\,
+\underbrace{\neg(X \wedge Y \wedge \neg A)}_{\textstyle C_2 = \{\neg X,\,\neg Y,\,A\}}
+\,\wedge\,
+\underbrace{(X \wedge A \to B)}_{\textstyle C_3 = \{\neg X,\,\neg A,\,B\}}
+\,\wedge\,
+\underbrace{(A \vee B)}_{\textstyle C_4 = \{A,\,B\}}.
 \]
 
-Drittes Konjunkt mit Implikation und De Morgan:
-\[
-X \wedge A \to B \;\equiv\; \neg X \vee \neg A \vee B.
-\]
-
-Viertes Konjunkt: $A \vee B$ ist bereits eine Klausel.
-
-Klauselmenge:
-\[
-\begin{array}{rcl}
-C_1 &=& \{X, Y\},\\
-C_2 &=& \{\neg X, \neg Y, A\},\\
-C_3 &=& \{\neg X, \neg A, B\},\\
-C_4 &=& \{A, B\}.
-\end{array}
-\]
-
-\medskip
+\bigskip
 \textbf{Schritt 2: Resolution.}
-Wichtige Beobachtung: Das Literal $\neg B$ kommt in keiner Klausel vor,
-$B$ tritt nur positiv auf (in $C_3$ und $C_4$). Damit kann $B$ durch
-keinen Resolutionsschritt eliminiert werden -- jeder Resolvent, der $B$
-enth\"alt, beh\"alt $B$. Folglich kann die leere Klausel $\emptyset$
-nicht abgeleitet werden, denn um $B$ aus $C_3$ oder $C_4$ herauszubekommen, br\"auchte
-es eine Klausel mit $\neg B$.
+Vorkommen jedes Literals in der Klauselmenge:
 
-Konkret berechenbare Resolventen (alle nicht-tautologischen, ohne
-Wiederholung):
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{lll}
+\begin{tabular}{r|cc|cc|cc|cc}
 \toprule
-Resolvent & aus & \"uber Literal \\
+                              & $X$        & $\neg X$   & $Y$        & $\neg Y$   & $A$        & $\neg A$   & $B$        & $\neg B$ \\
 \midrule
-$C_5 = \{\neg X, B\}$         & $C_3, C_4$ & $A$ \\
-$C_6 = \{Y, \neg A, B\}$      & $C_1, C_3$ & $X$ \\
-$C_7 = \{\neg X, \neg Y, B\}$ & $C_2, C_3$ & $A$ \\
-$C_8 = \{Y, B\}$              & $C_1, C_5$ & $X$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-Resolutionen \"uber $X$ oder $Y$ zwischen $C_1$ und $C_2$ liefern
-Tautologien wie $\{Y, \neg Y, A\}$ und sind damit nutzlos. Alle weiteren
-ableitbaren Klauseln enthalten weiterhin $B$ und f\"uhren nie zu
-$\emptyset$. Die Resolution s\"attigt also ohne leere Klausel; $G$ ist
-\textbf{erf\"ullbar}.
-
-\medskip
-\textbf{Schritt 3: DPLL.}
-Start mit $\{C_1, C_2, C_3, C_4\}$. Keine Unit-Klausel vorhanden, also
-muss verzweigt werden. Gew\"ahlt wird $X$, zuerst der Zweig $X = 1$.
-
-\emph{Zweig $X = 1$:}
-\begin{center}
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.22\textwidth}p{0.24\textwidth}p{0.44\textwidth}}
-\toprule
-Schritt & Belegung & Klauselmenge nach Vereinfachung \\
-\midrule
-Wahl $X = 1$
-& $X = 1$
-& $C_1 = \{X, Y\}$ ist erf\"ullt. $\neg X$ wird aus $C_2$ und $C_3$
-  entfernt.
-  Rest: $\{\neg Y, A\},\;\{\neg A, B\},\;\{A, B\}$. \\
-\midrule
-keine Unit -- Wahl $A = 1$
-& $X = 1,\; A = 1$
-& $\{\neg Y, A\}$ und $\{A, B\}$ sind erf\"ullt. $\neg A$ wird aus
-  $\{\neg A, B\}$ entfernt.
-  Rest: $\{B\}$. \\
-\midrule
-Unit $\{B\}$
-& $X = 1,\; A = 1,\; B = 1$
-& $\{B\}$ ist erf\"ullt. Keine Klausel mehr offen -- Modell gefunden. \\
+$C_1 = \{X, Y\}$              & \checkmark &            & \checkmark &            &            &            &            &          \\
+$C_2 = \{\neg X, \neg Y, A\}$ &            & \checkmark &            & \checkmark & \checkmark &            &            &          \\
+$C_3 = \{\neg X, \neg A, B\}$ &            & \checkmark &            &            &            & \checkmark & \checkmark &          \\
+$C_4 = \{A, B\}$              &            &            &            &            & \checkmark &            & \checkmark &          \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-DPLL liefert das Modell $X = 1,\; A = 1,\; B = 1$; $Y$ ist frei und
-darf $0$ oder $1$ sein.
-
-\medskip
-\textbf{Verifikation des Modells} f\"ur $Y = 0$ (analog f\"ur $Y = 1$):
+Spalte $\neg B$ ist leer:
 \[
-\begin{array}{rcl}
-X \vee Y &=& 1 \vee 0 \;=\; 1, \\[2pt]
-\neg(X \wedge Y \wedge \neg A) &=& \neg(1 \wedge 0 \wedge 0) \;=\; \neg 0 \;=\; 1, \\[2pt]
-X \wedge A \to B &=& (1 \wedge 1) \to 1 \;=\; 1 \to 1 \;=\; 1, \\[2pt]
-A \vee B &=& 1 \vee 1 \;=\; 1.
-\end{array}
+\neg B \text{ kommt nirgends vor}
+\;\;\Longrightarrow\;\;
+B \text{ ist nicht eliminierbar}
+\;\;\Longrightarrow\;\;
+\emptyset \text{ nicht ableitbar}
+\;\;\Longrightarrow\;\;
+G \text{ \textbf{erf\"ullbar}}.
 \]
-Alle Konjunkte sind wahr, das Modell ist also korrekt.
+
+\bigskip
+\textbf{Schritt 3: DPLL.}
+Keine Unit-Klausel am Anfang, also Verzweigung. Pfad $X = 1 \to A = 1 \to B = 1$:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{ll}
+\toprule
+\textbf{Schritt} & \textbf{Klauselmenge nach Vereinfachung} \\
+\midrule
+Start              & $\{X, Y\},\;\{\neg X, \neg Y, A\},\;\{\neg X, \neg A, B\},\;\{A, B\}$ \\
+Wahl $X = 1$       & $\{\neg Y, A\},\;\{\neg A, B\},\;\{A, B\}$ \\
+Wahl $A = 1$       & $\{B\}$ \\
+Unit $B = 1$       & alles erf\"ullt \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Modell:} $X = 1,\; A = 1,\; B = 1$, $Y$ frei.
 
 \medskip
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 \textbf{Ergebnis Aufgabe 3.}\\[2pt]
-Resolution leitet $\emptyset$ nicht ab, weil $\neg B$ in keiner Klausel
-vorkommt und $B$ deshalb nie wegresolviert werden kann. DPLL findet
-schon im ersten Zweig ($X = 1$) das Modell
-\[
-X = 1,\quad A = 1,\quad B = 1,\quad Y \text{ beliebig}.
-\]
-Damit ist
-\[
-G \;\equiv\; (X \vee Y)
-\wedge \neg(X \wedge Y \wedge \neg A)
-\wedge (X \wedge A \to B)
-\wedge (A \vee B)
-\]
-\textbf{erf\"ullbar}.%
+$\neg B$ kommt in keiner Klausel vor $\Rightarrow$ Resolution kann
+$\emptyset$ nicht ableiten $\Rightarrow$ $G$ \textbf{erf\"ullbar}.
+DPLL-Modell: $X = 1,\; A = 1,\; B = 1$, $Y$ beliebig.%
 }}
 
 \end{document}
